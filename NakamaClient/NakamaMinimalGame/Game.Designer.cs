@@ -46,6 +46,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.cbInvisibleStatus = new System.Windows.Forms.CheckBox();
+            this.tabGroups = new System.Windows.Forms.TabControl();
+            this.btCreateGroup = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -163,6 +165,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btCreateGroup);
+            this.tabPage2.Controls.Add(this.tabGroups);
             this.tabPage2.Controls.Add(this.cbInvisibleStatus);
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.tbStatus);
@@ -252,6 +256,24 @@
             this.cbInvisibleStatus.UseVisualStyleBackColor = true;
             this.cbInvisibleStatus.CheckedChanged += new System.EventHandler(this.cbInvisibleStatus_CheckedChanged);
             // 
+            // tabGroups
+            // 
+            this.tabGroups.Location = new System.Drawing.Point(445, 88);
+            this.tabGroups.Name = "tabGroups";
+            this.tabGroups.SelectedIndex = 0;
+            this.tabGroups.Size = new System.Drawing.Size(479, 417);
+            this.tabGroups.TabIndex = 9;
+            // 
+            // btCreateGroup
+            // 
+            this.btCreateGroup.Location = new System.Drawing.Point(827, 65);
+            this.btCreateGroup.Name = "btCreateGroup";
+            this.btCreateGroup.Size = new System.Drawing.Size(97, 23);
+            this.btCreateGroup.TabIndex = 10;
+            this.btCreateGroup.Text = "Create Group";
+            this.btCreateGroup.UseVisualStyleBackColor = true;
+            this.btCreateGroup.Click += new System.EventHandler(this.btCreateGroup_Click);
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,6 +312,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tbStatus;
         private System.Windows.Forms.CheckBox cbInvisibleStatus;
+        private System.Windows.Forms.TabControl tabGroups;
+        private System.Windows.Forms.Button btCreateGroup;
     }
 }
 

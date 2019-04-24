@@ -40,6 +40,8 @@ namespace NakamaMinimalGame
             //populate server-user-list
             UpdateServerUsers();
             UpdateFriendlist();
+            _gm.GroupManager.ListGroup(); //TODO
+
             this.Text = "Connected as " + (_gm.CurrentUser.DisplayName ?? _gm.CurrentUser.Username) + " -- " + _gm.CurrentUser.Id;
 
             tabControl1.SelectTab(1);
@@ -52,7 +54,10 @@ namespace NakamaMinimalGame
             btConnect.Click += btConnect_Click_Disconnect;
 
             _gm.FriendList.UpdateFriendlist += UpdateFriendlist;
+            _gm.GroupManager.UpdateGroups += GroupManagerOnUpdateGroups;
         }
+
+
         private async void btConnect_Click_Disconnect(object sender, EventArgs e)
         {
             await _gm.Logoff();
@@ -77,6 +82,14 @@ namespace NakamaMinimalGame
                 lvUser.Items.Add(new ListViewItem { Text = u.DisplayName ?? u.Username, Tag = u.Id });
             }
         }
+        
+        private void GroupManagerOnUpdateGroups()
+        {
+            tabGroups.TabPages.Clear();
+
+
+        }
+
         private void UpdateFriendlist()
         {
             var friends = _gm.FriendList.Friends;
@@ -201,6 +214,11 @@ namespace NakamaMinimalGame
                 await _gm.FriendList.ChangeStatus(tbStatus.Text);
             }
 
+        }
+
+        private void btCreateGroup_Click(object sender, EventArgs e)
+        {
+            _gm.GroupManager.CreateGroup();
         }
     }
 }
