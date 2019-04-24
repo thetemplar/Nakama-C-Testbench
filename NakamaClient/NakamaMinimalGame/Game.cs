@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Nakama;
+using NakamaMinimalGame.NakamaClient;
 
 namespace NakamaMinimalGame
 {
@@ -9,10 +11,18 @@ namespace NakamaMinimalGame
         readonly GameManager _gm = GameManager.Instance;
         
         private readonly ContextMenuStrip _collectionRoundMenuStrip = new ContextMenuStrip();
+        private static readonly Object Obj = new Object();
+
 
         public Game()
         {
             InitializeComponent();
+
+            _gm.OnNewNotifications += GmOnOnNewNotifications;
+        }
+
+        private void GmOnOnNewNotifications(IApiNotification note, GameManager.Notifications e)
+        {
         }
 
         private void btAlternativeAccount_Click(object sender, EventArgs e)
@@ -28,8 +38,9 @@ namespace NakamaMinimalGame
                 await _gm.Login(tbEmail.Text, tbPassword.Text, tbUsername.Text);
 
             //populate server-user-list
-            FillUsers();
-            FillFriends();
+            UpdateServerUsers();
+            UpdateFriendlist();
+            this.Text = "Connected as " + (_gm.CurrentUser.DisplayName ?? _gm.CurrentUser.Username) + " -- " + _gm.CurrentUser.Id;
 
             tabControl1.SelectTab(1);
 
@@ -39,6 +50,8 @@ namespace NakamaMinimalGame
             btConnect.Text = "Disconnect";
             btConnect.Click -= btConnect_Click;
             btConnect.Click += btConnect_Click_Disconnect;
+
+            _gm.FriendList.UpdateFriendlist += UpdateFriendlist;
         }
         private async void btConnect_Click_Disconnect(object sender, EventArgs e)
         {
@@ -46,6 +59,7 @@ namespace NakamaMinimalGame
             lvUser.Items.Clear();
             lvFriend.Items.Clear();
 
+            this.Text = "Disconnected";
             tbEmail.Enabled = true;
             tbPassword.Enabled = true;
             tbUsername.Enabled = true;
@@ -54,41 +68,47 @@ namespace NakamaMinimalGame
             btConnect.Click -= btConnect_Click_Disconnect;
         }
 
-        private async void FillUsers()
+        private async void UpdateServerUsers()
         {
-            var users = await _gm.GetUsers();
+            var users = await _gm.FriendList.GetUserlistFromServer();
             lvUser.Items.Clear();
             foreach (var u in users)
             {
                 lvUser.Items.Add(new ListViewItem { Text = u.DisplayName ?? u.Username, Tag = u.Id });
             }
         }
-        private async void FillFriends()
+        private async void UpdateFriendlist()
         {
-            var friends = await _gm.GetFriends();
-            lvFriend.Items.Clear();
-            foreach (var f in friends)
+            var friends = _gm.FriendList.Friends;
+            lock (Obj)
             {
-                var username = f.User.DisplayName ?? f.User.Username;
-                switch (f.State)
+                lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Clear()));
+                foreach (var f in friends)
                 {
-                    case GameManager.Friend.FriendState.Friend:
-                        if (f.User.Online)
-                            lvFriend.Items.Add(new ListViewItem { Text = "[Online] " + username, Tag = f.User.Id });
-                        else
-                            lvFriend.Items.Add(new ListViewItem { Text = "[Offline] " + username, Tag = f.User.Id });
-                        break;
-                    case GameManager.Friend.FriendState.IncomingRequest:
-                        lvFriend.Items.Add(new ListViewItem { Text = "[Requested] " + username, Tag = f.User.Id });
-                        break;
-                    case GameManager.Friend.FriendState.WaitingForAcceptance:
-                        lvFriend.Items.Add(new ListViewItem { Text = "[Waiting] " + username, Tag = f.User.Id });
-                        break;
-                    case GameManager.Friend.FriendState.Banned:
-                        lvFriend.Items.Add(new ListViewItem { Text = "[Banned] " + username, Tag = f.User.Id });
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    var username = f.User.DisplayName ?? f.User.Username;
+                    switch (f.State)
+                    {
+                        case FriendList.Friend.FriendState.Friend:
+                            if (f.User.Online)
+                                if(string.IsNullOrEmpty(f.User.Status))
+                                    lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem { Text = "[Online] " + username, Tag = f.User.Id })));
+                                else
+                                    lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem { Text = "[" + f.User.Status + "] " + username, Tag = f.User.Id })));
+                                else
+                                lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Offline] " + username, Tag = f.User.Id})));
+                            break;
+                        case FriendList.Friend.FriendState.IncomingRequest:
+                            lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Requested] " + username, Tag = f.User.Id})));
+                            break;
+                        case FriendList.Friend.FriendState.WaitingForAcceptance:
+                            lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Waiting] " + username, Tag = f.User.Id})));
+                            break;
+                        case FriendList.Friend.FriendState.Banned:
+                            lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Banned] " + username, Tag = f.User.Id})));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
         }
@@ -103,14 +123,75 @@ namespace NakamaMinimalGame
 
                 _collectionRoundMenuStrip.Items.Add("Add As Friend", null, async (send, args) =>
                 {
-                    await _gm.AddAsFriend(item.Tag.ToString());
-                    FillFriends();
+                    await _gm.FriendList.AddAsFriend(item.Tag.ToString());
+                    UpdateFriendlist();
                 });
                 _collectionRoundMenuStrip.Show(Cursor.Position);
                 _collectionRoundMenuStrip.Visible = true;
                 return;
             }
             _collectionRoundMenuStrip.Visible = false;            
+        }
+
+        private void lvFriend_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            _collectionRoundMenuStrip.Items.Clear();
+            foreach (ListViewItem item in lvFriend.Items)
+            {
+                if (!item.Bounds.Contains(new Point(e.X, e.Y))) continue;
+
+                if (item.Text.StartsWith("[Requested]") || item.Text.StartsWith("[Waiting]"))
+                {
+                    _collectionRoundMenuStrip.Items.Add("Accept Friend", null, async (send, args) =>
+                    {
+                        await _gm.FriendList.AddAsFriend(item.Tag.ToString());
+                        UpdateFriendlist();
+                    });
+                    _collectionRoundMenuStrip.Items.Add("Refuse Friend", null, async (send, args) =>
+                    {
+                        await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
+                        UpdateFriendlist();
+                    });
+                    _collectionRoundMenuStrip.Items.Add("Ban Friend", null, async (send, args) =>
+                    {
+                        await _gm.FriendList.BanAsFriend(item.Tag.ToString());
+                        UpdateFriendlist();
+                    });
+                }
+                if (item.Text.StartsWith("[Online]") || item.Text.StartsWith("[Offline]"))
+                {
+                    _collectionRoundMenuStrip.Items.Add("Delete Friend", null, async (send, args) =>
+                    {
+                        await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
+                        UpdateFriendlist();
+                    });
+                    _collectionRoundMenuStrip.Items.Add("Block Friend", null, async (send, args) =>
+                    {
+                        await _gm.FriendList.BanAsFriend(item.Tag.ToString());
+                        UpdateFriendlist();
+                    });
+                }
+                if (item.Text.StartsWith("[Banned]"))
+                {
+                    _collectionRoundMenuStrip.Items.Add("Un-Ban Friend", null, async (send, args) =>
+                    {
+                        await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
+                        UpdateFriendlist();
+                    });
+                }
+
+                _collectionRoundMenuStrip.Show(Cursor.Position);
+                _collectionRoundMenuStrip.Visible = true;
+                return;
+            }
+            _collectionRoundMenuStrip.Visible = false;
+        }
+
+        private async void tbStatus_TextChanged(object sender, EventArgs e)
+        {
+            await _gm.FriendList.ChangeStatus(tbStatus.Text);
+            
         }
     }
 }
