@@ -77,11 +77,12 @@ namespace NakamaMinimalGame
                 lvUser.Items.Add(new ListViewItem { Text = u.DisplayName ?? u.Username, Tag = u.Id });
             }
         }
-        private async void UpdateFriendlist()
+        private void UpdateFriendlist()
         {
             var friends = _gm.FriendList.Friends;
             lock (Obj)
             {
+                Console.WriteLine("UpdateFriendlist");
                 lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Clear()));
                 foreach (var f in friends)
                 {
@@ -94,7 +95,7 @@ namespace NakamaMinimalGame
                                     lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem { Text = "[Online] " + username, Tag = f.User.Id })));
                                 else
                                     lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem { Text = "[" + f.User.Status + "] " + username, Tag = f.User.Id })));
-                                else
+                            else
                                 lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Offline] " + username, Tag = f.User.Id})));
                             break;
                         case FriendList.Friend.FriendState.IncomingRequest:
@@ -124,7 +125,6 @@ namespace NakamaMinimalGame
                 _collectionRoundMenuStrip.Items.Add("Add As Friend", null, async (send, args) =>
                 {
                     await _gm.FriendList.AddAsFriend(item.Tag.ToString());
-                    UpdateFriendlist();
                 });
                 _collectionRoundMenuStrip.Show(Cursor.Position);
                 _collectionRoundMenuStrip.Visible = true;
@@ -146,17 +146,14 @@ namespace NakamaMinimalGame
                     _collectionRoundMenuStrip.Items.Add("Accept Friend", null, async (send, args) =>
                     {
                         await _gm.FriendList.AddAsFriend(item.Tag.ToString());
-                        UpdateFriendlist();
                     });
                     _collectionRoundMenuStrip.Items.Add("Refuse Friend", null, async (send, args) =>
                     {
                         await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
-                        UpdateFriendlist();
                     });
                     _collectionRoundMenuStrip.Items.Add("Ban Friend", null, async (send, args) =>
                     {
                         await _gm.FriendList.BanAsFriend(item.Tag.ToString());
-                        UpdateFriendlist();
                     });
                 }
                 if (item.Text.StartsWith("[Online]") || item.Text.StartsWith("[Offline]"))
@@ -164,12 +161,10 @@ namespace NakamaMinimalGame
                     _collectionRoundMenuStrip.Items.Add("Delete Friend", null, async (send, args) =>
                     {
                         await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
-                        UpdateFriendlist();
                     });
                     _collectionRoundMenuStrip.Items.Add("Block Friend", null, async (send, args) =>
                     {
                         await _gm.FriendList.BanAsFriend(item.Tag.ToString());
-                        UpdateFriendlist();
                     });
                 }
                 if (item.Text.StartsWith("[Banned]"))
@@ -177,7 +172,6 @@ namespace NakamaMinimalGame
                     _collectionRoundMenuStrip.Items.Add("Un-Ban Friend", null, async (send, args) =>
                     {
                         await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
-                        UpdateFriendlist();
                     });
                 }
 
@@ -192,6 +186,21 @@ namespace NakamaMinimalGame
         {
             await _gm.FriendList.ChangeStatus(tbStatus.Text);
             
+        }
+
+        private async void cbInvisibleStatus_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbInvisibleStatus.Checked)
+            {
+                tbStatus.Enabled = false;
+                await _gm.FriendList.ChangeStatus(null);
+            }
+            else
+            {
+                tbStatus.Enabled = true;
+                await _gm.FriendList.ChangeStatus(tbStatus.Text);
+            }
+
         }
     }
 }

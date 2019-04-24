@@ -32,13 +32,25 @@ namespace NakamaMinimalGame.NakamaClient
 
             _socket.OnNotification += async (_, notification) =>
             {
-                var noteId = (GameManager.Notifications)notification.Code;
-                if (noteId == GameManager.Notifications.FriendBlocked || noteId == GameManager.Notifications.FriendDeleted || noteId == GameManager.Notifications.FriendRequest || noteId == GameManager.Notifications.FriendRequestAccepted)
+                if ((GameManager.Notifications)notification.Code == GameManager.Notifications.RefreshFriendlist)
                     await GetFriendListFromServer();
             };
 
             _socket.OnStatusPresence += (_, presence) =>
             {
+                Console.WriteLine("Presence {0}", presence);
+                foreach (var join1 in presence.Joins)
+                {
+                    Console.WriteLine("User id '{0}' status update '{1}'", join1.UserId, join1.Status);
+                }
+
+                foreach (var leave in presence.Leaves)
+                {
+                    Console.WriteLine("User id '{0}' status gone '{1}'", leave.UserId, leave.Status);
+                }
+
+
+
                 var join = presence.Joins.FirstOrDefault();
                 if (join != null && _friendList.ContainsKey(join.UserId))
                 {
@@ -46,7 +58,8 @@ namespace NakamaMinimalGame.NakamaClient
                 }
                 UpdateFriendlist?.Invoke();
             };
-            GetFriendListFromServer();
+            
+            Task.Run(GetFriendListFromServer);
         }
 
         public class User
@@ -54,7 +67,7 @@ namespace NakamaMinimalGame.NakamaClient
             public string Id;
             public string Username;
             public string DisplayName;
-            public bool Online;
+            public bool Online => Status != null;
             public string Status;
         }
 
@@ -102,7 +115,6 @@ namespace NakamaMinimalGame.NakamaClient
                     User = new User
                     {
                         Username = d.User.Username,
-                        Online = d.User.Online,
                         DisplayName = d.User.DisplayName,
                         Id = d.User.Id
                     },
@@ -121,24 +133,23 @@ namespace NakamaMinimalGame.NakamaClient
                 }
                 else
                 {
-                    if (_friendList[friend.User.Id].User.Status == friend.User.Status) continue;
-
-                    _friendList[friend.User.Id].User.Status = friend.User.Status;
+                    _friendList[friend.User.Id] = friend;
                     change = true;
                 }
             }
 
-            foreach (KeyValuePair<string, Friend> friend in _friendList)
+            foreach (string friend in _friendList.Keys.ToList())
             {
                 // ReSharper disable once SimplifyLinqExpression
-                if (!users.Any(n => n.User.Id == friend.Key))
+                if (!users.Any(n => n.User.Id == friend))
                 {
-                    await _socket.UnfollowUsersAsync(new[] { friend.Key });
-                    _friendList.Remove(friend.Key);
+                    await _socket.UnfollowUsersAsync(new[] { friend });
+                    _friendList.Remove(friend);
                     change = true;
                 }
             }
 
+            Console.WriteLine("GetFriendListFromServer() - change: " + change);
             if (change)
             {
                 Friends = _friendList.Values.ToList().AsReadOnly();

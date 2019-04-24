@@ -45,6 +45,7 @@
             this.lvUser = new System.Windows.Forms.ListView();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.cbInvisibleStatus = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -162,6 +163,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.cbInvisibleStatus);
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.tbStatus);
             this.tabPage2.Controls.Add(this.lvFriend);
@@ -237,6 +239,17 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "User @Server";
             // 
+            // cbInvisibleStatus
+            // 
+            this.cbInvisibleStatus.AutoSize = true;
+            this.cbInvisibleStatus.Location = new System.Drawing.Point(445, 65);
+            this.cbInvisibleStatus.Name = "cbInvisibleStatus";
+            this.cbInvisibleStatus.Size = new System.Drawing.Size(80, 17);
+            this.cbInvisibleStatus.TabIndex = 8;
+            this.cbInvisibleStatus.Text = "checkBox1";
+            this.cbInvisibleStatus.UseVisualStyleBackColor = true;
+            this.cbInvisibleStatus.CheckedChanged += new System.EventHandler(this.cbInvisibleStatus_CheckedChanged);
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -274,6 +287,7 @@
         private System.Windows.Forms.Button btAlternativeAccount;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tbStatus;
+        private System.Windows.Forms.CheckBox cbInvisibleStatus;
     }
 }
 

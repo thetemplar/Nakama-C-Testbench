@@ -89,7 +89,7 @@ namespace NakamaMinimalGame.NakamaClient
                 Console.WriteLine("Notification content {0}", notification.Content);
                 var noteId = (Notifications) notification.Code;
 
-                if (noteId == Notifications.FriendBlocked || noteId == Notifications.FriendDeleted || noteId == Notifications.FriendRequest || noteId == Notifications.FriendRequestAccepted)
+                if (noteId == Notifications.FriendBlocked || noteId == Notifications.FriendDeleted || noteId == Notifications.FriendRequest || noteId == Notifications.FriendRequestAccepted || noteId == Notifications.RefreshFriendlist)
                 {
                 }
                 else
@@ -117,8 +117,9 @@ namespace NakamaMinimalGame.NakamaClient
             FriendRequestAccepted = -3,
             FriendRequest = -2,
             WantToChat = -1,
-            FriendBlocked = 1,
-            FriendDeleted = 2
+            RefreshFriendlist = 1,
+            FriendBlocked = 2,
+            FriendDeleted = 3
         }
 
         
