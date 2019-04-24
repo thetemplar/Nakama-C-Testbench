@@ -201,6 +201,7 @@
             // 
             this.lvFriend.Location = new System.Drawing.Point(166, 23);
             this.lvFriend.Margin = new System.Windows.Forms.Padding(2);
+            this.lvFriend.MultiSelect = false;
             this.lvFriend.Name = "lvFriend";
             this.lvFriend.Size = new System.Drawing.Size(274, 482);
             this.lvFriend.TabIndex = 5;
@@ -212,6 +213,7 @@
             // 
             this.lvUser.Location = new System.Drawing.Point(8, 23);
             this.lvUser.Margin = new System.Windows.Forms.Padding(2);
+            this.lvUser.MultiSelect = false;
             this.lvUser.Name = "lvUser";
             this.lvUser.Size = new System.Drawing.Size(154, 482);
             this.lvUser.TabIndex = 4;
