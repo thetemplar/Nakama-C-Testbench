@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Nakama;
 using NakamaMinimalGame.NakamaClient;
@@ -8,10 +11,10 @@ namespace NakamaMinimalGame
 {
     public partial class Game : Form
     {
-        readonly GameManager _gm = GameManager.Instance;
+        private readonly GameManager _gm = GameManager.Instance;
         
         private readonly ContextMenuStrip _collectionRoundMenuStrip = new ContextMenuStrip();
-        private static readonly Object Obj = new Object();
+        private static readonly object Obj = new object();
 
 
         public Game()
@@ -37,10 +40,6 @@ namespace NakamaMinimalGame
             if (tbPassword.Text.Length > 8 && tbEmail.Text.Length > 9 && tbEmail.Text.Contains("@"))
                 await _gm.Login(tbEmail.Text, tbPassword.Text, tbUsername.Text);
 
-            //populate server-user-list
-            UpdateServerUsers();
-            UpdateFriendlist();
-            _gm.GroupManager.ListGroup(); //TODO
 
             this.Text = "Connected as " + (_gm.CurrentUser.DisplayName ?? _gm.CurrentUser.Username) + " -- " + _gm.CurrentUser.Id;
 
@@ -53,8 +52,11 @@ namespace NakamaMinimalGame
             btConnect.Click -= btConnect_Click;
             btConnect.Click += btConnect_Click_Disconnect;
 
-            _gm.FriendList.UpdateFriendlist += UpdateFriendlist;
-            _gm.GroupManager.UpdateGroups += GroupManagerOnUpdateGroups;
+            _gm.FriendList.UpdateFriendList += UpdateFriendList;
+            _gm.GroupManager.UpdateGroups += UpdateGroupList;
+
+            //populate server-user-list
+            UpdateServerUsers();
         }
 
 
@@ -73,6 +75,48 @@ namespace NakamaMinimalGame
             btConnect.Click -= btConnect_Click_Disconnect;
         }
 
+        private void UpdateGroupList()
+        {
+            var groups = _gm.GroupManager.Groups;
+
+            int c = 0;
+            foreach (var group in groups)
+            {
+                if(tabGroups.TabPages.ContainsKey(group.Id)) continue;
+
+                var newTabPage = new TabPage()
+                {
+                    Text = c.ToString(),
+                    Name = group.Id
+                };
+                
+                var lbName = new Label() { Text = group.Name, Location = new Point(10, 10), Size = new Size(200, 14) };
+                newTabPage.Controls.Add(lbName);
+                var lbId = new Label() { Text = group.Id, Location = new Point(10, 30), Size = new Size(200, 14) };
+                newTabPage.Controls.Add(lbId);
+
+                var lbMembers = new Label() { Location = new Point(10, 90), Size = new Size(200, 200) };
+                StringBuilder sb = new StringBuilder();
+                foreach (var member in group.Members)
+                {
+                    sb.Append(member.MemberId + Environment.NewLine);
+                }
+                lbMembers.Text = sb.ToString();
+                newTabPage.Controls.Add(lbMembers);
+
+                var btDel = new Button()
+                {
+                    Text = "Delete Group",
+                    Location = new Point(10, 50)
+                };
+                btDel.Click += (sender, args) => { _gm.GroupManager.DeleteGroup(group.Id); };
+                newTabPage.Controls.Add(btDel);
+
+                tabGroups.Invoke((MethodInvoker)(() => tabGroups.TabPages.Insert(tabGroups.TabCount - 1, newTabPage)));
+                c++;
+            }
+        }
+
         private async void UpdateServerUsers()
         {
             var users = await _gm.FriendList.GetUserlistFromServer();
@@ -82,20 +126,13 @@ namespace NakamaMinimalGame
                 lvUser.Items.Add(new ListViewItem { Text = u.DisplayName ?? u.Username, Tag = u.Id });
             }
         }
-        
-        private void GroupManagerOnUpdateGroups()
-        {
-            tabGroups.TabPages.Clear();
 
-
-        }
-
-        private void UpdateFriendlist()
+        private void UpdateFriendList()
         {
             var friends = _gm.FriendList.Friends;
             lock (Obj)
             {
-                Console.WriteLine("UpdateFriendlist");
+                Console.WriteLine("UpdateFriendList");
                 lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Clear()));
                 foreach (var f in friends)
                 {

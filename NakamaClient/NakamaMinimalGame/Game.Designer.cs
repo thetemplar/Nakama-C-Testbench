@@ -48,9 +48,13 @@
             this.cbInvisibleStatus = new System.Windows.Forms.CheckBox();
             this.tabGroups = new System.Windows.Forms.TabControl();
             this.btCreateGroup = new System.Windows.Forms.Button();
+            this.tabGroupOverview = new System.Windows.Forms.TabPage();
+            this.lvGroups = new System.Windows.Forms.ListView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabGroups.SuspendLayout();
+            this.tabGroupOverview.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -130,7 +134,7 @@
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(940, 534);
+            this.tabControl1.Size = new System.Drawing.Size(1097, 537);
             this.tabControl1.TabIndex = 7;
             // 
             // tabPage1
@@ -165,7 +169,6 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.btCreateGroup);
             this.tabPage2.Controls.Add(this.tabGroups);
             this.tabPage2.Controls.Add(this.cbInvisibleStatus);
             this.tabPage2.Controls.Add(this.label6);
@@ -178,7 +181,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(932, 508);
+            this.tabPage2.Size = new System.Drawing.Size(1089, 511);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Lobby";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -186,7 +189,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(444, 23);
+            this.label6.Location = new System.Drawing.Point(600, 21);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(37, 13);
@@ -195,7 +198,7 @@
             // 
             // tbStatus
             // 
-            this.tbStatus.Location = new System.Drawing.Point(445, 39);
+            this.tbStatus.Location = new System.Drawing.Point(601, 37);
             this.tbStatus.Name = "tbStatus";
             this.tbStatus.Size = new System.Drawing.Size(193, 20);
             this.tbStatus.TabIndex = 6;
@@ -203,11 +206,11 @@
             // 
             // lvFriend
             // 
-            this.lvFriend.Location = new System.Drawing.Point(166, 23);
+            this.lvFriend.Location = new System.Drawing.Point(244, 23);
             this.lvFriend.Margin = new System.Windows.Forms.Padding(2);
             this.lvFriend.MultiSelect = false;
             this.lvFriend.Name = "lvFriend";
-            this.lvFriend.Size = new System.Drawing.Size(274, 482);
+            this.lvFriend.Size = new System.Drawing.Size(352, 482);
             this.lvFriend.TabIndex = 5;
             this.lvFriend.UseCompatibleStateImageBehavior = false;
             this.lvFriend.View = System.Windows.Forms.View.List;
@@ -219,7 +222,7 @@
             this.lvUser.Margin = new System.Windows.Forms.Padding(2);
             this.lvUser.MultiSelect = false;
             this.lvUser.Name = "lvUser";
-            this.lvUser.Size = new System.Drawing.Size(154, 482);
+            this.lvUser.Size = new System.Drawing.Size(232, 482);
             this.lvUser.TabIndex = 4;
             this.lvUser.UseCompatibleStateImageBehavior = false;
             this.lvUser.View = System.Windows.Forms.View.List;
@@ -228,7 +231,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(164, 6);
+            this.label5.Location = new System.Drawing.Point(241, 6);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 13);
@@ -248,37 +251,61 @@
             // cbInvisibleStatus
             // 
             this.cbInvisibleStatus.AutoSize = true;
-            this.cbInvisibleStatus.Location = new System.Drawing.Point(445, 65);
+            this.cbInvisibleStatus.Location = new System.Drawing.Point(800, 40);
             this.cbInvisibleStatus.Name = "cbInvisibleStatus";
-            this.cbInvisibleStatus.Size = new System.Drawing.Size(80, 17);
+            this.cbInvisibleStatus.Size = new System.Drawing.Size(64, 17);
             this.cbInvisibleStatus.TabIndex = 8;
-            this.cbInvisibleStatus.Text = "checkBox1";
+            this.cbInvisibleStatus.Text = "Invisible";
             this.cbInvisibleStatus.UseVisualStyleBackColor = true;
             this.cbInvisibleStatus.CheckedChanged += new System.EventHandler(this.cbInvisibleStatus_CheckedChanged);
             // 
             // tabGroups
             // 
-            this.tabGroups.Location = new System.Drawing.Point(445, 88);
+            this.tabGroups.Controls.Add(this.tabGroupOverview);
+            this.tabGroups.Location = new System.Drawing.Point(603, 73);
             this.tabGroups.Name = "tabGroups";
             this.tabGroups.SelectedIndex = 0;
-            this.tabGroups.Size = new System.Drawing.Size(479, 417);
+            this.tabGroups.Size = new System.Drawing.Size(479, 432);
             this.tabGroups.TabIndex = 9;
             // 
             // btCreateGroup
             // 
-            this.btCreateGroup.Location = new System.Drawing.Point(827, 65);
+            this.btCreateGroup.Location = new System.Drawing.Point(6, 6);
             this.btCreateGroup.Name = "btCreateGroup";
-            this.btCreateGroup.Size = new System.Drawing.Size(97, 23);
+            this.btCreateGroup.Size = new System.Drawing.Size(124, 23);
             this.btCreateGroup.TabIndex = 10;
-            this.btCreateGroup.Text = "Create Group";
+            this.btCreateGroup.Text = "Create New Group";
             this.btCreateGroup.UseVisualStyleBackColor = true;
             this.btCreateGroup.Click += new System.EventHandler(this.btCreateGroup_Click);
+            // 
+            // tabGroupOverview
+            // 
+            this.tabGroupOverview.Controls.Add(this.lvGroups);
+            this.tabGroupOverview.Controls.Add(this.btCreateGroup);
+            this.tabGroupOverview.Location = new System.Drawing.Point(4, 22);
+            this.tabGroupOverview.Name = "tabGroupOverview";
+            this.tabGroupOverview.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGroupOverview.Size = new System.Drawing.Size(471, 406);
+            this.tabGroupOverview.TabIndex = 0;
+            this.tabGroupOverview.Text = "Group Overview";
+            this.tabGroupOverview.UseVisualStyleBackColor = true;
+            // 
+            // lvGroups
+            // 
+            this.lvGroups.Location = new System.Drawing.Point(6, 34);
+            this.lvGroups.Margin = new System.Windows.Forms.Padding(2);
+            this.lvGroups.MultiSelect = false;
+            this.lvGroups.Name = "lvGroups";
+            this.lvGroups.Size = new System.Drawing.Size(460, 367);
+            this.lvGroups.TabIndex = 10;
+            this.lvGroups.UseCompatibleStateImageBehavior = false;
+            this.lvGroups.View = System.Windows.Forms.View.List;
             // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(940, 534);
+            this.ClientSize = new System.Drawing.Size(1097, 537);
             this.Controls.Add(this.tabControl1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Game";
@@ -288,6 +315,8 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabGroups.ResumeLayout(false);
+            this.tabGroupOverview.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -314,6 +343,8 @@
         private System.Windows.Forms.CheckBox cbInvisibleStatus;
         private System.Windows.Forms.TabControl tabGroups;
         private System.Windows.Forms.Button btCreateGroup;
+        private System.Windows.Forms.TabPage tabGroupOverview;
+        private System.Windows.Forms.ListView lvGroups;
     }
 }
 

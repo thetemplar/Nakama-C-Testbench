@@ -10,17 +10,19 @@ using Nakama;
 
 namespace NakamaMinimalGame.NakamaClient
 {
-    class GroupManager
+    internal class GroupManager
     {
         private readonly ISession _session;
         private readonly ISocket _socket;
         private readonly IClient _client;
         GameManager _gm = GameManager.Instance;
 
+        private readonly Dictionary<string, Group> _groups = new Dictionary<string, Group>();
+        public IReadOnlyCollection<Group> Groups = new ReadOnlyCollection<Group>(new List<Group>());
+
         public delegate void UpdateGroupsHandler();
         public event UpdateGroupsHandler UpdateGroups;
 
-        Dictionary<string, Group> Groups = new Dictionary<string, Group>();
 
         public class Group
         {
@@ -48,6 +50,14 @@ namespace NakamaMinimalGame.NakamaClient
             _session = session;
             _client = client;
             _socket = socket;
+
+            _socket.OnNotification += async (_, notification) =>
+            {
+                if ((GameManager.Notifications)notification.Code == GameManager.Notifications.RefreshGroup)
+                    await GetGroupsFromServer();
+            };
+
+            Task.Run(GetGroupsFromServer);
         }
 
         public async void CreateGroup(string name = "", string desc = "")
@@ -55,13 +65,13 @@ namespace NakamaMinimalGame.NakamaClient
             if (name == "")
                 name = DateTime.Now.ToLongDateString() + "_" + DateTime.Now.ToLongTimeString();
             var group = await _client.CreateGroupAsync(_session, name, desc);
-            System.Console.WriteLine("New group '{0}'", group.Id);
+            Task.Run(GetGroupsFromServer);
         }
 
-        public async void ListGroup()
+        public async Task GetGroupsFromServer()
         {
             var result = await _client.ListUserGroupsAsync(_session);
-            Groups.Clear();
+            List<Group> groups = new List<Group>();
             foreach (var ug in result.UserGroups)
             {
                 Group grp = new Group
@@ -76,14 +86,49 @@ namespace NakamaMinimalGame.NakamaClient
                 var resultGrpMember = await _client.ListGroupUsersAsync(_session, ug.Group.Id);
                 foreach (var member in resultGrpMember.GroupUsers)
                 {
-                    var g = ug.Group;
-                    System.Console.WriteLine("group '{0}' role '{1}'", g.Id, ug.State);
-                    grp.Members.Add(new Group.GroupMember{MemberId = g.Id, Role = (Group.GroupMember.GroupRole)ug.State});
+                    grp.Members.Add(new Group.GroupMember{MemberId = member.User.Id, Role = (Group.GroupMember.GroupRole)member.State });
                 }
 
-                Groups.Add(grp.Id, grp);
-
+                groups.Add(grp);
             }
+
+            bool change = false;
+            foreach (Group group in groups)
+            {
+                if (!_groups.ContainsKey(group.Id))
+                {
+                    _groups.Add(group.Id, group);
+                    change = true;
+                }
+                else
+                {
+                    _groups[group.Id] = group;
+                    change = true;
+                }
+            }
+
+            foreach (string group in _groups.Keys.ToList())
+            {
+                // ReSharper disable once SimplifyLinqExpression
+                if (!groups.Any(n => n.Id == group))
+                {
+                    _groups.Remove(group);
+                    change = true;
+                }
+            }
+
+            Console.WriteLine("GetGroupsFromServer() - change: " + change);
+            
+            if (change)
+            {
+                Groups = _groups.Values.ToList().AsReadOnly();
+                UpdateGroups?.Invoke();
+            }
+        }
+
+        public async void DeleteGroup(string groupId)
+        {
+            await _client.DeleteGroupAsync(_session, groupId);
         }
     }
 }

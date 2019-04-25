@@ -10,17 +10,17 @@ using Newtonsoft.Json.Linq;
 
 namespace NakamaMinimalGame.NakamaClient
 {
-    class FriendList
+    internal class FriendList
     {
         private readonly ISession _session;
         private readonly ISocket _socket;
         private readonly IClient _client;
-        GameManager _gm = GameManager.Instance;
-        private Dictionary<string, Friend> _friendList = new Dictionary<string, Friend>();
+        private readonly GameManager _gm = GameManager.Instance;
+        private readonly Dictionary<string, Friend> _friendList;
         public IReadOnlyCollection<Friend> Friends = new ReadOnlyCollection<Friend>(new List<Friend>());
 
-        public delegate void UpdateFriendlistHandler();
-        public event UpdateFriendlistHandler UpdateFriendlist;
+        public delegate void UpdateFriendListHandler();
+        public event UpdateFriendListHandler UpdateFriendList;
 
         public FriendList(ISession session, IClient client, ISocket socket)
         {
@@ -60,7 +60,7 @@ namespace NakamaMinimalGame.NakamaClient
                     }
                 }
                 
-                UpdateFriendlist?.Invoke();
+                UpdateFriendList?.Invoke();
             };
             
             Task.Run(GetFriendListFromServer);
@@ -158,7 +158,7 @@ namespace NakamaMinimalGame.NakamaClient
             if (change)
             {
                 Friends = _friendList.Values.ToList().AsReadOnly();
-                UpdateFriendlist?.Invoke();
+                UpdateFriendList?.Invoke();
             }
         }
 

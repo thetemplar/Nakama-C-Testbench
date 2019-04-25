@@ -14,7 +14,7 @@ namespace NakamaMinimalGame.NakamaClient
         private ISocket _socket;
         public FriendList.User CurrentUser { get; private set; }
         public bool IsConnected { get; private set; }
-        string _authtoken = "";
+        private string _authtoken = "";
 
         public delegate void NotificationsHandler(IApiNotification note, Notifications e);
         public event NotificationsHandler OnNewNotifications;
@@ -122,7 +122,8 @@ namespace NakamaMinimalGame.NakamaClient
             WantToChat = -1,
             RefreshFriendlist = 1,
             FriendBlocked = 2,
-            FriendDeleted = 3
+            FriendDeleted = 3,
+            RefreshGroup = 5
         }
 
         

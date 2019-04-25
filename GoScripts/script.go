@@ -23,10 +23,10 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	
 	if err := initializer.RegisterRpc("getPlayers", GetPlayers); err != nil {
 		return err
-	}
-	
+	}	
 	return nil
 }
+
 
 func createNewMatch(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, entries []runtime.MatchmakerEntry) (string, error) {	
 	logger.Print(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> createNewMatch <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
