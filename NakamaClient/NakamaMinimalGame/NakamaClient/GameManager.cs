@@ -22,6 +22,7 @@ namespace NakamaMinimalGame.NakamaClient
 
         public FriendList FriendList { get; private set; }
         public GroupManager GroupManager { get; private set; }
+        public MatchManager MatchManager { get; private set; }
 
         #region singleton
         private static GameManager _instance = null;
@@ -75,6 +76,7 @@ namespace NakamaMinimalGame.NakamaClient
                 IsConnected = true;
                 FriendList = new FriendList(_session, _client, _socket);
                 GroupManager = new GroupManager(_session, _client, _socket);
+                MatchManager = new MatchManager(_session, _client, _socket);
                 Console.WriteLine("Socket connected.");
             };
             _socket.OnDisconnect += (sender, args) =>
@@ -82,6 +84,7 @@ namespace NakamaMinimalGame.NakamaClient
                 IsConnected = false;
                 FriendList = null;
                 GroupManager = null;
+                MatchManager = null;
                 Console.WriteLine("Socket disconnected.");
             };
             await _socket.ConnectAsync(_session);

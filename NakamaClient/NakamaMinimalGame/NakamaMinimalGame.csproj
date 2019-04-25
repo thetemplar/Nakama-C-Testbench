@@ -68,6 +68,7 @@
       <DependentUpon>Game.cs</DependentUpon>
     </Compile>
     <Compile Include="NakamaClient\GroupManager.cs" />
+    <Compile Include="NakamaClient\MatchManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Game.resx">

@@ -20,6 +20,8 @@ namespace NakamaMinimalGame
         public Game()
         {
             InitializeComponent();
+            tabControl1.TabPages[1].Enabled = false;
+            tabControl1.TabPages[2].Enabled = false;
 
             _gm.OnNewNotifications += GmOnOnNewNotifications;
         }
@@ -43,6 +45,8 @@ namespace NakamaMinimalGame
 
             this.Text = "Connected as " + (_gm.CurrentUser.DisplayName ?? _gm.CurrentUser.Username) + " -- " + _gm.CurrentUser.Id;
 
+            tabControl1.TabPages[1].Enabled = true;
+            tabControl1.TabPages[2].Enabled = true;
             tabControl1.SelectTab(1);
 
             tbEmail.Enabled = false;
@@ -54,11 +58,16 @@ namespace NakamaMinimalGame
 
             _gm.FriendList.UpdateFriendList += UpdateFriendList;
             _gm.GroupManager.UpdateGroups += UpdateGroupList;
+            _gm.MatchManager.UpdateGameStatus += MatchManager_UpdateGameStatus;
 
             //populate server-user-list
             UpdateServerUsers();
         }
 
+        private void MatchManager_UpdateGameStatus()
+        {
+            btCreateMatch.Enabled = !_gm.MatchManager.IsInMatch;
+        }
 
         private async void btConnect_Click_Disconnect(object sender, EventArgs e)
         {
@@ -66,6 +75,8 @@ namespace NakamaMinimalGame
             lvUser.Items.Clear();
             lvFriend.Items.Clear();
 
+            tabControl1.TabPages[1].Enabled = false;
+            tabControl1.TabPages[2].Enabled = false;
             this.Text = "Disconnected";
             tbEmail.Enabled = true;
             tbPassword.Enabled = true;
@@ -256,6 +267,11 @@ namespace NakamaMinimalGame
         private void btCreateGroup_Click(object sender, EventArgs e)
         {
             _gm.GroupManager.CreateGroup();
+        }
+
+        private async void btCreateMatch_Click(object sender, EventArgs e)
+        {
+            await _gm.MatchManager.CreateMatch();
         }
     }
 }

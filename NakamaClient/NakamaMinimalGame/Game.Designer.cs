@@ -50,11 +50,14 @@
             this.btCreateGroup = new System.Windows.Forms.Button();
             this.tabGroupOverview = new System.Windows.Forms.TabPage();
             this.lvGroups = new System.Windows.Forms.ListView();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btCreateMatch = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabGroups.SuspendLayout();
             this.tabGroupOverview.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -129,6 +132,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
@@ -151,7 +155,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(932, 508);
+            this.tabPage1.Size = new System.Drawing.Size(1089, 511);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Connect";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -301,6 +305,27 @@
             this.lvGroups.UseCompatibleStateImageBehavior = false;
             this.lvGroups.View = System.Windows.Forms.View.List;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.btCreateMatch);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1089, 511);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Match";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // btCreateMatch
+            // 
+            this.btCreateMatch.Location = new System.Drawing.Point(8, 8);
+            this.btCreateMatch.Name = "btCreateMatch";
+            this.btCreateMatch.Size = new System.Drawing.Size(145, 23);
+            this.btCreateMatch.TabIndex = 0;
+            this.btCreateMatch.Text = "Create Match";
+            this.btCreateMatch.UseVisualStyleBackColor = true;
+            this.btCreateMatch.Click += new System.EventHandler(this.btCreateMatch_Click);
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -317,6 +342,7 @@
             this.tabPage2.PerformLayout();
             this.tabGroups.ResumeLayout(false);
             this.tabGroupOverview.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -345,6 +371,8 @@
         private System.Windows.Forms.Button btCreateGroup;
         private System.Windows.Forms.TabPage tabGroupOverview;
         private System.Windows.Forms.ListView lvGroups;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button btCreateMatch;
     }
 }
 
