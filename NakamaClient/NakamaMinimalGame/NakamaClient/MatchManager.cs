@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using Nakama;
+using Newtonsoft.Json.Linq;
 
 namespace NakamaMinimalGame.NakamaClient
 {
@@ -15,7 +17,9 @@ namespace NakamaMinimalGame.NakamaClient
         GameManager _gm = GameManager.Instance;
 
         private string _match = "";
-        public bool IsInMatch => string.IsNullOrEmpty(_match);
+        private string _ticket = "";
+        public bool IsInMatch => !string.IsNullOrEmpty(_match);
+        public bool IsQueued => !string.IsNullOrEmpty(_ticket);
 
         public delegate void UpdateGameStatusHandler();
         public event UpdateGameStatusHandler UpdateGameStatus;
@@ -29,23 +33,24 @@ namespace NakamaMinimalGame.NakamaClient
 
         public async Task CreateMatch()
         {
-            if (!string.IsNullOrEmpty(_match))
+            if (IsInMatch)
                 throw new Exception("Already in a match!");
-            var match = await _socket.CreateMatchAsync();
-            Console.WriteLine("Created match with ID '{0}'. Authoritive: '{1}'", match.Id, match.Authoritative);
-            _match = match.Id;
+            var match = await _client.RpcAsync(_session, "createMatch");
 
+            Console.WriteLine("Created match with ID '{0}'.'", match.Payload);
+            _match = match.Payload;
+            
             _socket.OnMatchState += SocketOnOnMatchState;
             UpdateGameStatus?.Invoke();
         }
 
         private void SocketOnOnMatchState(object sender, IMatchState state)
         {
-            var content = System.Text.Encoding.UTF8.GetString(state.State);
+            var content = Encoding.UTF8.GetString(state.State);
             switch (state.OpCode)
             {
                 default:
-                    Console.WriteLine("User {0} sent {1}", state.UserPresence.Username, content);
+                    Console.WriteLine("MatchData: Opcode {0} - Data: {1}", state.OpCode, content);
                     break;
             }
         }
@@ -63,7 +68,7 @@ namespace NakamaMinimalGame.NakamaClient
 
         public async Task LeaveMatch(string matchId)
         {
-            if (string.IsNullOrEmpty(_match))
+            if (!IsInMatch)
                 throw new Exception("Not in a match!");
             await _socket.LeaveMatchAsync(matchId);
             _match = "";
@@ -72,7 +77,7 @@ namespace NakamaMinimalGame.NakamaClient
 
         public async Task ListMatches()
         {
-            var list = await _client.ListMatchesAsync(_session, 2, 2, )
+           //var list = await _client.ListMatchesAsync(_session, 2, 2, )
             _match = "";
             UpdateGameStatus?.Invoke();
         }
@@ -95,12 +100,50 @@ namespace NakamaMinimalGame.NakamaClient
 
         public async Task SendData()
         {
-            if (string.IsNullOrEmpty(_match))
+            if (!IsInMatch)
                 throw new Exception("Not in a match!");
 
             var opCode = 1;
             var newState = "data";
             _socket.SendMatchState(_match, opCode, newState);
+        }
+
+        public async Task QueueMatchmaking()
+        {
+            if (IsQueued)
+                throw new Exception("Already queued!");
+            if (IsInMatch)
+                throw new Exception("Already in a match!");
+
+            var matchmakerTicket = await _socket.AddMatchmakerAsync("*", 2);
+            _ticket = matchmakerTicket.Ticket;
+
+            _socket.OnMatchmakerMatched += async (_, matched) =>
+            {
+                Console.WriteLine("[OnMatchmakerMatched] Received MatchmakerMatched message: {0}", matched);
+                var opponents = string.Join(",", matched.Users.Select(x => x.Presence.Username)); // printable list.
+                Console.WriteLine("[OnMatchmakerMatched] Matched opponents: {0}", opponents);
+                IMatch match = await _socket.JoinMatchAsync(matched);
+                _ticket = "";
+                _match = match.Id;
+
+                _socket.OnMatchState += SocketOnOnMatchState;
+                var id = match.Id;
+                var opCode = 1;
+                var timer = new System.Threading.Timer((e) =>
+                {
+                    _socket.SendMatchStateAsync(id, opCode, "SendMatchState :) " + _session.UserId);
+                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            };
+        }
+
+        public async Task CancelMatchmaking()
+        {
+            if (!IsQueued)
+                throw new Exception("Not queued!");
+
+            await _socket.RemoveMatchmakerAsync(_ticket);
+            _ticket = "";
         }
     }
 }

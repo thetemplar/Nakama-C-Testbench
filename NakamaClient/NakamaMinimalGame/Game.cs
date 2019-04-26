@@ -1,277 +1,170 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Nakama;
-using NakamaMinimalGame.NakamaClient;
 
 namespace NakamaMinimalGame
 {
-    public partial class Game : Form
+    public sealed partial class Game : Form
     {
-        private readonly GameManager _gm = GameManager.Instance;
-        
-        private readonly ContextMenuStrip _collectionRoundMenuStrip = new ContextMenuStrip();
-        private static readonly object Obj = new object();
+        private Pen Player1Pen;
+        private Pen Player2Pen;
 
+        private int player1Pos = 0;
+        private int player2Pos = 180;
 
+        private bool _movesCw;
+        private bool _movesCcw;
+
+        private Ball _ball;
+
+        private string _debug = "";
+
+        class Ball
+        {
+            public class Vector
+            {
+                public double X;
+                public double Y;
+
+                public Vector(double x, double y)
+                {
+                    X = x;
+                    Y = y;
+                }
+
+                public double DistanceTo(Vector v)
+                {
+                    return Math.Sqrt(Math.Pow((v.X - X), 2) + Math.Pow((v.Y - Y), 2));
+                }
+            }
+            public Vector Pos;
+
+            private Vector _mid;
+            private int _radius;
+            private Vector _dir;
+
+            public Ball(int MidX, int MidY, int Radius)
+            {
+                Random r = new Random();
+                _mid = new Vector(MidX, MidY);
+                _radius = Radius;
+                _dir = new Vector((r.NextDouble() - 0.5)*2, (r.NextDouble() - 0.5) * 2);
+                Pos = new Vector(MidX, MidY);
+            }
+
+            public double BallAngle()
+            {
+                return Math.Atan2(Pos.Y - _mid.Y, Pos.X - _mid.X) * 180 / Math.PI;
+            }
+
+            public void Move()
+            {
+                Pos.X += _dir.X * 7;
+                Pos.Y += _dir.Y * 7;
+            }
+            public void Reverse()
+            {
+                _dir.X *= -1f;
+                _dir.Y *= -1f;
+            }
+            public void Deflect(double angle)
+            {
+
+            }
+        }
         public Game()
         {
             InitializeComponent();
-            tabControl1.TabPages[1].Enabled = false;
-            tabControl1.TabPages[2].Enabled = false;
+            Player1Pen = new Pen(Color.DeepSkyBlue, 5);
+            Player2Pen = new Pen(Color.PaleVioletRed, 5);
 
-            _gm.OnNewNotifications += GmOnOnNewNotifications;
+            Timer t = new Timer {Interval = 33, Enabled = true};
+            t.Tick += OnTick;
+
+            DoubleBuffered = true;
+
+            _ball = new Ball(260, 260, 250);
         }
 
-        private void GmOnOnNewNotifications(IApiNotification note, GameManager.Notifications e)
+        private void OnTick(object sender, EventArgs e)
         {
-        }
+            _ball.Move();
 
-        private void btAlternativeAccount_Click(object sender, EventArgs e)
-        {
-            tbEmail.Text = "second@test.com";
-            tbPassword.Text = "secondbest";
-            tbUsername.Text = "second_user";
-        }
+            if (_movesCw)
+                player1Pos += 2;
+            if (_movesCcw)
+                player1Pos -= 2;
 
-        private async void btConnect_Click(object sender, EventArgs e)
-        {
-            if (tbPassword.Text.Length > 8 && tbEmail.Text.Length > 9 && tbEmail.Text.Contains("@"))
-                await _gm.Login(tbEmail.Text, tbPassword.Text, tbUsername.Text);
+            if (player1Pos > 359)
+                player1Pos = 0;
+            if (player1Pos < 0)
+                player1Pos = 360;
 
+            double angle = _ball.BallAngle();
+            if (angle < 0)
+                angle += 360;
+            double dist = angle - player1Pos;
+            _debug = ("player:" + player1Pos + " - ball:" + angle + " - dist: " + dist);
 
-            this.Text = "Connected as " + (_gm.CurrentUser.DisplayName ?? _gm.CurrentUser.Username) + " -- " + _gm.CurrentUser.Id;
-
-            tabControl1.TabPages[1].Enabled = true;
-            tabControl1.TabPages[2].Enabled = true;
-            tabControl1.SelectTab(1);
-
-            tbEmail.Enabled = false;
-            tbPassword.Enabled = false;
-            tbUsername.Enabled = false;
-            btConnect.Text = "Disconnect";
-            btConnect.Click -= btConnect_Click;
-            btConnect.Click += btConnect_Click_Disconnect;
-
-            _gm.FriendList.UpdateFriendList += UpdateFriendList;
-            _gm.GroupManager.UpdateGroups += UpdateGroupList;
-            _gm.MatchManager.UpdateGameStatus += MatchManager_UpdateGameStatus;
-
-            //populate server-user-list
-            UpdateServerUsers();
-        }
-
-        private void MatchManager_UpdateGameStatus()
-        {
-            btCreateMatch.Enabled = !_gm.MatchManager.IsInMatch;
-        }
-
-        private async void btConnect_Click_Disconnect(object sender, EventArgs e)
-        {
-            await _gm.Logoff();
-            lvUser.Items.Clear();
-            lvFriend.Items.Clear();
-
-            tabControl1.TabPages[1].Enabled = false;
-            tabControl1.TabPages[2].Enabled = false;
-            this.Text = "Disconnected";
-            tbEmail.Enabled = true;
-            tbPassword.Enabled = true;
-            tbUsername.Enabled = true;
-            btConnect.Text = "Connect";
-            btConnect.Click += btConnect_Click;
-            btConnect.Click -= btConnect_Click_Disconnect;
-        }
-
-        private void UpdateGroupList()
-        {
-            var groups = _gm.GroupManager.Groups;
-
-            int c = 0;
-            foreach (var group in groups)
+            if (_ball.Pos.DistanceTo(new Ball.Vector(260, 260)) > 250)
             {
-                if(tabGroups.TabPages.ContainsKey(group.Id)) continue;
+                if (Math.Abs(dist) < 10)
+                    _ball.Deflect(dist);
+                else
+                    _ball = new Ball(260, 260, 250);
+            }
 
-                var newTabPage = new TabPage()
-                {
-                    Text = c.ToString(),
-                    Name = group.Id
-                };
-                
-                var lbName = new Label() { Text = group.Name, Location = new Point(10, 10), Size = new Size(200, 14) };
-                newTabPage.Controls.Add(lbName);
-                var lbId = new Label() { Text = group.Id, Location = new Point(10, 30), Size = new Size(200, 14) };
-                newTabPage.Controls.Add(lbId);
 
-                var lbMembers = new Label() { Location = new Point(10, 90), Size = new Size(200, 200) };
-                StringBuilder sb = new StringBuilder();
-                foreach (var member in group.Members)
-                {
-                    sb.Append(member.MemberId + Environment.NewLine);
-                }
-                lbMembers.Text = sb.ToString();
-                newTabPage.Controls.Add(lbMembers);
+            Invalidate();
+        }
 
-                var btDel = new Button()
-                {
-                    Text = "Delete Group",
-                    Location = new Point(10, 50)
-                };
-                btDel.Click += (sender, args) => { _gm.GroupManager.DeleteGroup(group.Id); };
-                newTabPage.Controls.Add(btDel);
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (_ball == null) return;
+            var g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                tabGroups.Invoke((MethodInvoker)(() => tabGroups.TabPages.Insert(tabGroups.TabCount - 1, newTabPage)));
-                c++;
+            g.DrawArc(Player1Pen, 10, 10, 510, 510, player1Pos - 10 , 10);
+            g.DrawArc(Player1Pen, 10, 10, 510, 510, player1Pos , 10);
+            g.DrawArc(Player2Pen, 10, 10, 510, 510, player2Pos - 10, 10);
+            g.DrawArc(Player2Pen, 10, 10, 510, 510, player2Pos, 10);
+
+            g.FillEllipse(Brushes.Black, (int)(_ball.Pos.X + 2), (int)(_ball.Pos.Y + 2), 4, 4);
+
+            g.DrawString(_debug, this.Font, Brushes.DimGray, 3, 3);
+        }
+
+        private void Game_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.S:
+                    _movesCw = true;
+                    return;
+                case Keys.W:
+                    _movesCcw = true;
+                    return;
             }
         }
 
-        private async void UpdateServerUsers()
+        private void Game_KeyUp(object sender, KeyEventArgs e)
         {
-            var users = await _gm.FriendList.GetUserlistFromServer();
-            lvUser.Items.Clear();
-            foreach (var u in users)
+            switch (e.KeyData)
             {
-                lvUser.Items.Add(new ListViewItem { Text = u.DisplayName ?? u.Username, Tag = u.Id });
+                case Keys.S:
+                    _movesCw = false;
+                    return;
+                case Keys.W:
+                    _movesCcw = false;
+                    return;
             }
-        }
-
-        private void UpdateFriendList()
-        {
-            var friends = _gm.FriendList.Friends;
-            lock (Obj)
-            {
-                Console.WriteLine("UpdateFriendList");
-                lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Clear()));
-                foreach (var f in friends)
-                {
-                    var username = f.User.DisplayName ?? f.User.Username;
-                    switch (f.State)
-                    {
-                        case FriendList.Friend.FriendState.Friend:
-                            if (f.User.Online)
-                                if(string.IsNullOrEmpty(f.User.Status))
-                                    lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem { Text = "[Online] " + username, Tag = f.User.Id })));
-                                else
-                                    lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem { Text = "[" + f.User.Status + "] " + username, Tag = f.User.Id })));
-                            else
-                                lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Offline] " + username, Tag = f.User.Id})));
-                            break;
-                        case FriendList.Friend.FriendState.IncomingRequest:
-                            lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Requested] " + username, Tag = f.User.Id})));
-                            break;
-                        case FriendList.Friend.FriendState.WaitingForAcceptance:
-                            lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Waiting] " + username, Tag = f.User.Id})));
-                            break;
-                        case FriendList.Friend.FriendState.Banned:
-                            lvFriend.Invoke((MethodInvoker)(() => lvFriend.Items.Add(new ListViewItem {Text = "[Banned] " + username, Tag = f.User.Id})));
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-            }
-        }
-
-        private void lvUser_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right) return;
-            _collectionRoundMenuStrip.Items.Clear();
-            foreach (ListViewItem item in lvUser.Items)
-            {
-                if (!item.Bounds.Contains(new Point(e.X, e.Y))) continue;
-
-                _collectionRoundMenuStrip.Items.Add("Add As Friend", null, async (send, args) =>
-                {
-                    await _gm.FriendList.AddAsFriend(item.Tag.ToString());
-                });
-                _collectionRoundMenuStrip.Show(Cursor.Position);
-                _collectionRoundMenuStrip.Visible = true;
-                return;
-            }
-            _collectionRoundMenuStrip.Visible = false;            
-        }
-
-        private void lvFriend_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right) return;
-            _collectionRoundMenuStrip.Items.Clear();
-            foreach (ListViewItem item in lvFriend.Items)
-            {
-                if (!item.Bounds.Contains(new Point(e.X, e.Y))) continue;
-
-                if (item.Text.StartsWith("[Requested]") || item.Text.StartsWith("[Waiting]"))
-                {
-                    _collectionRoundMenuStrip.Items.Add("Accept Friend", null, async (send, args) =>
-                    {
-                        await _gm.FriendList.AddAsFriend(item.Tag.ToString());
-                    });
-                    _collectionRoundMenuStrip.Items.Add("Refuse Friend", null, async (send, args) =>
-                    {
-                        await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
-                    });
-                    _collectionRoundMenuStrip.Items.Add("Ban Friend", null, async (send, args) =>
-                    {
-                        await _gm.FriendList.BanAsFriend(item.Tag.ToString());
-                    });
-                }
-                if (item.Text.StartsWith("[Online]") || item.Text.StartsWith("[Offline]"))
-                {
-                    _collectionRoundMenuStrip.Items.Add("Delete Friend", null, async (send, args) =>
-                    {
-                        await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
-                    });
-                    _collectionRoundMenuStrip.Items.Add("Block Friend", null, async (send, args) =>
-                    {
-                        await _gm.FriendList.BanAsFriend(item.Tag.ToString());
-                    });
-                }
-                if (item.Text.StartsWith("[Banned]"))
-                {
-                    _collectionRoundMenuStrip.Items.Add("Un-Ban Friend", null, async (send, args) =>
-                    {
-                        await _gm.FriendList.DeleteAsFriend(item.Tag.ToString());
-                    });
-                }
-
-                _collectionRoundMenuStrip.Show(Cursor.Position);
-                _collectionRoundMenuStrip.Visible = true;
-                return;
-            }
-            _collectionRoundMenuStrip.Visible = false;
-        }
-
-        private async void tbStatus_TextChanged(object sender, EventArgs e)
-        {
-            await _gm.FriendList.ChangeStatus(tbStatus.Text);
-            
-        }
-
-        private async void cbInvisibleStatus_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbInvisibleStatus.Checked)
-            {
-                tbStatus.Enabled = false;
-                await _gm.FriendList.ChangeStatus(null);
-            }
-            else
-            {
-                tbStatus.Enabled = true;
-                await _gm.FriendList.ChangeStatus(tbStatus.Text);
-            }
-
-        }
-
-        private void btCreateGroup_Click(object sender, EventArgs e)
-        {
-            _gm.GroupManager.CreateGroup();
-        }
-
-        private async void btCreateMatch_Click(object sender, EventArgs e)
-        {
-            await _gm.MatchManager.CreateMatch();
         }
     }
 }

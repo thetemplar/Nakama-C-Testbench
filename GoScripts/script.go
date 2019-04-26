@@ -11,8 +11,8 @@ import (
 )
 
 func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	logger.Print("RUNNING IN GO")
-	if err := initializer.RegisterMatchmakerMatched(createNewMatch); err != nil {
+	logger.Print("RUNNING IN GO: Script.go")
+	if err := initializer.RegisterMatchmakerMatched(CreateMatchmakerMatch); err != nil {
 		return err
 	}
 	if err := initializer.RegisterMatch("match", func(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (runtime.Match, error) {
@@ -20,6 +20,9 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}); err != nil {
 		return err
 	}
+	if err := initializer.RegisterRpc("createMatch", CreateManualMatch); err != nil {
+		return err
+	}	
 	
 	if err := initializer.RegisterRpc("getPlayers", GetPlayers); err != nil {
 		return err
@@ -27,9 +30,8 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	return nil
 }
 
-
-func createNewMatch(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, entries []runtime.MatchmakerEntry) (string, error) {	
-	logger.Print(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> createNewMatch <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+func CreateMatchmakerMatch(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, entries []runtime.MatchmakerEntry) (string, error) {	
+	logger.Print(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> createMatchmakerMatch <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 	for _, entry := range entries { 
 		logger.Printf("%+v\n", entry)
 	}
@@ -42,6 +44,19 @@ func createNewMatch(ctx context.Context, logger runtime.Logger, db *sql.DB, nk r
     }
     return matchID, nil
 }
+	
+func CreateManualMatch(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, payload string) (string, error) {
+	logger.Print(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> createManualMatch <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+	
+    params := map[string]interface{}{ "debug": "true" }
+    matchID, err := nk.MatchCreate(ctx, "match", params)
+	if err != nil {
+        // Handle errors as you want.
+        return "", err
+    }
+	return string(matchID), nil
+}
+
 
 func GetPlayers(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, payload string) (string, error) {
 	query := `
