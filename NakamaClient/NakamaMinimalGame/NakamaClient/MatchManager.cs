@@ -41,18 +41,18 @@ namespace NakamaMinimalGame.NakamaClient
             _match = match.Payload;
             
             _socket.OnMatchState += SocketOnOnMatchState;
+
+            Game g = new Game(_session, _socket, _match);
+            g.Show();
+            g.FormClosed += async (a, b) => { await _socket.LeaveMatchAsync(_match); };
+
             UpdateGameStatus?.Invoke();
         }
 
         private void SocketOnOnMatchState(object sender, IMatchState state)
         {
             var content = Encoding.UTF8.GetString(state.State);
-            switch (state.OpCode)
-            {
-                default:
-                    Console.WriteLine("MatchData: Opcode {0} - Data: {1}", state.OpCode, content);
-                    break;
-            }
+            Console.WriteLine("MatchData: Opcode {0} - Data: {1}", state.OpCode, content);
         }
 
         public async Task JoinMatch(string matchId)
@@ -127,15 +127,18 @@ namespace NakamaMinimalGame.NakamaClient
                 _ticket = "";
                 _match = match.Id;
 
+                UpdateGameStatus?.Invoke();
+
                 _socket.OnMatchState += SocketOnOnMatchState;
-                var id = match.Id;
-                var opCode = 1;
-                var timer = new System.Threading.Timer((e) =>
-                {
-                    _socket.SendMatchStateAsync(id, opCode, "SendMatchState :) " + _session.UserId);
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+                
+                Game g = new Game(_session, _socket, match.Id);
+                g.Show();
+                g.FormClosed += async (a, b) => { await _socket.LeaveMatchAsync(match); };
+                
+
             };
         }
+
 
         public async Task CancelMatchmaking()
         {

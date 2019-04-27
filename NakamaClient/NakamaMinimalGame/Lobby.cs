@@ -47,7 +47,7 @@ namespace NakamaMinimalGame
 
             tabControl1.TabPages[1].Enabled = true;
             tabControl1.TabPages[2].Enabled = true;
-            tabControl1.SelectTab(1);
+            tabControl1.SelectTab(2);
 
             tbEmail.Enabled = false;
             tbPassword.Enabled = false;
@@ -288,12 +288,6 @@ namespace NakamaMinimalGame
                 btMatchmaker.Text = "Find Match";
                 btCreateMatch.Enabled = true;
             }
-        }
-
-        private void btOpenGameWindow_Click(object sender, EventArgs e)
-        {
-            Game g = new Game();
-            g.Show();
         }
     }
 }
