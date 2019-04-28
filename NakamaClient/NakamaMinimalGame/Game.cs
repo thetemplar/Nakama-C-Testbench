@@ -20,7 +20,7 @@ namespace NakamaMinimalGame
         private Pen Player2Pen;
 
         private int player1Pos = 0;
-        public int Player2Pos = -1;
+        private int player2Pos = -1;
 
         private bool _movesCw;
         private bool _movesCcw;
@@ -64,7 +64,7 @@ namespace NakamaMinimalGame
                 Random r = new Random();
                 _mid = new Vector(MidX, MidY);
                 _radius = Radius;
-                _dir = GetVectorFromAngle(r.NextDouble() * 360d);
+                //_dir = GetVectorFromAngle(r.NextDouble() * 360d);
                 Pos = new Vector(MidX, MidY);
             }
 
@@ -130,8 +130,15 @@ namespace NakamaMinimalGame
         {
             if (e.OpCode != (long)OpCodes.Dict) throw new NotImplementedException();
 
-            var content = Encoding.UTF8.GetString(e.State);
-            dynamic data = JArray.Parse(content);
+            PublicMatchState.PublicMatchState state = PublicMatchState.PublicMatchState.Parser.ParseFrom(e.State);
+
+            var p1 = state.Player.Where(x => x.Value.Id == _session.UserId).First();
+            var p2 = state.Player.Where(x => x.Value.Id != _session.UserId).First();
+
+            player1Pos = p1.Value.Position;
+            player2Pos = p2.Value.Position;
+
+            _ball.Pos = new Ball.Vector(state.Ball.PosX, state.Ball.PosY);
         }
 
         void Init()
@@ -163,7 +170,7 @@ namespace NakamaMinimalGame
             if (angle < 0)
                 angle += 360;
             double distPlayer1 = angle - player1Pos;
-            double distPlayer2 = angle - Player2Pos;
+            double distPlayer2 = angle - player2Pos;
 
             if (_ball.Pos.DistanceTo(new Ball.Vector(260, 260)) > 250)
             {
@@ -172,9 +179,9 @@ namespace NakamaMinimalGame
                     _ball.Deflect(player1Pos, distPlayer1);
                     _lastPlayerContact = 1;
                 }
-                else if (Player2Pos != -1 && Math.Abs(distPlayer2) < 10)
+                else if (player2Pos != -1 && Math.Abs(distPlayer2) < 10)
                 {
-                    _ball.Deflect(Player2Pos, distPlayer2);
+                    _ball.Deflect(player2Pos, distPlayer2);
                     _lastPlayerContact = 2;
                 }
                 else
@@ -199,10 +206,10 @@ namespace NakamaMinimalGame
 
             g.DrawArc(Player1Pen, 10, 10, 510, 510, player1Pos - 10 , 10);
             g.DrawArc(Player1Pen, 10, 10, 510, 510, player1Pos , 10);
-            if (Player2Pos != -1)
+            if (player2Pos != -1)
             {
-                g.DrawArc(Player2Pen, 10, 10, 510, 510, Player2Pos - 10, 10);
-                g.DrawArc(Player2Pen, 10, 10, 510, 510, Player2Pos, 10);
+                g.DrawArc(Player2Pen, 10, 10, 510, 510, player2Pos - 10, 10);
+                g.DrawArc(Player2Pen, 10, 10, 510, 510, player2Pos, 10);
             }
 
             g.FillEllipse(Brushes.Black, (int)(_ball.Pos.X + 2), (int)(_ball.Pos.Y + 2), 4, 4);
