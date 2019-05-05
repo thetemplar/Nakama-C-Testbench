@@ -3,18 +3,23 @@ package main;
 option csharp_namespace = "NakamaMinimalGame.PublicMatchState";
 
 message PublicMatchState {
-	map<string, Player> player = 1;
-	Ball ball = 2;
+	int64 tick = 1;
+	map<string, Player> player = 2;
   
 	message Player {
 		string id = 1;
-		int32 position = 2;
+		int64 last_received_tick = 2;
+		Vector2Df position = 3;
 	}
-	
-	message Ball {
-		int32 pos_x = 1;
-		int32 pos_y = 2;
-		int32 dir_x = 3;
-		int32 dir_y = 4;
+		
+	message Vector2Df {
+		float x = 1;
+		float y = 2;
 	}
+}
+
+message SendPackage {
+	int64 tick = 1;
+	float x_axis = 2;
+	float y_axis = 3;
 }

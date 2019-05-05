@@ -7,15 +7,10 @@ import (
     "github.com/golang/protobuf/proto"
 )
 
-type CommandKeys struct {
-	CCW bool
-	CW bool
-}
-
 type InternalPlayer struct {
-	Public *PublicMatchState_Player
+	Public   *PublicMatchState_Player
+	Presence runtime.Presence
 	Id       string
-	CommandKeys CommandKeys
 }
 
 
@@ -45,15 +40,9 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 	}*/
 	state := &MatchState{
-		Debug: true,
+		Debug: false,
 		EmptyCounter : 0,
 		PublicMatchState : PublicMatchState{
-			Ball :   &PublicMatchState_Ball{ 
-				PosX : 0,
-				PosY : 0,
-				DirX : 0,
-				DirY : 0,
-			},
 			Player: make(map[string]*PublicMatchState_Player),
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
@@ -63,7 +52,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 	if state.Debug {
 		logger.Printf("match init, starting with debug: %v", state.Debug)
 	}
-	tickRate := 10
+	tickRate := 5
 	label := ""
 
 	return state, tickRate, label
@@ -79,74 +68,92 @@ func (m *Match) MatchJoinAttempt(ctx context.Context, logger runtime.Logger, db 
 
 func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, presences []runtime.Presence) interface{} {
 	for _, presence := range presences {
-		logger.Printf(">match join username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
-			
 		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = &PublicMatchState_Player{
-			Id: presence.GetUserId(), 
+			Id: presence.GetUserId(),
+			Position: &PublicMatchState_Vector2Df {
+				X: 0,
+				Y: 0,
+			},
 		}
 		
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = &InternalPlayer{
 			Public: state.(*MatchState).PublicMatchState.Player[presence.GetUserId()],
 			Id: presence.GetUserId(),
-			CommandKeys: CommandKeys {
-				CCW: false,
-				CW: false,
-			},
+			Presence: presence,
 		}
+		
+		logger.Printf("match join username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
 	}
 
-	logger.Printf("match join %v", state.(*MatchState))
 	return state
 }
 
 func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, presences []runtime.Presence) interface{} {
-	if state.(*MatchState).Debug {
-		for _, presence := range presences {
-			logger.Printf("match leave username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
-		}
+	for _, presence := range presences {		
+		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = nil
+		state.(*MatchState).InternalPlayer[presence.GetUserId()] = nil
+		logger.Printf("match leave username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
 	}
 
 	return state
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {
+	
 	if state.(*MatchState).Debug {
 		logger.Printf("match loop match_id %v tick %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), tick)
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
 	}
-	/*
+	
+	//get new inputs
 	for _, message := range messages { 
+		//logger.Printf("message from %v with opcode %v", message.GetUserId(), message.GetOpCode())
 		//entry.UserID, entry.SessionId, entry.Username, entry.Node, entry.OpCode, entry.Data, entry.ReceiveTime
-		if message.GetOpCode() == 1 {
-			state.(*MatchState).player[message.GetUserId()].commandKeys.CCW = true
+		msg := &SendPackage{}
+		if err := proto.Unmarshal(message.GetData(), msg); err != nil {
+			logger.Printf("Failed to parse SendPackage:", err)
 		}
-		if message.GetOpCode() == 2 {
-			state.(*MatchState).player[message.GetUserId()].commandKeys.CCW = false
+
+		state.(*MatchState).PublicMatchState.Tick = tick
+
+		if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil {
+			continue
 		}
-		if message.GetOpCode() == 3	{
-			state.(*MatchState).player[message.GetUserId()].commandKeys.CW = true
+		currentPlayer := state.(*MatchState).InternalPlayer[message.GetUserId()].Public;
+
+		currentPlayer.LastReceivedTick = msg.Tick
+
+		if message.GetOpCode() == 0 { 		
+			currentPlayer.Position.X += msg.XAxis * 0.2;
+			currentPlayer.Position.Y += msg.YAxis * 0.2;
+
+			//simple "wall"
+			if currentPlayer.Position.X < -25 { currentPlayer.Position.X = -25 }
+			if currentPlayer.Position.X >  25 { currentPlayer.Position.X =  25 }
+			if currentPlayer.Position.Y < -25 { currentPlayer.Position.Y = -25 }
+			if currentPlayer.Position.Y >  25 { currentPlayer.Position.Y =  25 }
 		}
-		if message.GetOpCode() == 4	{
-			state.(*MatchState).player[message.GetUserId()].commandKeys.CW = false
-		}
-	}*/
+	}
 	
 	//calculate game
-	for _, player := range state.(*MatchState).InternalPlayer {
-		if player.CommandKeys.CCW {
-			player.Public.Position += 2
-		}
-		if player.CommandKeys.CW {
-			player.Public.Position -= 2
+	for _, player := range state.(*MatchState).InternalPlayer {		
+		if player == nil {
+			continue
 		}
 	}
 	
-	//create protobuf message
-	out, err := proto.Marshal(&state.(*MatchState).PublicMatchState)
-	if err != nil {
-			logger.Printf("Failed to encode PublicMatchState:", err)
+	//send new game state (by creating protobuf message)
+	for _, player := range state.(*MatchState).InternalPlayer {		
+		if player == nil {
+			continue
+		}
+
+		out, err := proto.Marshal(&state.(*MatchState).PublicMatchState)
+		if err != nil {
+				logger.Printf("Failed to encode PublicMatchState:", err)
+		}
+		dispatcher.BroadcastMessage(1, out, []runtime.Presence { player.Presence }, nil)
 	}
-	dispatcher.BroadcastMessage(1, out, nil, nil)
 	
 	
 	//end if no ones sending smth (all dc'ed)
@@ -156,7 +163,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).EmptyCounter = 0
 	}
 	
-	if state.(*MatchState).EmptyCounter == 20 {
+	if state.(*MatchState).EmptyCounter == 50 {
 		return nil
 	}
 	
