@@ -19,7 +19,7 @@ message PublicMatchState {
 }
 
 message SendPackage {
-	int64 tick = 1;
+	int64 server_tick_performing_on = 1;
 	float x_axis = 2;
 	float y_axis = 3;
 }

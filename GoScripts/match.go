@@ -4,22 +4,26 @@ import (
 	"context"
 	"database/sql"
 	"github.com/heroiclabs/nakama/runtime"
-    "github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto"
+	//"github.com/thetemplar/golang-moving-average" //https://github.com/RobinUS2/golang-moving-average
 )
 
-type InternalPlayer struct {
-	Public   *PublicMatchState_Player
-	Presence runtime.Presence
-	Id       string
-}
-
-
 type MatchState struct {
-	PublicMatchState PublicMatchState
-	EmptyCounter     int
-	Debug            bool
-	
-	InternalPlayer   map[string]*InternalPlayer
+	PublicMatchState    PublicMatchState
+	EmptyCounter        int
+	Debug               bool
+
+	InternalPlayer      map[string]*InternalPlayer
+
+	OldMatchState       map[int64]PublicMatchState
+}  
+  
+type InternalPlayer struct {
+	Presence                runtime.Presence
+	Id                      string
+
+	LastMessage             runtime.MatchData
+	LastMessageServerTick   int64
 }
 
 type Match struct{
@@ -77,7 +81,6 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = &InternalPlayer{
-			Public: state.(*MatchState).PublicMatchState.Player[presence.GetUserId()],
 			Id: presence.GetUserId(),
 			Presence: presence,
 		}
@@ -92,10 +95,38 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 	for _, presence := range presences {		
 		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = nil
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = nil
+
 		logger.Printf("match leave username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
 	}
 
 	return state
+}
+
+func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData) {
+	//currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
+	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
+	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Player[message.GetUserId()] == nil {
+		return
+	}
+	
+	msg := &SendPackage{}
+	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
+		logger.Printf("Failed to parse incoming SendPackage:", err)
+	}
+
+	if message.GetOpCode() == 0 {
+		//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
+		currentPlayerPublic.Position.X += msg.XAxis * 0.2;
+		currentPlayerPublic.Position.Y += msg.YAxis * 0.1;
+
+		//simple "wall"
+		if currentPlayerPublic.Position.X < -25 { currentPlayerPublic.Position.X = -25 }
+		if currentPlayerPublic.Position.X >  25 { currentPlayerPublic.Position.X =  25 }
+		if currentPlayerPublic.Position.Y < -25 { currentPlayerPublic.Position.Y = -25 }
+		if currentPlayerPublic.Position.Y >  25 { currentPlayerPublic.Position.Y =  25 }
+	}
+
+	currentPlayerPublic.LastReceivedTick = msg.ServerTickPerformingOn
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {
@@ -104,44 +135,39 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		logger.Printf("match loop match_id %v tick %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), tick)
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
 	}
-	
+
+	state.(*MatchState).PublicMatchState.Tick = tick
 	//get new inputs
 	for _, message := range messages { 
 		//logger.Printf("message from %v with opcode %v", message.GetUserId(), message.GetOpCode())
 		//entry.UserID, entry.SessionId, entry.Username, entry.Node, entry.OpCode, entry.Data, entry.ReceiveTime
-		msg := &SendPackage{}
-		if err := proto.Unmarshal(message.GetData(), msg); err != nil {
-			logger.Printf("Failed to parse SendPackage:", err)
-		}
-
-		state.(*MatchState).PublicMatchState.Tick = tick
-
 		if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil {
 			continue
 		}
-		currentPlayer := state.(*MatchState).InternalPlayer[message.GetUserId()].Public;
 
-		currentPlayer.LastReceivedTick = msg.Tick
+		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage = message;
+		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessageServerTick = tick;
+		
+		PerformInputs(logger, state, message)
+	}
 
-		if message.GetOpCode() == 0 { 		
-			currentPlayer.Position.X += msg.XAxis * 0.2;
-			currentPlayer.Position.Y += msg.YAxis * 0.2;
-
-			//simple "wall"
-			if currentPlayer.Position.X < -25 { currentPlayer.Position.X = -25 }
-			if currentPlayer.Position.X >  25 { currentPlayer.Position.X =  25 }
-			if currentPlayer.Position.Y < -25 { currentPlayer.Position.Y = -25 }
-			if currentPlayer.Position.Y >  25 { currentPlayer.Position.Y =  25 }
+	//did a player not send an package? then re-do his last
+	for _, player := range state.(*MatchState).InternalPlayer {		
+		if player == nil {
+			continue
+		}
+		if player.LastMessageServerTick != tick {
+			PerformInputs(logger, state, player.LastMessage)
 		}
 	}
 	
-	//calculate game
+	//calculate game/npcs/objects
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
 			continue
 		}
 	}
-	
+
 	//send new game state (by creating protobuf message)
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
@@ -153,9 +179,12 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				logger.Printf("Failed to encode PublicMatchState:", err)
 		}
 		dispatcher.BroadcastMessage(1, out, []runtime.Presence { player.Presence }, nil)
-	}
+	}	
 	
-	
+	//save for history
+	historyCopy := state.(*MatchState).PublicMatchState
+	state.(*MatchState).OldMatchState[tick] = historyCopy
+
 	//end if no ones sending smth (all dc'ed)
 	if len(messages) == 0 {
 		state.(*MatchState).EmptyCounter = state.(*MatchState).EmptyCounter + 1;
