@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d748728869943d44cb879b8aa97b303f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseInterpolation: 0
+  Level: 3
   IsLocalPlayer: 1
 --- !u!143 &399795762
 CharacterController:
@@ -652,7 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d748728869943d44cb879b8aa97b303f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseInterpolation: 1
+  Level: 0
   IsLocalPlayer: 0
 --- !u!143 &1953332198
 CharacterController:

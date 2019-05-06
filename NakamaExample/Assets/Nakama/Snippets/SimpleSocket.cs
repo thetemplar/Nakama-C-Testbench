@@ -21,8 +21,9 @@ public class SimpleSocket : MonoBehaviour
     List<IUserPresence> _connectedOpponents = new List<IUserPresence>(0);
 
     private long _tick;
-    private List<SendPackage> _sentPackages = new List<SendPackage>();
-    
+    private List<SendPackage> _sentPackagesSinceLastServerFrame = new List<SendPackage>();
+
+    private int _socketModulo;
 
     private async void Awake()
     {
@@ -49,21 +50,31 @@ public class SimpleSocket : MonoBehaviour
             Tick = _tick
         };
 
-        _sentPackages.Add(send);
-        _socket.SendMatchState(_matchId, 0, send.ToByteArray());
-        _tick++;
+        _sentPackagesSinceLastServerFrame.Add(send);
+
+        if (!Input.GetKey("x"))
+            _socket.SendMatchState(_matchId, 0, send.ToByteArray());
     }
 
     private void _socket_OnMatchState(object sender, IMatchState e)
     {
         PublicMatchState state = PublicMatchState.Parser.ParseFrom(e.State);
+        _tick = state.Tick;
 
+        var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
         foreach (var player in state.Player)
         {
-            Debug.Log("Received state with tick " + player.Value.LastReceivedTick + ". Current tick is " + _tick);
-            ServerShadow.SetPosition(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), (float)(DateTime.Now - _timeOfLastState).TotalSeconds);
-            Player.SetPosition(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), (float)(DateTime.Now - _timeOfLastState).TotalSeconds);
+            //handle player character
+            if (player.Value.Id == _session.UserId)
+            {
+                _sentPackagesSinceLastServerFrame.RemoveAll(x => x.Tick < player.Value.LastReceivedTick);
+
+                Debug.Log("Received state with tick " + player.Value.LastReceivedTick + ". Current tick is " + _tick);
+                ServerShadow.SetPosition(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), diffTime);
+                //Player.SetPosition(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), (float)(DateTime.Now - _timeOfLastState).TotalSeconds);
+                Player.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), player.Value.LastReceivedTick, _sentPackagesSinceLastServerFrame, diffTime);
+            }
         }
 
         _timeOfLastState = DateTime.Now;

@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"github.com/heroiclabs/nakama/runtime"
 	"github.com/golang/protobuf/proto"
-	//"github.com/thetemplar/golang-moving-average" //https://github.com/RobinUS2/golang-moving-average
 )
 
 type MatchState struct {
@@ -24,6 +23,7 @@ type InternalPlayer struct {
 
 	LastMessage             runtime.MatchData
 	LastMessageServerTick   int64
+	MissingCount			int
 }
 
 type Match struct{
@@ -44,19 +44,20 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 	}*/
 	state := &MatchState{
-		Debug: false,
+		Debug: true,
 		EmptyCounter : 0,
 		PublicMatchState : PublicMatchState{
 			Player: make(map[string]*PublicMatchState_Player),
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
+		OldMatchState: make(map[int64]PublicMatchState),
 	}
 	
 
 	if state.Debug {
 		logger.Printf("match init, starting with debug: %v", state.Debug)
 	}
-	tickRate := 5
+	tickRate := 20
 	label := ""
 
 	return state, tickRate, label
@@ -116,8 +117,8 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 
 	if message.GetOpCode() == 0 {
 		//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
-		currentPlayerPublic.Position.X += msg.XAxis * 0.2;
-		currentPlayerPublic.Position.Y += msg.YAxis * 0.1;
+		currentPlayerPublic.Position.X += msg.XAxis * 1;
+		currentPlayerPublic.Position.Y += msg.YAxis * 1;
 
 		//simple "wall"
 		if currentPlayerPublic.Position.X < -25 { currentPlayerPublic.Position.X = -25 }
@@ -145,10 +146,11 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 
-		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage = message;
-		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessageServerTick = tick;
+		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage = message
+		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessageServerTick = tick
+		state.(*MatchState).InternalPlayer[message.GetUserId()].MissingCount = 0
 		
-		PerformInputs(logger, state, message)
+		PerformInputs(logger, state, state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage)
 	}
 
 	//did a player not send an package? then re-do his last
@@ -157,7 +159,11 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 		if player.LastMessageServerTick != tick {
-			PerformInputs(logger, state, player.LastMessage)
+			player.MissingCount++
+			if player.MissingCount > 1 {
+				logger.Printf("2nd missing Package from player %v in a row, inserting last known package.", player.Id)
+				PerformInputs(logger, state, state.(*MatchState).InternalPlayer[player.Id].LastMessage)
+			}
 		}
 	}
 	

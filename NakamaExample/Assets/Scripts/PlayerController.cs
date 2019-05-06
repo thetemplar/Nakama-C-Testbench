@@ -1,13 +1,25 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using NakamaMinimalGame.PublicMatchState;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
-    public bool UseInterpolation = true;
+
+    public enum LevelOfNetworking
+    {
+        A_Dumb,
+        B_Prediction,
+        C_PredictionWithFeedback,
+        D_Reconciliation,
+        E_Interpolation
+    };
+
+    [SerializeField]
+    public LevelOfNetworking Level = LevelOfNetworking.A_Dumb;
 
     [SerializeField]
     public bool IsLocalPlayer;
@@ -25,6 +37,8 @@ public class PlayerController : MonoBehaviour
     private float _timeToLerp;
     private float _lerpingPercentage;
 
+    private bool _newSetPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,30 +54,45 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    // Update is called once per frame    
     void Update()
     {
+        //if (UseInterpolation)    NakamaLerp();
+        
+        if(Level >= LevelOfNetworking.B_Prediction)
+        {
+            if (Level >= LevelOfNetworking.C_PredictionWithFeedback)
+            {
+                if (_newSetPos)
+                {
+                    _newSetPos = false;
+                    transform.position = _realPostion;
+                    transform.rotation = _realRotation;
+                }
+            }
+        }
+        else // LevelOfNetworking.A_Dumb
+        {
+            transform.position = _realPostion;
+            transform.rotation = _realRotation;
+        }        
     }
 
     private void FixedUpdate()
     {
-        if (!IsLocalPlayer)
+        if (Level >= LevelOfNetworking.B_Prediction)
         {
-            if (UseInterpolation)
-            {
-                NakamaLerp();
-            }
-            else
-            {
-                transform.position = _realPostion;
-                transform.rotation = _realRotation;
-            }
+            MovementPrediction();
         }
-        else
-        {
-            LocalClientUpdate();
-        }
+    }
 
+    private void MovementPrediction()
+    {
+        if (!IsLocalPlayer)
+            return;
+
+        //controller.Move(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
+        transform.position = new Vector3(transform.position.x + Input.GetAxis("Horizontal"), transform.position.y, transform.position.z + Input.GetAxis("Vertical"));
     }
 
     private void NakamaLerp()
@@ -78,7 +107,6 @@ public class PlayerController : MonoBehaviour
         if (_isLerpingPosition)
         {
             transform.position = Vector3.Lerp(_lastRealPostion, _realPostion, _lerpingPercentage);
-            Debug.Log("_isLerpingPosition:" + _lerpingPercentage);
 
             if (_lerpingPercentage >= 1)
             {
@@ -96,26 +124,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void LocalClientUpdate()
+    public void SetLastServerAck(Vector3 position, Quaternion rotation, long lastReceivedTick, List<SendPackage> sentPackagesSinceLastServerFrame, float timeToLerp)
     {
-        if (!IsLocalPlayer)
-            return;
-
-        controller.Move(new Vector3(Input.GetAxis("Horizontal") * 0.2f, 0, Input.GetAxis("Vertical") * 0.2f));
-
-        //is it too far off?
-        Ray ray = new Ray(_realPostion, _lastRealPostion);
-        if (Vector3.Cross(ray.direction, transform.position - ray.origin).magnitude > .2f)
+        if (Level < LevelOfNetworking.D_Reconciliation)
         {
-            //todo: lerp
-            //transform.position = _realPostion;
+            SetPosition(position, rotation, timeToLerp);
+            return;
         }
+
+        foreach (var package in sentPackagesSinceLastServerFrame)
+        {
+            position.x += package.XAxis;
+            position.z += package.YAxis;
+        }
+        SetPosition(position, rotation, timeToLerp);
     }
 
     //This is Entity Interpolation
     public void SetPosition(Vector3 position, Quaternion rotation, float timeToLerp)
     {
-        if(!UseInterpolation)
+        _newSetPos = true;
+        if (Level < LevelOfNetworking.E_Interpolation)
         {
             _realPostion = position;
             _realRotation = rotation;
