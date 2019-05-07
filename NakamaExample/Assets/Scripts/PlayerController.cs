@@ -13,9 +13,7 @@ public class PlayerController : MonoBehaviour
     {
         A_Dumb,
         B_Prediction,
-        C_PredictionWithFeedback,
-        D_Reconciliation,
-        E_Interpolation
+        C_Reconciliation,
     };
 
     [SerializeField]
@@ -23,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     public bool IsLocalPlayer;
+    public bool UseInterpolation;
 
     CharacterController controller;
 
@@ -38,7 +37,10 @@ public class PlayerController : MonoBehaviour
     private float _lerpingPercentage;
 
     private bool _newSetPos;
+    private Vector3 _applyPredictedInput;
+    private bool _applyPredictedInputDone;
 
+    private List<Vector3> _l = new List<Vector3>();
     // Start is called before the first frame update
     void Start()
     {
@@ -54,102 +56,67 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame    
+    // Update is called once per frame  
     void Update()
     {
-        //if (UseInterpolation)    NakamaLerp();
+        if (Level >= LevelOfNetworking.B_Prediction && IsLocalPlayer)
+        {
+            if (!_applyPredictedInputDone)
+            {
+
+                _realPostion += _applyPredictedInput;
+                _applyPredictedInputDone = true;
+            }
+        }
+
+        transform.position = GetPosition();
+        if(IsLocalPlayer)
+            Debug.DrawRay(transform.position, new Vector3(0, 1, 0), Color.black, 10);
+        else
+            foreach (var l in _l.ToArray())
+            {
+                Debug.DrawRay(l, new Vector3(0, 1, 0), Color.white, 10);
+                _l.Remove(l);
+            }
+    }
+
+    private Vector3 GetPosition()
+    {
+        if (!UseInterpolation || !_isLerpingPosition)
+            return _realPostion;
+
+        if (_timeStartedLerping == 0)
+            _timeStartedLerping = Time.time;
+
+        _lerpingPercentage = (Time.time - _timeStartedLerping) / _timeToLerp;
+
+        if (_lerpingPercentage >= 1)
+        {
+            _isLerpingPosition = false;
+        }
+        return Vector3.Lerp(_lastRealPostion, _realPostion, _lerpingPercentage);
+    }
+
+    public void ApplyPredictedInput(float XAxis, float YAxis)
+    {
+        _applyPredictedInput = new Vector3(XAxis, 0, YAxis);
+        _applyPredictedInputDone = false;
+    }
+
+    public void SetLastServerAck(Vector3 position, Quaternion rotation, List<SendPackage> notAcknowledgedPackages, float timeToLerp)
+    {
+        if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)
+        {
+            foreach (var package in notAcknowledgedPackages.ToArray())
+            {
+                position.x += package.XAxis;
+                position.z += package.YAxis;
+            }
+        }
         
-        if(Level >= LevelOfNetworking.B_Prediction)
-        {
-            if (Level >= LevelOfNetworking.C_PredictionWithFeedback)
-            {
-                if (_newSetPos)
-                {
-                    _newSetPos = false;
-                    transform.position = _realPostion;
-                    transform.rotation = _realRotation;
-                }
-            }
-        }
-        else // LevelOfNetworking.A_Dumb
-        {
-            transform.position = _realPostion;
-            transform.rotation = _realRotation;
-        }        
-    }
-
-    private void FixedUpdate()
-    {
-        if (Level >= LevelOfNetworking.B_Prediction)
-        {
-            MovementPrediction();
-        }
-    }
-
-    private void MovementPrediction()
-    {
-        if (!IsLocalPlayer)
-            return;
-
-        //controller.Move(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
-        transform.position = new Vector3(transform.position.x + Input.GetAxis("Horizontal"), transform.position.y, transform.position.z + Input.GetAxis("Vertical"));
-    }
-
-    private void NakamaLerp()
-    {
-        if (_isLerpingPosition || _isLerpingRotation)
-        {
-            if (_timeStartedLerping == 0)
-                _timeStartedLerping = Time.time;
-            _lerpingPercentage = (Time.time - _timeStartedLerping) / _timeToLerp;
-        }
-
-        if (_isLerpingPosition)
-        {
-            transform.position = Vector3.Lerp(_lastRealPostion, _realPostion, _lerpingPercentage);
-
-            if (_lerpingPercentage >= 1)
-            {
-                _isLerpingPosition = false;
-            }
-        }
-        if (_isLerpingRotation)
-        {
-            transform.rotation = Quaternion.Lerp(_lastRealRotation, _realRotation, _lerpingPercentage);
-
-            if (_lerpingPercentage >= 1)
-            {
-                _isLerpingRotation = false;
-            }
-        }
-    }
-
-    public void SetLastServerAck(Vector3 position, Quaternion rotation, long lastReceivedTick, List<SendPackage> sentPackagesSinceLastServerFrame, float timeToLerp)
-    {
-        if (Level < LevelOfNetworking.D_Reconciliation)
-        {
-            SetPosition(position, rotation, timeToLerp);
-            return;
-        }
-
-        foreach (var package in sentPackagesSinceLastServerFrame)
-        {
-            position.x += package.XAxis;
-            position.z += package.YAxis;
-        }
-        SetPosition(position, rotation, timeToLerp);
-    }
-
-    //This is Entity Interpolation
-    public void SetPosition(Vector3 position, Quaternion rotation, float timeToLerp)
-    {
+        _l.Add(position);
+        position.y = 0;
         _newSetPos = true;
-        if (Level < LevelOfNetworking.E_Interpolation)
-        {
-            _realPostion = position;
-            _realRotation = rotation;
-            return;
-        }
 
         _lastRealPostion = _realPostion;
         _lastRealRotation = _realRotation;
@@ -168,5 +135,9 @@ public class PlayerController : MonoBehaviour
 
         _timeToLerp = timeToLerp;
         _timeStartedLerping = 0;
+
     }
 }
+
+
+

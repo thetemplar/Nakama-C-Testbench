@@ -23,6 +23,7 @@ type InternalPlayer struct {
 
 	LastMessage             runtime.MatchData
 	LastMessageServerTick   int64
+	LastMessageClientTick   int64
 	MissingCount			int
 }
 
@@ -57,7 +58,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 	if state.Debug {
 		logger.Printf("match init, starting with debug: %v", state.Debug)
 	}
-	tickRate := 20
+	tickRate := 10
 	label := ""
 
 	return state, tickRate, label
@@ -104,11 +105,11 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 }
 
 func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData) {
-	//currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
-	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
 	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Player[message.GetUserId()] == nil {
 		return
 	}
+	//currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
+	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
 	
 	msg := &SendPackage{}
 	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
@@ -127,7 +128,7 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 		if currentPlayerPublic.Position.Y >  25 { currentPlayerPublic.Position.Y =  25 }
 	}
 
-	currentPlayerPublic.LastReceivedTick = msg.ServerTickPerformingOn
+	currentPlayerPublic.LastProcessedClientTick = msg.ClientTick
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {
@@ -160,9 +161,9 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		if player.LastMessageServerTick != tick {
 			player.MissingCount++
-			if player.MissingCount > 1 {
+			if player.MissingCount > 1 && player.LastMessage != nil {
 				logger.Printf("2nd missing Package from player %v in a row, inserting last known package.", player.Id)
-				PerformInputs(logger, state, state.(*MatchState).InternalPlayer[player.Id].LastMessage)
+				PerformInputs(logger, state, player.LastMessage)
 			}
 		}
 	}
