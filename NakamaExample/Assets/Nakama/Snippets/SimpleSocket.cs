@@ -23,14 +23,16 @@ public class SimpleSocket : MonoBehaviour
     private long _clientTick;
     private List<SendPackage> _notAcknowledgedPackages = new List<SendPackage>();
 
-    private int _socketModulo;
+    private Dictionary<string, PlayerController> _npcs = new Dictionary<string, PlayerController>();
+
+    public GameObject PrefabNPC;
 
     private async void Awake()
     {
         Screen.SetResolution(400, 400, false, 144);
 
         var deviceid = SystemInfo.deviceUniqueIdentifier;
-        _session = await _client.AuthenticateDeviceAsync(deviceid);
+        _session = await _client.AuthenticateDeviceAsync(deviceid + DateTime.Now.Second.ToString());
         
 		_socket = _client.CreateWebSocket();
         _socket.OnConnect += _socket_OnConnect;
@@ -51,7 +53,7 @@ public class SimpleSocket : MonoBehaviour
         };
 
         if (Player.Level >= PlayerController.LevelOfNetworking.B_Prediction)
-            Player.ApplyPredictedInput(send.XAxis, send.YAxis);
+            Player.ApplyPredictedInput(send.XAxis, send.YAxis, Time.fixedDeltaTime);
 
         _notAcknowledgedPackages.Add(send);
         _socket.SendMatchState(_matchId, 0, send.ToByteArray());
@@ -64,19 +66,27 @@ public class SimpleSocket : MonoBehaviour
 
         var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
+Debug.Log("player: " + state.Player.Count());
         foreach (var player in state.Player)
         {
             //handle player character
-            if (player.Value.Id == _session.UserId)
+            if (player.Key == _session.UserId)
             {
-                //Debug.Log("RECEIVED SERVER STATE FROM TICK: " + state.Tick + " WITH ACK FROM MY TICKS: " + player.Value.LastProcessedClientTick);
-                //Debug.Log("pre-len:" + string.Join(" ", _notAcknowledgedPackages.Select(x => x.ClientTick).ToArray()));
                 _notAcknowledgedPackages.RemoveAll(x => x.ClientTick <= player.Value.LastProcessedClientTick);
-                //Debug.Log("suf-len:" + string.Join(" ", _notAcknowledgedPackages.Select(x => x.ClientTick).ToArray()));
+
                 if(ServerShadow != null)
                     ServerShadow.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), null, diffTime);
-                //Player.SetPosition(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), (float)(DateTime.Now - _timeOfLastState).TotalSeconds);
+                
                 Player.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), _notAcknowledgedPackages, diffTime);
+            }
+            else
+            {
+                if(!_npcs.ContainsKey(player.Key))
+                {
+                    GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.identity);
+                    _npcs.Add(player.Key, obj.GetComponent<PlayerController>());
+                }
+                _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), _notAcknowledgedPackages, diffTime);
             }
         }
 
@@ -89,10 +99,20 @@ public class SimpleSocket : MonoBehaviour
         Debug.Log("Socket connected.");
         _socket.OnMatchmakerMatched += _socket_OnMatchmakerMatched;
         //_socket.AddMatchmakerAsync();
-        var match = await _client.RpcAsync(_session, "createMatch");
-        _matchId = match.Payload;
+
+        var list = await _client.ListMatchesAsync(_session, 0, 10, 10, true, "");
+        if(list.Matches.Count() == 0)
+        {
+            var match = await _client.RpcAsync(_session, "createMatch");
+            _matchId = match.Payload;
+        }
+        else
+        {
+            _matchId = list.Matches.FirstOrDefault()?.MatchId;
+        }
+
         await _socket.JoinMatchAsync(_matchId);
-        Debug.Log("Created & joined match with ID: " + match.Payload.ToString());
+        Debug.Log("Created & joined match with ID: " + _matchId);
         _socket.OnMatchState += _socket_OnMatchState;
 
         _socket.OnMatchPresence += (_, presence) =>

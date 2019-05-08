@@ -71,12 +71,17 @@ namespace NakamaMinimalGame.NakamaClient
             
             _socket = _client.CreateWebSocket();
 
-            _socket.OnConnect += (sender, args) =>
+            _socket.OnConnect += async (sender, args) =>
             {
                 IsConnected = true;
                 FriendList = new FriendList(_session, _client, _socket);
                 GroupManager = new GroupManager(_session, _client, _socket);
                 MatchManager = new MatchManager(_session, _client, _socket);
+
+
+                IApiMatchList list = await _client.ListMatchesAsync(_session, 0, 10, 10, true, "");
+                var match = list.Matches.Count();
+                IApiMatch match1 = list.Matches.FirstOrDefault();
                 Console.WriteLine("Socket connected.");
             };
             _socket.OnDisconnect += (sender, args) =>

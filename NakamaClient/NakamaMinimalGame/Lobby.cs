@@ -62,6 +62,7 @@ namespace NakamaMinimalGame
 
             //populate server-user-list
             UpdateServerUsers();
+
         }
 
         private void MatchManager_UpdateGameStatus()

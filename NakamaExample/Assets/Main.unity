@@ -406,6 +406,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 399795761}
   ServerShadow: {fileID: 1953332197}
+  PrefabNPC: {fileID: 955992072519475621, guid: 86a790a80441ae445976c5a76f82260b,
+    type: 3}
 --- !u!1 &1128763120
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,7 +496,7 @@ Transform:
   m_GameObject: {fileID: 1128763120}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.2, z: 0}
-  m_LocalScale: {x: 1.5, y: 0.7, z: 1.5}
+  m_LocalScale: {x: 1.2, y: 0.7, z: 1.2}
   m_Children: []
   m_Father: {fileID: 1953332196}
   m_RootOrder: 0

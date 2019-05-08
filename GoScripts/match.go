@@ -45,7 +45,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 	}*/
 	state := &MatchState{
-		Debug: true,
+		Debug: false,
 		EmptyCounter : 0,
 		PublicMatchState : PublicMatchState{
 			Player: make(map[string]*PublicMatchState_Player),
@@ -58,7 +58,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 	if state.Debug {
 		logger.Printf("match init, starting with debug: %v", state.Debug)
 	}
-	tickRate := 10
+	tickRate := 20
 	label := ""
 
 	return state, tickRate, label

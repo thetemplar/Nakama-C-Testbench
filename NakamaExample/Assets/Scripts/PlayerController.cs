@@ -36,12 +36,10 @@ public class PlayerController : MonoBehaviour
     private float _timeToLerp;
     private float _lerpingPercentage;
 
-    private bool _newSetPos;
-    private Vector3 _applyPredictedInput;
-    private bool _applyPredictedInputDone;
 
     private List<Vector3> _l = new List<Vector3>();
     // Start is called before the first frame update
+    
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -59,25 +57,19 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame  
     void Update()
     {
-        if (Level >= LevelOfNetworking.B_Prediction && IsLocalPlayer)
-        {
-            if (!_applyPredictedInputDone)
-            {
-
-                _realPostion += _applyPredictedInput;
-                _applyPredictedInputDone = true;
-            }
-        }
-
         transform.position = GetPosition();
-        if(IsLocalPlayer)
+        /*
+        //if(IsLocalPlayer)
             Debug.DrawRay(transform.position, new Vector3(0, 1, 0), Color.black, 10);
-        else
+        //else
             foreach (var l in _l.ToArray())
             {
                 Debug.DrawRay(l, new Vector3(0, 1, 0), Color.white, 10);
                 _l.Remove(l);
             }
+
+        if(Input.GetKey("x")) _realPostion = new Vector3(0,0,0);
+        */
     }
 
     private Vector3 GetPosition()
@@ -97,14 +89,19 @@ public class PlayerController : MonoBehaviour
         return Vector3.Lerp(_lastRealPostion, _realPostion, _lerpingPercentage);
     }
 
-    public void ApplyPredictedInput(float XAxis, float YAxis)
+    public void ApplyPredictedInput(float XAxis, float YAxis, float timeToLerp)
     {
-        _applyPredictedInput = new Vector3(XAxis, 0, YAxis);
-        _applyPredictedInputDone = false;
+        if (Level >= LevelOfNetworking.B_Prediction && IsLocalPlayer)
+        {
+            var newPos = _realPostion + new Vector3(XAxis, 0, YAxis);
+
+            SetNextPosition(newPos, new Quaternion(), timeToLerp);        
+        }
     }
 
     public void SetLastServerAck(Vector3 position, Quaternion rotation, List<SendPackage> notAcknowledgedPackages, float timeToLerp)
     {
+        position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)
         {
             foreach (var package in notAcknowledgedPackages.ToArray())
@@ -115,8 +112,22 @@ public class PlayerController : MonoBehaviour
         }
         
         _l.Add(position);
-        position.y = 0;
-        _newSetPos = true;
+
+        if(!IsLocalPlayer)        
+        {
+            SetNextPosition(position, rotation, timeToLerp);
+        }
+        else if(Vector3.Distance(position, _realPostion) > 0.2f)
+        {
+            Debug.Log("dist too big:" + Vector3.Distance(position, _realPostion));
+            _isLerpingPosition = false;
+            _realPostion = position;
+        }
+
+    }
+
+    private void SetNextPosition(Vector3 position, Quaternion rotation, float timeToLerp)
+    {        
 
         _lastRealPostion = _realPostion;
         _lastRealRotation = _realRotation;
@@ -135,7 +146,6 @@ public class PlayerController : MonoBehaviour
 
         _timeToLerp = timeToLerp;
         _timeStartedLerping = 0;
-
     }
 }
 
