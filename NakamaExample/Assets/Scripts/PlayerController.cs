@@ -110,8 +110,8 @@ public class PlayerController : MonoBehaviour
     
     public Vector2 Rotate(Vector2 v, float degrees)
     {
-        float ca = (float)Math.Cos(degrees * (float)Math.PI/180);
-        float sa = (float)Math.Sin(degrees * (float)Math.PI/180);
+        float ca = (float)Math.Cos(360 - degrees * 0.01745329251);
+        float sa = (float)Math.Sin(360 - degrees * 0.01745329251);
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
         {
             foreach (var package in notAcknowledgedPackages.ToArray())
             {
-                var rotated = Rotate(new Vector2(package.XAxis, package.YAxis), 360 - package.Rotation);
+                var rotated = Rotate(new Vector2(package.XAxis, package.YAxis), package.Rotation);
                 position.x += rotated.x;
                 position.z += rotated.y;
                 rotation = package.Rotation;

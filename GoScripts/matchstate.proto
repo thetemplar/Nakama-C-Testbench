@@ -10,6 +10,7 @@ message PublicMatchState {
 		string id = 1;
 		int64 last_processed_client_tick = 2;
 		Vector2Df position = 3;
+		float rotation = 4;
 	}
 		
 	message Vector2Df {
@@ -22,4 +23,5 @@ message SendPackage {
 	int64 client_tick = 1;
 	float x_axis = 2;
 	float y_axis = 3;
+	float rotation = 4;
 }

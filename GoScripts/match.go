@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"math"
 	"database/sql"
 	"github.com/heroiclabs/nakama/runtime"
 	"github.com/golang/protobuf/proto"
@@ -104,6 +105,19 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 	return state
 }
 
+func PublicMatchState_Vector2Df_Rotate(v PublicMatchState_Vector2Df, degrees float32) PublicMatchState_Vector2Df {
+	ca := float32(math.Cos(float64(360 - degrees) * 0.01745329251)); //0.01745329251
+	sa := float32(math.Sin(float64(360 - degrees) * 0.01745329251));
+
+	vec := PublicMatchState_Vector2Df {
+		X: ca * v.X - sa * v.Y,
+		Y: sa * v.X + ca * v.Y,
+	}
+
+	return vec
+}
+
+
 func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData) {
 	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Player[message.GetUserId()] == nil {
 		return
@@ -118,8 +132,14 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 
 	if message.GetOpCode() == 0 {
 		//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
-		currentPlayerPublic.Position.X += msg.XAxis * 1;
-		currentPlayerPublic.Position.Y += msg.YAxis * 1;
+		add := PublicMatchState_Vector2Df {
+			X: msg.XAxis,
+			Y: msg.YAxis,
+		}
+		rotated := PublicMatchState_Vector2Df_Rotate(add, msg.Rotation)
+		currentPlayerPublic.Position.X += rotated.X;
+		currentPlayerPublic.Position.Y += rotated.Y;
+		currentPlayerPublic.Rotation = msg.Rotation;
 
 		//simple "wall"
 		if currentPlayerPublic.Position.X < -25 { currentPlayerPublic.Position.X = -25 }
