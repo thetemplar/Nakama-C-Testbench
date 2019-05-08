@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
 public class SimpleSocket : MonoBehaviour
 {
@@ -58,7 +59,7 @@ public class SimpleSocket : MonoBehaviour
 
         _notAcknowledgedPackages.Add(send);
         _socket.SendMatchState(_matchId, 0, send.ToByteArray());
-        _clientTick++;
+        _clientTick++;            
     }
 
     private void _socket_OnMatchState(object sender, IMatchState e)
@@ -84,9 +85,10 @@ public class SimpleSocket : MonoBehaviour
                 if(!_npcs.ContainsKey(player.Key))
                 {
                     GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.AngleAxis(player.Value.Rotation, Vector3.up));
+                    //GameObject obj = PrefabUtility.InstantiatePrefab(PrefabNPC) as GameObject;
                     _npcs.Add(player.Key, obj.GetComponent<PlayerController>());
                 }
-                _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, _notAcknowledgedPackages, diffTime);
+                _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
             }
         }
 

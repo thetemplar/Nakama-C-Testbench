@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Level >= LevelOfNetworking.B_Prediction && IsLocalPlayer)
         {
-            var rotated = Rotate(new Vector2(XAxis, YAxis), 360 - _lerpRotation.Value);
+            var rotated = Rotate(new Vector2(XAxis, YAxis), _lerpRotation.Value);
             var newPos = _lerpPosition.Value + new Vector3(rotated.x, 0, rotated.y);
 
             _lerpPosition.SetNext(newPos, timeToLerp);     
@@ -110,8 +110,8 @@ public class PlayerController : MonoBehaviour
     
     public Vector2 Rotate(Vector2 v, float degrees)
     {
-        float ca = (float)Math.Cos(360 - degrees * 0.01745329251);
-        float sa = (float)Math.Sin(360 - degrees * 0.01745329251);
+        float ca = (float)Math.Cos((360 - degrees) * 0.01745329251);
+        float sa = (float)Math.Sin((360 - degrees) * 0.01745329251);
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
