@@ -47,13 +47,14 @@ public class SimpleSocket : MonoBehaviour
 
         SendPackage send = new SendPackage
         {
-            XAxis = (Input.GetKey("a") ? -1 : 0) + (Input.GetKey("d") ? 1 : 0),
+            XAxis = Input.GetAxis("Horizontal"),
             YAxis = Input.GetAxis("Vertical"),
+            Rotation = Player.Rotation,
             ClientTick = _clientTick
         };
 
         if (Player.Level >= PlayerController.LevelOfNetworking.B_Prediction)
-            Player.ApplyPredictedInput(send.XAxis, send.YAxis, Time.fixedDeltaTime);
+            Player.ApplyPredictedInput(send.XAxis, send.YAxis, send.Rotation, Time.fixedDeltaTime);
 
         _notAcknowledgedPackages.Add(send);
         _socket.SendMatchState(_matchId, 0, send.ToByteArray());
@@ -66,7 +67,6 @@ public class SimpleSocket : MonoBehaviour
 
         var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
-Debug.Log("player: " + state.Player.Count());
         foreach (var player in state.Player)
         {
             //handle player character
@@ -75,18 +75,18 @@ Debug.Log("player: " + state.Player.Count());
                 _notAcknowledgedPackages.RemoveAll(x => x.ClientTick <= player.Value.LastProcessedClientTick);
 
                 if(ServerShadow != null)
-                    ServerShadow.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), null, diffTime);
+                    ServerShadow.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
                 
-                Player.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), _notAcknowledgedPackages, diffTime);
+                Player.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, _notAcknowledgedPackages, diffTime);
             }
             else
             {
                 if(!_npcs.ContainsKey(player.Key))
                 {
-                    GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.identity);
+                    GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.AngleAxis(player.Value.Rotation, Vector3.up));
                     _npcs.Add(player.Key, obj.GetComponent<PlayerController>());
                 }
-                _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), new Quaternion(), _notAcknowledgedPackages, diffTime);
+                _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, _notAcknowledgedPackages, diffTime);
             }
         }
 

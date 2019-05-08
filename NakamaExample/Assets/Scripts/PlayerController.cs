@@ -25,127 +25,129 @@ public class PlayerController : MonoBehaviour
 
     CharacterController controller;
 
-    [Header("Lerping Properties")]
-    private bool _isLerpingPosition;
-    private bool _isLerpingRotation;
-    private Vector3 _realPostion;
-    private Quaternion _realRotation;
-    private Vector3 _lastRealPostion;
-    private Quaternion _lastRealRotation;
-    private float _timeStartedLerping;
-    private float _timeToLerp;
-    private float _lerpingPercentage;
+    class LerpingParameters<T> {
+        public bool IsLerping;
+        public T Value;
+        public T LastValue;
+        public float TimeStarted;
+        public float TimeToLerp;
+        public float Percentage {
+            get {
+                if (TimeStarted == 0)
+                    TimeStarted = Time.time;
 
+                float perc = (Time.time - TimeStarted) / TimeToLerp;
+                if (perc >= 1)
+                {
+                    IsLerping = false;
+                }
 
-    private List<Vector3> _l = new List<Vector3>();
-    // Start is called before the first frame update
+                return perc;
+            }
+        }
+        
+        public void SetNext(T value, float timeToLerp)
+        {        
+            LastValue = Value;
+            Value = value;  
+            if (EqualityComparer<T>.Default.Equals(LastValue, Value))
+            {
+                IsLerping = true;
+            }
+            TimeToLerp = timeToLerp;
+            TimeStarted = 0;
+        }
+    }
+
+    private LerpingParameters<Vector3> _lerpPosition = new LerpingParameters<Vector3>();
+    private LerpingParameters<float> _lerpRotation = new LerpingParameters<float>();
+
+    public float Rotation => _lerpRotation.Value;
     
     void Start()
     {
         controller = GetComponent<CharacterController>();
-
-        if (!IsLocalPlayer)
-        {
-            _isLerpingPosition = false;
-            _isLerpingRotation = false;
-
-            _realPostion = transform.position;
-            _realRotation = transform.rotation;
-        }
     }
 
     // Update is called once per frame  
     void Update()
     {
         transform.position = GetPosition();
-        /*
-        //if(IsLocalPlayer)
-            Debug.DrawRay(transform.position, new Vector3(0, 1, 0), Color.black, 10);
-        //else
-            foreach (var l in _l.ToArray())
-            {
-                Debug.DrawRay(l, new Vector3(0, 1, 0), Color.white, 10);
-                _l.Remove(l);
-            }
+        transform.rotation = GetRotation();
+    }
 
-        if(Input.GetKey("x")) _realPostion = new Vector3(0,0,0);
-        */
+    void FixedUpdate()
+    {
+        if(IsLocalPlayer)
+            _lerpRotation.SetNext(transform.rotation.eulerAngles.y + (Input.GetKey("q") ? -10 : 0) + (Input.GetKey("e") ? 10 : 0), Time.fixedDeltaTime);
     }
 
     private Vector3 GetPosition()
     {
-        if (!UseInterpolation || !_isLerpingPosition)
-            return _realPostion;
+        if (!UseInterpolation || !_lerpPosition.IsLerping)
+            return _lerpPosition.Value;
 
-        if (_timeStartedLerping == 0)
-            _timeStartedLerping = Time.time;
+        return Vector3.Lerp(_lerpPosition.LastValue, _lerpPosition.Value, _lerpPosition.Percentage);
+    }
+    private Quaternion GetRotation()
+    {
+        if (!UseInterpolation || !_lerpRotation.IsLerping)
+            return Quaternion.AngleAxis(_lerpRotation.Value, Vector3.up);
 
-        _lerpingPercentage = (Time.time - _timeStartedLerping) / _timeToLerp;
-
-        if (_lerpingPercentage >= 1)
-        {
-            _isLerpingPosition = false;
-        }
-        return Vector3.Lerp(_lastRealPostion, _realPostion, _lerpingPercentage);
+        return Quaternion.Lerp(Quaternion.AngleAxis(_lerpRotation.LastValue, Vector3.up), Quaternion.AngleAxis(_lerpRotation.Value, Vector3.up), _lerpRotation.Percentage);
     }
 
-    public void ApplyPredictedInput(float XAxis, float YAxis, float timeToLerp)
+    public void ApplyPredictedInput(float XAxis, float YAxis, float rotation, float timeToLerp)
     {
         if (Level >= LevelOfNetworking.B_Prediction && IsLocalPlayer)
         {
-            var newPos = _realPostion + new Vector3(XAxis, 0, YAxis);
+            var rotated = Rotate(new Vector2(XAxis, YAxis), 360 - _lerpRotation.Value);
+            var newPos = _lerpPosition.Value + new Vector3(rotated.x, 0, rotated.y);
 
-            SetNextPosition(newPos, new Quaternion(), timeToLerp);        
+            _lerpPosition.SetNext(newPos, timeToLerp);     
         }
     }
+    
+    public Vector2 Rotate(Vector2 v, float degrees)
+    {
+        float ca = (float)Math.Cos(degrees * (float)Math.PI/180);
+        float sa = (float)Math.Sin(degrees * (float)Math.PI/180);
+        return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
+    }
 
-    public void SetLastServerAck(Vector3 position, Quaternion rotation, List<SendPackage> notAcknowledgedPackages, float timeToLerp)
+    public void SetLastServerAck(Vector3 position, float rotation, List<SendPackage> notAcknowledgedPackages, float timeToLerp)
     {
         position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)
         {
             foreach (var package in notAcknowledgedPackages.ToArray())
             {
-                position.x += package.XAxis;
-                position.z += package.YAxis;
+                var rotated = Rotate(new Vector2(package.XAxis, package.YAxis), 360 - package.Rotation);
+                position.x += rotated.x;
+                position.z += rotated.y;
+                rotation = package.Rotation;
             }
         }
         
-        _l.Add(position);
-
         if(!IsLocalPlayer)        
         {
-            SetNextPosition(position, rotation, timeToLerp);
+            _lerpPosition.SetNext(position, timeToLerp);
+            _lerpRotation.SetNext(rotation, timeToLerp);
+            return;
         }
-        else if(Vector3.Distance(position, _realPostion) > 0.2f)
+
+        if(Vector3.Distance(position, _lerpPosition.Value) > 0.2f)
         {
-            Debug.Log("dist too big:" + Vector3.Distance(position, _realPostion));
-            _isLerpingPosition = false;
-            _realPostion = position;
+            Debug.Log("dist too big:" + Vector3.Distance(position, _lerpPosition.Value));
+            _lerpPosition.IsLerping = false;
+            _lerpPosition.Value = position;
         }
-
-    }
-
-    private void SetNextPosition(Vector3 position, Quaternion rotation, float timeToLerp)
-    {        
-
-        _lastRealPostion = _realPostion;
-        _lastRealRotation = _realRotation;
-
-        _realPostion = position;
-        _realRotation = rotation;
-
-        if (_realPostion != _lastRealPostion)
+        if(180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180) > 5f)
         {
-            _isLerpingPosition = true;
+            Debug.Log("angle too big:" + (180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180)).ToString());
+            _lerpRotation.IsLerping = false;
+            _lerpRotation.Value = rotation;        
         }
-        if (_realRotation.eulerAngles != _lastRealRotation.eulerAngles)
-        {
-            _isLerpingPosition = true;
-        }
-
-        _timeToLerp = timeToLerp;
-        _timeStartedLerping = 0;
     }
 }
 
