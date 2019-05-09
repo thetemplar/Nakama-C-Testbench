@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
                 if (TimeStarted == 0)
                     TimeStarted = Time.time;
 
-                float perc = (Time.time - TimeStarted) / TimeToLerp;
+                float perc = TimeToLerp > 0 ? (Time.time - TimeStarted) / TimeToLerp : 1;
                 if (perc >= 1)
                 {
                     IsLerping = false;
@@ -72,7 +72,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame  
     void Update()
     {
-        transform.position = GetPosition();
+        var pos = GetPosition();
+        if (float.IsNaN(pos.x))
+            Debug.Log("NANAAAAAA");
+        transform.position = pos;
         transform.rotation = GetRotation();
     }
 

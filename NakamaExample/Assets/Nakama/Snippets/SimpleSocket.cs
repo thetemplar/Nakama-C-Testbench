@@ -25,6 +25,8 @@ public class SimpleSocket : MonoBehaviour
     private List<SendPackage> _notAcknowledgedPackages = new List<SendPackage>();
 
     private Dictionary<string, PlayerController> _npcs = new Dictionary<string, PlayerController>();
+    private List<PublicMatchState.Types.Player> _waitingForInstantiate = new List<PublicMatchState.Types.Player>();
+    private List<string> _waitingForDelete = new List<string>();
 
     public GameObject PrefabNPC;
 
@@ -34,8 +36,8 @@ public class SimpleSocket : MonoBehaviour
 
         var deviceid = SystemInfo.deviceUniqueIdentifier;
         _session = await _client.AuthenticateDeviceAsync(deviceid + DateTime.Now.Second.ToString());
-        
-		_socket = _client.CreateWebSocket();
+
+        _socket = _client.CreateWebSocket();
         _socket.OnConnect += _socket_OnConnect;
         _socket.OnDisconnect += _socket_OnDisconnect;
 
@@ -68,6 +70,7 @@ public class SimpleSocket : MonoBehaviour
 
         var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
+        Debug.Log("state.Player " + state.Player.Count);
         foreach (var player in state.Player)
         {
             //handle player character
@@ -82,17 +85,50 @@ public class SimpleSocket : MonoBehaviour
             }
             else
             {
-                if(!_npcs.ContainsKey(player.Key))
+                if (_waitingForDelete.Contains(player.Key))
+                    continue;
+                
+                if (_npcs.ContainsKey(player.Key))
                 {
-                    GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.AngleAxis(player.Value.Rotation, Vector3.up));
-                    //GameObject obj = PrefabUtility.InstantiatePrefab(PrefabNPC) as GameObject;
-                    _npcs.Add(player.Key, obj.GetComponent<PlayerController>());
+                    if (player.Value?.Position != null)
+                    {
+                        _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
+                    }
+                    else
+                    {
+                        _waitingForDelete.Add(player.Key);
+                    }
                 }
-                _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
+                else
+                {
+                    if (player.Value?.Position != null)
+                    {
+                        _waitingForInstantiate.Add(player.Value);
+                    }
+                }
             }
         }
 
         _timeOfLastState = DateTime.Now;
+    }
+
+    private void Update()
+    {
+        foreach (var insert in _waitingForInstantiate)
+        {
+            if (_npcs.ContainsKey(insert.Id)) continue;
+
+            GameObject obj = Instantiate(PrefabNPC, new Vector3(insert.Position.X, 1.5f, insert.Position.Y), Quaternion.AngleAxis(insert.Rotation, Vector3.up));
+            _npcs.Add(insert.Id, obj.GetComponent<PlayerController>());
+        }
+        foreach (var delete in _waitingForDelete)
+        {
+            if (!_npcs.ContainsKey(delete)) continue;
+
+            var del = _npcs.Where(x => x.Key == delete).FirstOrDefault();
+            Destroy(del.Value.gameObject);
+            _npcs.Remove(del.Key);
+        }
     }
 
 
