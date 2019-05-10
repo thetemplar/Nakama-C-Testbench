@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nakama;
 using Nakama.TinyJson;
-using NakamaMinimalGame.PublicMatchState;
 
 namespace NakamaClient
 {
@@ -15,7 +14,7 @@ namespace NakamaClient
         static string authtoken = "";
         private const string PrefKeyName = "nakama.session";
 
-        private static IClient _client = new Client("defaultkey", "127.0.0.1", 7350, false);
+        private static IClient _client = new Client("defaultkey", "18.185.43.148", 7350, false);
         private static ISession _session;
 
         private static async Task LogIn()
