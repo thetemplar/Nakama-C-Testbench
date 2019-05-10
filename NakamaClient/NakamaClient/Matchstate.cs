@@ -41,9 +41,9 @@ namespace NakamaClient
             descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
                 new pbr::FileDescriptor[] { },
                 new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Stopwatch", "Player" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player.Parser, new[]{ "Id", "LastProcessedClientTick", "Position", "Rotation" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.SendPackage), global::NakamaMinimalGame.PublicMatchState.SendPackage.Parser, new[]{ "ClientTick", "XAxis", "YAxis", "Rotation" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaClient.PublicMatchState), global::NakamaClient.PublicMatchState.Parser, new[]{ "Tick", "Stopwatch", "Player" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaClient.PublicMatchState.Types.Player), global::NakamaClient.PublicMatchState.Types.Player.Parser, new[]{ "Id", "LastProcessedClientTick", "Position", "Rotation" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaClient.PublicMatchState.Types.Vector2Df), global::NakamaClient.PublicMatchState.Types.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaClient.SendPackage), global::NakamaClient.SendPackage.Parser, new[]{ "ClientTick", "XAxis", "YAxis", "Rotation" }, null, null, null)
                 }));
         }
         #endregion
@@ -59,7 +59,7 @@ namespace NakamaClient
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor
         {
-            get { return global::NakamaMinimalGame.PublicMatchState.MatchstateReflection.Descriptor.MessageTypes[0]; }
+            get { return global::NakamaClient.MatchstateReflection.Descriptor.MessageTypes[0]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -116,11 +116,11 @@ namespace NakamaClient
 
         /// <summary>Field number for the "player" field.</summary>
         public const int PlayerFieldNumber = 3;
-        private static readonly pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player>.Codec _map_player_codec
-            = new pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player>.Codec(pb::FieldCodec.ForString(10), pb::FieldCodec.ForMessage(18, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player.Parser), 26);
-        private readonly pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player> player_ = new pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player>();
+        private static readonly pbc::MapField<string, global::NakamaClient.PublicMatchState.Types.Player>.Codec _map_player_codec
+            = new pbc::MapField<string, global::NakamaClient.PublicMatchState.Types.Player>.Codec(pb::FieldCodec.ForString(10), pb::FieldCodec.ForMessage(18, global::NakamaClient.PublicMatchState.Types.Player.Parser), 26);
+        private readonly pbc::MapField<string, global::NakamaClient.PublicMatchState.Types.Player> player_ = new pbc::MapField<string, global::NakamaClient.PublicMatchState.Types.Player>();
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player> Player
+        public pbc::MapField<string, global::NakamaClient.PublicMatchState.Types.Player> Player
         {
             get { return player_; }
         }
@@ -249,7 +249,7 @@ namespace NakamaClient
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[1]; }
+                    get { return global::NakamaClient.PublicMatchState.Descriptor.NestedTypes[1]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -309,9 +309,9 @@ namespace NakamaClient
 
                 /// <summary>Field number for the "position" field.</summary>
                 public const int PositionFieldNumber = 3;
-                private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df position_;
+                private global::NakamaClient.PublicMatchState.Types.Vector2Df position_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df Position
+                public global::NakamaClient.PublicMatchState.Types.Vector2Df Position
                 {
                     get { return position_; }
                     set
@@ -441,7 +441,7 @@ namespace NakamaClient
                     {
                         if (position_ == null)
                         {
-                            position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
+                            position_ = new global::NakamaClient.PublicMatchState.Types.Vector2Df();
                         }
                         Position.MergeFrom(other.Position);
                     }
@@ -476,7 +476,7 @@ namespace NakamaClient
                                 {
                                     if (position_ == null)
                                     {
-                                        position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
+                                        position_ = new global::NakamaClient.PublicMatchState.Types.Vector2Df();
                                     }
                                     input.ReadMessage(position_);
                                     break;
@@ -501,7 +501,7 @@ namespace NakamaClient
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[2]; }
+                    get { return global::NakamaClient.PublicMatchState.Descriptor.NestedTypes[2]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -682,7 +682,7 @@ namespace NakamaClient
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor
         {
-            get { return global::NakamaMinimalGame.PublicMatchState.MatchstateReflection.Descriptor.MessageTypes[1]; }
+            get { return global::NakamaClient.MatchstateReflection.Descriptor.MessageTypes[1]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
