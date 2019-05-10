@@ -4,7 +4,8 @@ option csharp_namespace = "NakamaMinimalGame.PublicMatchState";
 
 message PublicMatchState {
 	int64 tick = 1;
-	map<string, Player> player = 2;
+	repeated int64 stopwatch = 2;
+	map<string, Player> player = 3;
   
 	message Player {
 		string id = 1;

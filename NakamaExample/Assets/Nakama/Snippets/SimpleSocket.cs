@@ -1,4 +1,4 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 using Nakama;
 using NakamaMinimalGame.PublicMatchState;
 using System;
@@ -10,7 +10,7 @@ using UnityEditor;
 
 public class SimpleSocket : MonoBehaviour
 {
-	private IClient _client = new Client("defaultkey", "127.0.0.1", 7350, false);
+	private IClient _client = new Client("defaultkey", "ec2-18-185-43-148.eu-central-1.compute.amazonaws.com", 7350, false);
 	private ISocket _socket;
     private ISession _session;
     private string _matchId;
@@ -70,7 +70,7 @@ public class SimpleSocket : MonoBehaviour
 
         var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
-        Debug.Log("state.Player " + state.Player.Count);
+        Debug.Log("Stopwatch-Server: 0:" + (state.Stopwatch[0] / 1000f) + "ms 1:" + (state.Stopwatch[1] / 1000f) + "ms 2:" + (state.Stopwatch[2] / 1000f) + "ms 3:" + (state.Stopwatch[3] / 1000f) + "ms 4:" + (state.Stopwatch[4] / 1000f) + "ms");
         foreach (var player in state.Player)
         {
             //handle player character
