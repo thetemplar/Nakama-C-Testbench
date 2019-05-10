@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Nakama;
 using Nakama.TinyJson;
+using NakamaMinimalGame.PublicMatchState;
 
 namespace NakamaClient
 {
@@ -55,9 +58,12 @@ namespace NakamaClient
 
             Console.WriteLine(" * *  Socket messages  * * ");
             var socket = _client.CreateWebSocket();
-            socket.OnConnect += (sender, args) =>
+            socket.OnConnect += async (sender, args) =>
             {
                 Console.WriteLine("[OnConnect] Socket connected.");
+
+                var match = await _client.RpcAsync(_session, "createMatch");
+                await socket.JoinMatchAsync(match.Id);
             };
             socket.OnDisconnect += (sender, args) =>
             {
@@ -65,43 +71,15 @@ namespace NakamaClient
             };
             await socket.ConnectAsync(_session);
             
-
-            Console.WriteLine(" * *  Handle events  * * ");
-            socket.OnStatusPresence += (_, presence) =>
-            {
-                foreach (var join in presence.Joins)
-                {
-                    Console.WriteLine("[OnStatusPresence] User '{0}' joined.", join.Username);
-                }
-                foreach (var leave in presence.Leaves)
-                {
-                    Console.WriteLine("[OnStatusPresence] User '{0}' left.", leave.Username);
-                }
-            };
-            Console.WriteLine(" * *  DONE  INIT  * * ");
-            var matchmakerTicket = await socket.AddMatchmakerAsync("*", 2);
-            socket.OnMatchmakerMatched += async (_, matched) =>
-            {
-                Console.WriteLine("[OnMatchmakerMatched] Received MatchmakerMatched message: {0}", matched);
-                var opponents = string.Join(",", matched.Users); // printable list.
-                Console.WriteLine("[OnMatchmakerMatched] Matched opponents: {0}", opponents);
-                IMatch match = await socket.JoinMatchAsync(matched);
-
-
-                var id = match.Id;
-                var opCode = 1;
-                var timer = new System.Threading.Timer((e) =>
-                {
-                    socket.SendMatchState(id, opCode, "SendMatchState :) " + _session.UserId);
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
-            };
             
-
             Console.WriteLine(" * *  Receive data messages  * * ");
             socket.OnMatchState += (_, state) => {
                 var in_content = System.Text.Encoding.UTF8.GetString(state.State);
 
                 Console.WriteLine("[OnMatchState] User  sent {0} with Opcode: {1}", in_content, state.OpCode);
+                PublicMatchState msg = PublicMatchState.Parser.ParseFrom(state.State);
+                Console.WriteLine("Stopwatch-Server: 0:" + (msg.Stopwatch[0] / 1000f) + "ms 1:" + (msg.Stopwatch[1] / 1000f) + "ms 2:" + (msg.Stopwatch[2] / 1000f) + "ms 3:" + (msg.Stopwatch[3] / 1000f) + "ms 4:" + (msg.Stopwatch[4] / 1000f) + "ms");
+
             };
         }
 
