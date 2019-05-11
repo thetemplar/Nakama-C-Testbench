@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"github.com/heroiclabs/nakama/runtime"
 	"github.com/golang/protobuf/proto"
-	"time"
+	"fmt"
 )
 
 type MatchState struct {
@@ -155,7 +155,6 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {
-	start := time.Now()
 	if state.(*MatchState).Debug {
 		logger.Printf("match loop match_id %v tick %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), tick)
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
@@ -169,7 +168,6 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		state.(*MatchState).InternalPlayer[message.GetUserId()].MessageCountThisFrame++
 	}
-	state.(*MatchState).PublicMatchState.Stopwatch[0] = int64(time.Since(start))
 	//get new inputs
 	for _, message := range messages { 
 		//logger.Printf("message from %v with opcode %v", message.GetUserId(), message.GetOpCode())
@@ -185,7 +183,6 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		PerformInputs(logger, state, state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage)
 	}
 
-	state.(*MatchState).PublicMatchState.Stopwatch[1] = int64(time.Since(start))
 	//did a player not send an package? then re-do his last
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
@@ -194,13 +191,13 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		if player.LastMessageServerTick != tick {
 			player.MissingCount++
 			if player.MissingCount > 1 && player.LastMessage != nil {
+				player.MessageCountThisFrame = 1
 				logger.Printf("2nd missing Package from player %v in a row, inserting last known package.", player.Id)
 				PerformInputs(logger, state, player.LastMessage)
 			}
 		}
 	}
 	
-	state.(*MatchState).PublicMatchState.Stopwatch[2] = int64(time.Since(start))
 	//calculate game/npcs/objects
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
@@ -208,14 +205,16 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 	}
 
-	state.(*MatchState).PublicMatchState.Stopwatch[3] = int64(time.Since(start))
 	//send new game state (by creating protobuf message)
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
 			continue
 		}
 		player.MessageCountThisFrame = 0
-		
+
+		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[player.Id];
+
+		fmt.Printf("%v @ %v | %v\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y)
 
 		out, err := proto.Marshal(&state.(*MatchState).PublicMatchState)
 		if err != nil {
@@ -223,11 +222,12 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		dispatcher.BroadcastMessage(1, out, []runtime.Presence { player.Presence }, nil)
 	}	
-	state.(*MatchState).PublicMatchState.Stopwatch[4] = int64(time.Since(start))
 	
 	//save for history
 	//historyCopy := state.(*MatchState).PublicMatchState
 	//state.(*MatchState).OldMatchState[tick] = historyCopy
+
+
 
 	//end if no ones sending smth (all dc'ed)
 	if len(messages) == 0 {

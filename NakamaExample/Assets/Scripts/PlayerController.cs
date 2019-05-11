@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public bool IsLocalPlayer;
     public bool UseInterpolation;
+    public bool ShowGhost;
+    public Vector3 InitialPosition;
 
     CharacterController controller;
 
@@ -45,9 +47,20 @@ public class PlayerController : MonoBehaviour
                 return perc;
             }
         }
-        
+
+        public LerpingParameters()
+        {
+        }
+
+        public LerpingParameters(T initial)
+        {
+            Value = initial;
+        }
+
         public void SetNext(T value, float timeToLerp)
-        {        
+        {
+           //if(typeof(T) != typeof(float))
+           //     Debug.Log("LastValue: " + LastValue + " - Value: " + Value + " @ " + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " - timeToLerp: " + timeToLerp);
             LastValue = Value;
             Value = value;  
             if (EqualityComparer<T>.Default.Equals(LastValue, Value))
@@ -59,30 +72,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private LerpingParameters<Vector3> _lerpPosition = new LerpingParameters<Vector3>();
-    private LerpingParameters<float> _lerpRotation = new LerpingParameters<float>();
+    private LerpingParameters<Vector3> _lerpPosition;
+    private LerpingParameters<float> _lerpRotation;
 
     public float Rotation => _lerpRotation.Value;
     
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        _lerpPosition = new LerpingParameters<Vector3>(InitialPosition);
+        _lerpRotation = new LerpingParameters<float>();
     }
 
     // Update is called once per frame  
     void Update()
     {
-        var pos = GetPosition();
-        if (float.IsNaN(pos.x))
-            Debug.Log("NANAAAAAA");
-        transform.position = pos;
+        transform.position = GetPosition();
         transform.rotation = GetRotation();
     }
 
     void FixedUpdate()
     {
-        if(IsLocalPlayer)
-            _lerpRotation.SetNext(transform.rotation.eulerAngles.y + (Input.GetKey("q") ? -10 : 0) + (Input.GetKey("e") ? 10 : 0), Time.fixedDeltaTime);
+    }
+
+    public void SetRotation(float rotation)
+    {
+        _lerpRotation.SetNext(rotation, 0);
     }
 
     private Vector3 GetPosition()
@@ -92,6 +107,7 @@ public class PlayerController : MonoBehaviour
 
         return Vector3.Lerp(_lerpPosition.LastValue, _lerpPosition.Value, _lerpPosition.Percentage);
     }
+
     private Quaternion GetRotation()
     {
         if (!UseInterpolation || !_lerpRotation.IsLerping)
@@ -144,6 +160,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("dist too big:" + Vector3.Distance(position, _lerpPosition.Value));
             _lerpPosition.IsLerping = false;
             _lerpPosition.Value = position;
+
         }
         if(180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180) > 5f)
         {
