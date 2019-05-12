@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<SendPackage> notAcknowledgedPackages, float timeToLerp)
+    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Character> notAcknowledgedPackages, float timeToLerp)
     {
         position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)

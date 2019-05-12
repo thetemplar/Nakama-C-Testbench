@@ -6,12 +6,50 @@ message PublicMatchState {
 	int64 tick = 1;
 	repeated int64 stopwatch = 2;
 	map<string, Player> player = 3;
+	map<string, NPC> npc = 4;
+	map<string, Projectile> projectile = 5;
   
 	message Player {
+		//system
 		string id = 1;
 		int64 last_processed_client_tick = 2;
-		Vector2Df position = 3;
-		float rotation = 4;
+		repeated string errors = 3;
+
+		int32 health = 4;
+		int32 power = 5;
+		
+		//pos
+		Vector2Df position = 6;
+		float rotation = 7;
+
+		//combat
+		float global_cooldown = 8;
+		string target = 9;
+	}
+
+	message NPC {
+		//system
+		string id = 1;
+
+		int32 health = 2;
+		int32 power = 3;
+
+		//pos
+		Vector2Df position = 4;
+		float rotation = 5;
+
+		//combat
+		string target = 6;
+	}
+
+	message Projectile {
+		//system
+		string id = 1;
+		Vector2Df position = 2;
+		float rotation = 3;
+		string target = 4;
+		float speed = 5;
+		int32 damage = 6;
 	}
 		
 	message Vector2Df {
@@ -20,9 +58,14 @@ message PublicMatchState {
 	}
 }
 
-message SendPackage {
+message Client_Character {
 	int64 client_tick = 1;
 	float x_axis = 2;
 	float y_axis = 3;
 	float rotation = 4;
+	string target = 5;
+}
+
+message Client_Cast {
+	string spellname = 1;
 }

@@ -17,12 +17,13 @@ public class SimpleSocket : MonoBehaviour
 
     public PlayerController Player;
     public PlayerController ServerShadow;
+    public UnitSelector UnitSelector;
 
     private DateTime _timeOfLastState;
     List<IUserPresence> _connectedOpponents = new List<IUserPresence>(0);
 
     private long _clientTick;
-    private List<SendPackage> _notAcknowledgedPackages = new List<SendPackage>();
+    private List<Client_Character> _notAcknowledgedPackages = new List<Client_Character>();
 
     private Dictionary<string, PlayerController> _npcs = new Dictionary<string, PlayerController>();
     private List<PublicMatchState.Types.Player> _waitingForInstantiate = new List<PublicMatchState.Types.Player>();
@@ -48,19 +49,27 @@ public class SimpleSocket : MonoBehaviour
         if (string.IsNullOrEmpty(_matchId)) return;
 
 
-        SendPackage send = new SendPackage
+        Client_Character send = new Client_Character
         {
             XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0),
             YAxis = Input.GetAxis("Vertical"),
             Rotation = Player.Rotation,
-            ClientTick = _clientTick
+            ClientTick = _clientTick,
+            Target = (UnitSelector.SelectedUnit != null) ? /*UnitSelector.SelectedUnit.name*/ _session.UserId : "",
         };
 
         if (Player.Level >= PlayerController.LevelOfNetworking.B_Prediction)
             Player.ApplyPredictedInput(send.XAxis, send.YAxis, send.Rotation, Time.fixedDeltaTime);
-
+        
         _notAcknowledgedPackages.Add(send);
         _socket.SendMatchState(_matchId, 0, send.ToByteArray());
+
+        Client_Cast[] sendMsg = UnitSelector.GetCastMessages();
+        foreach(var msg in sendMsg)
+        {
+            _socket.SendMatchState(_matchId, 1, msg.ToByteArray());
+        }
+
         _clientTick++;            
     }
 
@@ -73,6 +82,7 @@ public class SimpleSocket : MonoBehaviour
         //Debug.Log("Stopwatch-Server: 0:" + (state.Stopwatch[0] / 1000000f) + "ms 1>" + (state.Stopwatch[1] / 1000000f) + "ms 2>" + (state.Stopwatch[2] / 1000000f) + "ms 3>" + (state.Stopwatch[3] / 1000000f) + "ms 4>" + (state.Stopwatch[4] / 1000000f) + "ms");
         foreach (var player in state.Player)
         {
+            continue;
             //handle player character
             if (player.Key == _session.UserId)
             {
