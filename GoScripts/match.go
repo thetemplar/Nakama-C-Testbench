@@ -8,6 +8,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type MatchState struct {
@@ -185,9 +186,10 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	fmt.Printf(" _ _ _ _ _ new tick %v _ _ _ _ _\n", tick)
 	//clear states
 	for _, player := range state.(*MatchState).PublicMatchState.Player { 
-		if state.(*MatchState).InternalPlayer[player.Id] == nil {
+		if player == nil {
 			continue
 		}
+		player.GlobalCooldown -= float32(1)/float32(ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int));
 		player.Errors = make([]string, 0)
 	}
 
@@ -233,10 +235,9 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 						proj := &PublicMatchState_Projectile{
 							Id: "p_" + strconv.FormatInt(state.(*MatchState).ProjectileCounter, 16),
 							Type: PublicMatchState_Projectile_FIREBALL,
-							//Position: currentPlayerPublic.Position,
 							Position: &PublicMatchState_Vector2Df {
-								X: 10,
-								Y: 10,
+								X: currentPlayerPublic.Position.X,
+								Y: currentPlayerPublic.Position.Y,
 							},
 							Rotation: currentPlayerPublic.Rotation,
 							Target: currentPlayerPublic.Target,
@@ -279,11 +280,19 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 
-		target := state.(*MatchState).PublicMatchState.Player[projectile.Target]
-		distance := float32(math.Sqrt(math.Pow(float64(projectile.Position.X - target.Position.X), 2) + math.Pow(float64(projectile.Position.Y - target.Position.Y), 2)))	
+		var targetDirection *PublicMatchState_Vector2Df
+		if strings.HasPrefix(projectile.Target, "npc_") {
+			targetDirection = state.(*MatchState).PublicMatchState.Npc[projectile.Target].Position
+		} else if strings.HasPrefix(projectile.Target, "p_") {
+			targetDirection = state.(*MatchState).PublicMatchState.Projectile[projectile.Target].Position
+		} else {
+			targetDirection = state.(*MatchState).PublicMatchState.Player[projectile.Target].Position
+		}
+		
+		distance := float32(math.Sqrt(math.Pow(float64(projectile.Position.X - targetDirection.X), 2) + math.Pow(float64(projectile.Position.Y - targetDirection.Y), 2)))	
 		direction := PublicMatchState_Vector2Df {
-			X: target.Position.X - projectile.Position.X,
-			Y: target.Position.Y - projectile.Position.Y,
+			X: targetDirection.X - projectile.Position.X,
+			Y: targetDirection.Y - projectile.Position.Y,
 		}
 		direction.X /= distance
 		direction.Y /= distance
@@ -291,7 +300,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		if distance <= projectile.Speed {
 			//impact
 			fmt.Printf("%v impact\n", projectile.Id)
-			target.Health -= projectile.Damage
+			//target.Health -= projectile.Damage
 			delete(state.(*MatchState).PublicMatchState.Projectile, projectile.Id)
 			projectile = nil
 			continue
@@ -319,7 +328,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 
 		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[player.Id];
 
-		fmt.Printf("%v @ %v | %v\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y)
+		fmt.Printf("%v @ %v | %v  GCD: %v\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y, currentPlayerPublic.GlobalCooldown)
 
 		out, err := proto.Marshal(&state.(*MatchState).PublicMatchState)
 		if err != nil {

@@ -29,7 +29,7 @@ public class OrbitCamera : MonoBehaviour
 
     private float xDeg = 0.0f;
     private float oldxDeg = 0.0f;
-    private float yDeg = 0.0f;
+    private float yDeg = 32.0f;
     private float currentDistance;
     private float desiredDistance;
     private float correctedDistance;

@@ -25,10 +25,11 @@ public class SimpleSocket : MonoBehaviour
     private long _clientTick;
     private List<Client_Character> _notAcknowledgedPackages = new List<Client_Character>();
 
-    private Dictionary<string, PlayerController> _players = new Dictionary<string, PlayerController>();
+    private Dictionary<string, PlayerController> _gameObjects = new Dictionary<string, PlayerController>();
 
     public GameObject PrefabNPC;
     public GameObject PrefabTrainingBall;
+    public GameObject PrefabFireball;
     public GameObject PrefabUnknown;
 
 
@@ -57,7 +58,7 @@ public class SimpleSocket : MonoBehaviour
             YAxis = Input.GetAxis("Vertical"),
             Rotation = Player.Rotation,
             ClientTick = _clientTick,
-            Target = (UnitSelector.SelectedUnit != null) ? /*UnitSelector.SelectedUnit.name*/ _session.UserId : "",
+            Target = (UnitSelector.SelectedUnit != null) ? UnitSelector.SelectedUnit.name : "",
         };
 
         if (Player.Level >= PlayerController.LevelOfNetworking.B_Prediction)
@@ -96,21 +97,21 @@ public class SimpleSocket : MonoBehaviour
             }
             else
             {
-                if (_players.ContainsKey(player.Key))
+                if (_gameObjects.ContainsKey(player.Key))
                 {
                     if (player.Value?.Position != null)
                     {
-                        _players[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
+                        _gameObjects[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
                     }
                     else
                     {
                         UnityThread.executeInUpdate(() =>
                         {
-                            if (_players.ContainsKey(player.Key))
+                            if (_gameObjects.ContainsKey(player.Key))
                             {
-                                var del = _players.Where(x => x.Key == player.Key).FirstOrDefault();
+                                var del = _gameObjects.Where(x => x.Key == player.Key).FirstOrDefault();
                                 Destroy(del.Value.gameObject);
-                                _players.Remove(player.Key);
+                                _gameObjects.Remove(player.Key);
                             }
                         });
                     }
@@ -121,10 +122,11 @@ public class SimpleSocket : MonoBehaviour
                     {
                         UnityThread.executeInUpdate(() =>
                         {
-                            if (!_players.ContainsKey(player.Key))
+                            if (!_gameObjects.ContainsKey(player.Key))
                             {
                                 GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.AngleAxis(player.Value.Rotation, Vector3.up));
-                                _players.Add(player.Key, obj.GetComponent<PlayerController>());
+                                obj.name = player.Key;
+                                _gameObjects.Add(player.Key, obj.GetComponent<PlayerController>());
                             }
                         });
                     }
@@ -134,21 +136,21 @@ public class SimpleSocket : MonoBehaviour
 
         foreach (var npc in state.Npc)
         {
-            if (_players.ContainsKey(npc.Key))
+            if (_gameObjects.ContainsKey(npc.Key))
             {
                 if (npc.Value?.Position != null)
                 {
-                    _players[npc.Key].SetLastServerAck(new Vector3(npc.Value.Position.X, 1.5f, npc.Value.Position.Y), npc.Value.Rotation, null, diffTime);
+                    _gameObjects[npc.Key].SetLastServerAck(new Vector3(npc.Value.Position.X, 1.5f, npc.Value.Position.Y), npc.Value.Rotation, null, diffTime);
                 }
                 else
                 {
                     UnityThread.executeInUpdate(() =>
                     {
-                        if (_players.ContainsKey(npc.Key))
+                        if (_gameObjects.ContainsKey(npc.Key))
                         {
-                            var del = _players.Where(x => x.Key == npc.Key).FirstOrDefault();
+                            var del = _gameObjects.Where(x => x.Key == npc.Key).FirstOrDefault();
                             Destroy(del.Value.gameObject);
-                            _players.Remove(npc.Key);
+                            _gameObjects.Remove(npc.Key);
                         }
                     });
                 }
@@ -159,7 +161,7 @@ public class SimpleSocket : MonoBehaviour
                 {
                     UnityThread.executeInUpdate(() =>
                     {
-                        if (!_players.ContainsKey(npc.Key))
+                        if (!_gameObjects.ContainsKey(npc.Key))
                         {
                             GameObject toPlace = PrefabUnknown;
                             switch (npc.Value.Type)
@@ -169,7 +171,8 @@ public class SimpleSocket : MonoBehaviour
                                     break;
                             }
                             GameObject obj = Instantiate(toPlace, new Vector3(npc.Value.Position.X, 0f, npc.Value.Position.Y), Quaternion.AngleAxis(npc.Value.Rotation, Vector3.up));
-                            _players.Add(npc.Key, obj.GetComponent<PlayerController>());
+                            obj.name = npc.Key;
+                            _gameObjects.Add(npc.Key, obj.GetComponent<PlayerController>());
                         }
                     });
                 }
@@ -177,21 +180,21 @@ public class SimpleSocket : MonoBehaviour
         }
         foreach (var projectile in state.Projectile)
         {
-            if (_players.ContainsKey(projectile.Key))
+            if (_gameObjects.ContainsKey(projectile.Key))
             {
                 if (projectile.Value?.Position != null)
                 {
-                    _players[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime);
+                    _gameObjects[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime);
                 }
                 else
                 {
                     UnityThread.executeInUpdate(() =>
                     {
-                        if (_players.ContainsKey(projectile.Key))
+                        if (_gameObjects.ContainsKey(projectile.Key))
                         {
-                            var del = _players.Where(x => x.Key == projectile.Key).FirstOrDefault();
+                            var del = _gameObjects.Where(x => x.Key == projectile.Key).FirstOrDefault();
                             Destroy(del.Value.gameObject);
-                            _players.Remove(projectile.Key);
+                            _gameObjects.Remove(projectile.Key);
                         }
                     });
                 }
@@ -202,18 +205,19 @@ public class SimpleSocket : MonoBehaviour
                 {
                     UnityThread.executeInUpdate(() =>
                     {
-                        if (!_players.ContainsKey(projectile.Key))
+                        if (!_gameObjects.ContainsKey(projectile.Key))
                         {
                             GameObject toPlace = PrefabUnknown;
-                            /*
+                            
                             switch (projectile.Value.Type)
                             {
-                                case PublicMatchState.Types.NPC.Types.Type.Trainingball:
-                                    toPlace = PrefabTrainingBall;
+                                case PublicMatchState.Types.Projectile.Types.Type.Fireball:
+                                    toPlace = PrefabFireball;
                                     break;
-                            }*/
+                            }
                             GameObject obj = Instantiate(toPlace, new Vector3(projectile.Value.Position.X, 0f, projectile.Value.Position.Y), Quaternion.AngleAxis(projectile.Value.Rotation, Vector3.up));
-                            _players.Add(projectile.Key, obj.GetComponent<PlayerController>());
+                            obj.name = projectile.Key;
+                            _gameObjects.Add(projectile.Key, obj.GetComponent<PlayerController>());
                         }
                     });
                 }
