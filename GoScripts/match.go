@@ -20,6 +20,7 @@ type MatchState struct {
 	//OldMatchState       map[int64]PublicMatchState
 
 	ProjectileCounter		int64
+	NpcCounter		int64
 }  
   
 type InternalPlayer struct {
@@ -61,6 +62,20 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		InternalPlayer: make(map[string]*InternalPlayer),
 		//OldMatchState: make(map[int64]PublicMatchState),
 	}
+
+	//create map npcs:
+	enemy := &PublicMatchState_NPC{
+		Id: "npc_" + strconv.FormatInt(state.NpcCounter, 16),
+		Type: PublicMatchState_NPC_TRAININGBALL,
+		//Position: currentPlayerPublic.Position,
+		Position: &PublicMatchState_Vector2Df {
+			X: 15,
+			Y: 15,
+		},
+		Health: 100,
+	}
+	state.PublicMatchState.Npc[enemy.Id] = enemy
+	state.NpcCounter++
 	
 
 	if state.Debug {
@@ -217,6 +232,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 						currentPlayerPublic.GlobalCooldown = 1.5
 						proj := &PublicMatchState_Projectile{
 							Id: "p_" + strconv.FormatInt(state.(*MatchState).ProjectileCounter, 16),
+							Type: PublicMatchState_Projectile_FIREBALL,
 							//Position: currentPlayerPublic.Position,
 							Position: &PublicMatchState_Vector2Df {
 								X: 10,

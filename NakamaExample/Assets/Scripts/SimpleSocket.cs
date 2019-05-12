@@ -25,14 +25,16 @@ public class SimpleSocket : MonoBehaviour
     private long _clientTick;
     private List<Client_Character> _notAcknowledgedPackages = new List<Client_Character>();
 
-    private Dictionary<string, PlayerController> _npcs = new Dictionary<string, PlayerController>();
-    private List<PublicMatchState.Types.Player> _waitingForInstantiate = new List<PublicMatchState.Types.Player>();
-    private List<string> _waitingForDelete = new List<string>();
+    private Dictionary<string, PlayerController> _players = new Dictionary<string, PlayerController>();
 
     public GameObject PrefabNPC;
+    public GameObject PrefabTrainingBall;
+    public GameObject PrefabUnknown;
+
 
     private async void Awake()
     {
+        UnityThread.initUnityThread();
         Screen.SetResolution(400, 400, false, 144);
 
         var deviceid = SystemInfo.deviceUniqueIdentifier;
@@ -82,7 +84,6 @@ public class SimpleSocket : MonoBehaviour
         //Debug.Log("Stopwatch-Server: 0:" + (state.Stopwatch[0] / 1000000f) + "ms 1>" + (state.Stopwatch[1] / 1000000f) + "ms 2>" + (state.Stopwatch[2] / 1000000f) + "ms 3>" + (state.Stopwatch[3] / 1000000f) + "ms 4>" + (state.Stopwatch[4] / 1000000f) + "ms");
         foreach (var player in state.Player)
         {
-            continue;
             //handle player character
             if (player.Key == _session.UserId)
             {
@@ -95,50 +96,131 @@ public class SimpleSocket : MonoBehaviour
             }
             else
             {
-                if (_waitingForDelete.Contains(player.Key))
-                    continue;
-                
-                if (_npcs.ContainsKey(player.Key))
+                if (_players.ContainsKey(player.Key))
                 {
                     if (player.Value?.Position != null)
                     {
-                        _npcs[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
+                        _players[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime);
                     }
                     else
                     {
-                        _waitingForDelete.Add(player.Key);
+                        UnityThread.executeInUpdate(() =>
+                        {
+                            if (_players.ContainsKey(player.Key))
+                            {
+                                var del = _players.Where(x => x.Key == player.Key).FirstOrDefault();
+                                Destroy(del.Value.gameObject);
+                                _players.Remove(player.Key);
+                            }
+                        });
                     }
                 }
                 else
                 {
                     if (player.Value?.Position != null)
                     {
-                        _waitingForInstantiate.Add(player.Value);
+                        UnityThread.executeInUpdate(() =>
+                        {
+                            if (!_players.ContainsKey(player.Key))
+                            {
+                                GameObject obj = Instantiate(PrefabNPC, new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), Quaternion.AngleAxis(player.Value.Rotation, Vector3.up));
+                                _players.Add(player.Key, obj.GetComponent<PlayerController>());
+                            }
+                        });
                     }
                 }
             }
         }
 
+        foreach (var npc in state.Npc)
+        {
+            if (_players.ContainsKey(npc.Key))
+            {
+                if (npc.Value?.Position != null)
+                {
+                    _players[npc.Key].SetLastServerAck(new Vector3(npc.Value.Position.X, 1.5f, npc.Value.Position.Y), npc.Value.Rotation, null, diffTime);
+                }
+                else
+                {
+                    UnityThread.executeInUpdate(() =>
+                    {
+                        if (_players.ContainsKey(npc.Key))
+                        {
+                            var del = _players.Where(x => x.Key == npc.Key).FirstOrDefault();
+                            Destroy(del.Value.gameObject);
+                            _players.Remove(npc.Key);
+                        }
+                    });
+                }
+            }
+            else
+            {
+                if (npc.Value?.Position != null)
+                {
+                    UnityThread.executeInUpdate(() =>
+                    {
+                        if (!_players.ContainsKey(npc.Key))
+                        {
+                            GameObject toPlace = PrefabUnknown;
+                            switch (npc.Value.Type)
+                            {
+                                case PublicMatchState.Types.NPC.Types.Type.Trainingball:
+                                    toPlace = PrefabTrainingBall;
+                                    break;
+                            }
+                            GameObject obj = Instantiate(toPlace, new Vector3(npc.Value.Position.X, 0f, npc.Value.Position.Y), Quaternion.AngleAxis(npc.Value.Rotation, Vector3.up));
+                            _players.Add(npc.Key, obj.GetComponent<PlayerController>());
+                        }
+                    });
+                }
+            }
+        }
+        foreach (var projectile in state.Projectile)
+        {
+            if (_players.ContainsKey(projectile.Key))
+            {
+                if (projectile.Value?.Position != null)
+                {
+                    _players[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime);
+                }
+                else
+                {
+                    UnityThread.executeInUpdate(() =>
+                    {
+                        if (_players.ContainsKey(projectile.Key))
+                        {
+                            var del = _players.Where(x => x.Key == projectile.Key).FirstOrDefault();
+                            Destroy(del.Value.gameObject);
+                            _players.Remove(projectile.Key);
+                        }
+                    });
+                }
+            }
+            else
+            {
+                if (projectile.Value?.Position != null)
+                {
+                    UnityThread.executeInUpdate(() =>
+                    {
+                        if (!_players.ContainsKey(projectile.Key))
+                        {
+                            GameObject toPlace = PrefabUnknown;
+                            /*
+                            switch (projectile.Value.Type)
+                            {
+                                case PublicMatchState.Types.NPC.Types.Type.Trainingball:
+                                    toPlace = PrefabTrainingBall;
+                                    break;
+                            }*/
+                            GameObject obj = Instantiate(toPlace, new Vector3(projectile.Value.Position.X, 0f, projectile.Value.Position.Y), Quaternion.AngleAxis(projectile.Value.Rotation, Vector3.up));
+                            _players.Add(projectile.Key, obj.GetComponent<PlayerController>());
+                        }
+                    });
+                }
+            }
+        }
+
         _timeOfLastState = DateTime.Now;
-    }
-
-    private void Update()
-    {
-        foreach (var insert in _waitingForInstantiate)
-        {
-            if (_npcs.ContainsKey(insert.Id)) continue;
-
-            GameObject obj = Instantiate(PrefabNPC, new Vector3(insert.Position.X, 1.5f, insert.Position.Y), Quaternion.AngleAxis(insert.Rotation, Vector3.up));
-            _npcs.Add(insert.Id, obj.GetComponent<PlayerController>());
-        }
-        foreach (var delete in _waitingForDelete)
-        {
-            if (!_npcs.ContainsKey(delete)) continue;
-
-            var del = _npcs.Where(x => x.Key == delete).FirstOrDefault();
-            Destroy(del.Value.gameObject);
-            _npcs.Remove(del.Key);
-        }
     }
 
 
