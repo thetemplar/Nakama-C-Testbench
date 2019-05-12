@@ -10,6 +10,9 @@ public class UnitSelector : MonoBehaviour
     public Text Me;
     public Text Enemy;
     public Text GCD;
+    public Slider MeSlider;
+    public Slider EnemySlider;
+    public Slider GCDSlider;
 
     public GameObject SelectedUnit;
     private float _gcd;
@@ -20,7 +23,11 @@ public class UnitSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EnemySlider.gameObject.SetActive(false);
+        GCDSlider.gameObject.SetActive(false);
+
         Me.text = "100HP";
+        MeSlider.value = 100;
         Enemy.text = "";
     }
 
@@ -47,15 +54,28 @@ public class UnitSelector : MonoBehaviour
 
         if (SelectedUnit != null)
         {
+            EnemySlider.gameObject.SetActive(true);
             Enemy.text = "100HP";
+            EnemySlider.value = 100;
         }
         else
         {
             Enemy.text = "";
+            EnemySlider.gameObject.SetActive(false);
         }
 
-        GCD.text = (Time.time - _gcd <= 0) ? (Time.time - _gcd).ToString() : "";
-
+        if (_gcd - Time.time > 0)
+        {
+            GCDSlider.gameObject.SetActive(true);
+            GCD.gameObject.SetActive(true);
+            GCD.text = (_gcd - Time.time) + "ms";
+            GCDSlider.value = (_gcd - Time.time);
+        }
+        else
+        {
+            GCD.gameObject.SetActive(false);
+            GCDSlider.gameObject.SetActive(false);
+        }
         //cast 
         if (Input.GetKey("1")) //  && _gcd > Time.time
         {
