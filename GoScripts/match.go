@@ -279,6 +279,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		if projectile == nil {
 			continue
 		}
+		fmt.Printf("calc proj %v\n", projectile)
 
 		var targetDirection *PublicMatchState_Vector2Df
 		if strings.HasPrefix(projectile.Target, "npc_") {

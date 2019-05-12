@@ -178,11 +178,30 @@ public class SimpleSocket : MonoBehaviour
                 }
             }
         }
+
+
+        foreach (var projectile in _gameObjects.Where(x => x.Key.StartsWith("p_")))
+        {
+            if (!state.Projectile.ContainsKey(projectile.Key))
+            {
+                UnityThread.executeInUpdate(() =>
+                {
+                    if (_gameObjects.ContainsKey(projectile.Key))
+                    {
+                        var del = _gameObjects.Where(x => x.Key == projectile.Key).FirstOrDefault();
+                        Destroy(del.Value.gameObject);
+                        _gameObjects.Remove(projectile.Key);
+                    }
+                });
+            }
+        }
+
         foreach (var projectile in state.Projectile)
         {
+            Debug.Log("projectile" + projectile.Value?.Position);
             if (_gameObjects.ContainsKey(projectile.Key))
             {
-                if (projectile.Value?.Position != null)
+                if (projectile.Value != null && projectile.Value?.Position != null)
                 {
                     _gameObjects[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime);
                 }
