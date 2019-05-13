@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour
     public bool IsLocalPlayer;
     public bool UseInterpolation;
     public bool ShowGhost;
-    public Vector3 InitialPosition;
 
     CharacterController controller;
 
@@ -57,13 +56,11 @@ public class PlayerController : MonoBehaviour
             Value = initial;
         }
 
-        public void SetNext(T value, float timeToLerp)
+        public void SetNext(T value, float timeToLerp, bool debug = false)
         {
-           //if(typeof(T) != typeof(float))
-           //     Debug.Log("LastValue: " + LastValue + " - Value: " + Value + " @ " + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " - timeToLerp: " + timeToLerp);
             LastValue = Value;
-            Value = value;  
-            if (EqualityComparer<T>.Default.Equals(LastValue, Value))
+            Value = value;
+            if (!EqualityComparer<T>.Default.Equals(LastValue, Value))
             {
                 IsLerping = true;
             }
@@ -77,11 +74,12 @@ public class PlayerController : MonoBehaviour
 
     public float Rotation => _lerpRotation.Value;
     
-    void Start()
+
+    void Awake()
     {
         controller = GetComponent<CharacterController>();
-        _lerpPosition = new LerpingParameters<Vector3>(InitialPosition);
-        _lerpRotation = new LerpingParameters<float>();
+        _lerpPosition = new LerpingParameters<Vector3>(transform.position);
+        _lerpRotation = new LerpingParameters<float>(transform.rotation.eulerAngles.y);
     }
 
     // Update is called once per frame  
@@ -104,7 +102,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!UseInterpolation || !_lerpPosition.IsLerping)
             return _lerpPosition.Value;
-
         return Vector3.Lerp(_lerpPosition.LastValue, _lerpPosition.Value, _lerpPosition.Percentage);
     }
 
@@ -134,8 +131,10 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Character> notAcknowledgedPackages, float timeToLerp)
+    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Character> notAcknowledgedPackages, float timeToLerp, bool debug = false)
     {
+        if(debug)
+            Debug.Log(" SetLastServerAck> " + position);
         position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)
         {
@@ -148,10 +147,10 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if(!IsLocalPlayer)        
+        if(!IsLocalPlayer)
         {
-            _lerpPosition.SetNext(position, timeToLerp);
-            _lerpRotation.SetNext(rotation, timeToLerp);
+            _lerpPosition.SetNext(position, timeToLerp, debug);
+            _lerpRotation.SetNext(rotation, timeToLerp, debug);
             return;
         }
 

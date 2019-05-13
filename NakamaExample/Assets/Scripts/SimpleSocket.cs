@@ -198,12 +198,11 @@ public class SimpleSocket : MonoBehaviour
 
         foreach (var projectile in state.Projectile)
         {
-            Debug.Log("projectile" + projectile.Value?.Position);
             if (_gameObjects.ContainsKey(projectile.Key))
             {
                 if (projectile.Value != null && projectile.Value?.Position != null)
                 {
-                    _gameObjects[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime);
+                    _gameObjects[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime, true);
                 }
                 else
                 {

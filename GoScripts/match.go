@@ -101,8 +101,8 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = &PublicMatchState_Player{
 			Id: presence.GetUserId(),
 			Position: &PublicMatchState_Vector2Df {
-				X: 0,
-				Y: 0,
+				X: -10,
+				Y: -5,
 			},
 			Health: 100,
 			Power: 100,
@@ -143,8 +143,8 @@ func PublicMatchState_Vector2Df_Rotate(v PublicMatchState_Vector2Df, degrees flo
 }
 
 
-func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData) {
-	const BaseMovementSpeed = 2
+func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData, tickrate int) {
+	BaseMovementSpeed := 20 / float32(tickrate)
 	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Player[message.GetUserId()] == nil {
 		return
 	}
@@ -184,6 +184,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
 	}
 	fmt.Printf(" _ _ _ _ _ new tick %v _ _ _ _ _\n", tick)
+	tickrate := ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int);
 	//clear states
 	for _, player := range state.(*MatchState).PublicMatchState.Player { 
 		if player == nil {
@@ -218,7 +219,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			currentPlayerInternal.LastMessageServerTick = tick
 			currentPlayerInternal.MissingCount = 0
 			
-			PerformInputs(logger, state, currentPlayerInternal.LastMessage)
+			PerformInputs(logger, state, currentPlayerInternal.LastMessage, tickrate)
 		} else if message.GetOpCode() == 1 {
 			msg := &Client_Cast{}
 			if err := proto.Unmarshal(message.GetData(), msg); err != nil {
@@ -240,8 +241,9 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 								Y: currentPlayerPublic.Position.Y,
 							},
 							Rotation: currentPlayerPublic.Rotation,
+							CreatedAtTick: tick,
 							Target: currentPlayerPublic.Target,
-							Speed: 2,
+							Speed: 30,
 							Damage: 10,
 						}
 						state.(*MatchState).PublicMatchState.Projectile[proj.Id] = proj
@@ -269,14 +271,14 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			if player.MissingCount > 1 && player.LastMessage != nil {
 				player.MessageCountThisFrame = 1
 				logger.Printf("2nd missing Package from player %v in a row, inserting last known package.", player.Id)
-				PerformInputs(logger, state, player.LastMessage)
+				PerformInputs(logger, state, player.LastMessage, tickrate)
 			}
 		}
 	}
 	
 	//calculate game/npcs/objects
 	for _, projectile := range state.(*MatchState).PublicMatchState.Projectile {		
-		if projectile == nil {
+		if projectile == nil || projectile.CreatedAtTick == tick {
 			continue
 		}
 		fmt.Printf("calc proj %v\n", projectile)
@@ -298,7 +300,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		direction.X /= distance
 		direction.Y /= distance
 
-		if distance <= projectile.Speed {
+		if distance <= (projectile.Speed / float32(tickrate)) {
 			//impact
 			fmt.Printf("%v impact\n", projectile.Id)
 			//target.Health -= projectile.Damage
@@ -307,8 +309,8 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 
-		projectile.Position.X = projectile.Position.X + (direction.X * projectile.Speed)
-		projectile.Position.Y = projectile.Position.Y + (direction.Y * projectile.Speed)
+		projectile.Position.X = projectile.Position.X + (direction.X * (projectile.Speed / float32(tickrate)))
+		projectile.Position.Y = projectile.Position.Y + (direction.Y * (projectile.Speed / float32(tickrate)))
 
 		fmt.Printf("%v @ %v | %v\n", projectile.Id, projectile.Position.X, projectile.Position.Y)
 	}
@@ -351,7 +353,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).EmptyCounter = 0
 	}
 	
-	if state.(*MatchState).EmptyCounter == 50 {
+	if state.(*MatchState).EmptyCounter == 20 {
 		return nil
 	}
 	

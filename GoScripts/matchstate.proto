@@ -53,13 +53,14 @@ message PublicMatchState {
 		//system
 		string id = 1;
 		Type type = 2;
+		int64 created_at_tick = 3;
 
-		Vector2Df position = 3;
-		float rotation = 4;
-		string target = 5;
-		float speed = 6;
+		Vector2Df position = 4;
+		float rotation = 5;
+		string target = 6;
+		float speed = 7;
 
-		int32 damage = 7;
+		int32 damage = 8;
 	}
 		
 	message Vector2Df {

@@ -26,7 +26,7 @@ namespace NakamaMinimalGame.PublicMatchState
         {
             byte[] descriptorData = global::System.Convert.FromBase64String(
                 string.Concat(
-                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIucIChBQdWJsaWNNYXRjaFN0YXRl",
+                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIoAJChBQdWJsaWNNYXRjaFN0YXRl",
                   "EgwKBHRpY2sYASABKAMSEQoJc3RvcHdhdGNoGAIgAygDEjIKBnBsYXllchgD",
                   "IAMoCzIiLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5QbGF5ZXJFbnRyeRIsCgNu",
                   "cGMYBCADKAsyHy5tYWluLlB1YmxpY01hdGNoU3RhdGUuTnBjRW50cnkSOgoK",
@@ -46,22 +46,23 @@ namespace NakamaMinimalGame.PublicMatchState
                   "aBgDIAEoBRINCgVwb3dlchgEIAEoBRIyCghwb3NpdGlvbhgFIAEoCzIgLm1h",
                   "aW4uUHVibGljTWF0Y2hTdGF0ZS5WZWN0b3IyRGYSEAoIcm90YXRpb24YBiAB",
                   "KAISDgoGdGFyZ2V0GAcgASgJIhgKBFR5cGUSEAoMVFJBSU5JTkdCQUxMEAAa",
-                  "2QEKClByb2plY3RpbGUSCgoCaWQYASABKAkSNAoEdHlwZRgCIAEoDjImLm1h",
-                  "aW4uUHVibGljTWF0Y2hTdGF0ZS5Qcm9qZWN0aWxlLlR5cGUSMgoIcG9zaXRp",
-                  "b24YAyABKAsyIC5tYWluLlB1YmxpY01hdGNoU3RhdGUuVmVjdG9yMkRmEhAK",
-                  "CHJvdGF0aW9uGAQgASgCEg4KBnRhcmdldBgFIAEoCRINCgVzcGVlZBgGIAEo",
-                  "AhIOCgZkYW1hZ2UYByABKAUiFAoEVHlwZRIMCghGSVJFQkFMTBAAGiEKCVZl",
-                  "Y3RvcjJEZhIJCgF4GAEgASgCEgkKAXkYAiABKAIiaQoQQ2xpZW50X0NoYXJh",
-                  "Y3RlchITCgtjbGllbnRfdGljaxgBIAEoAxIOCgZ4X2F4aXMYAiABKAISDgoG",
-                  "eV9heGlzGAMgASgCEhAKCHJvdGF0aW9uGAQgASgCEg4KBnRhcmdldBgFIAEo",
-                  "CSIgCgtDbGllbnRfQ2FzdBIRCglzcGVsbG5hbWUYASABKAlCJaoCIk5ha2Ft",
-                  "YU1pbmltYWxHYW1lLlB1YmxpY01hdGNoU3RhdGViBnByb3RvMw=="));
+                  "8gEKClByb2plY3RpbGUSCgoCaWQYASABKAkSNAoEdHlwZRgCIAEoDjImLm1h",
+                  "aW4uUHVibGljTWF0Y2hTdGF0ZS5Qcm9qZWN0aWxlLlR5cGUSFwoPY3JlYXRl",
+                  "ZF9hdF90aWNrGAMgASgDEjIKCHBvc2l0aW9uGAQgASgLMiAubWFpbi5QdWJs",
+                  "aWNNYXRjaFN0YXRlLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgFIAEoAhIOCgZ0",
+                  "YXJnZXQYBiABKAkSDQoFc3BlZWQYByABKAISDgoGZGFtYWdlGAggASgFIhQK",
+                  "BFR5cGUSDAoIRklSRUJBTEwQABohCglWZWN0b3IyRGYSCQoBeBgBIAEoAhIJ",
+                  "CgF5GAIgASgCImkKEENsaWVudF9DaGFyYWN0ZXISEwoLY2xpZW50X3RpY2sY",
+                  "ASABKAMSDgoGeF9heGlzGAIgASgCEg4KBnlfYXhpcxgDIAEoAhIQCghyb3Rh",
+                  "dGlvbhgEIAEoAhIOCgZ0YXJnZXQYBSABKAkiIAoLQ2xpZW50X0Nhc3QSEQoJ",
+                  "c3BlbGxuYW1lGAEgASgJQiWqAiJOYWthbWFNaW5pbWFsR2FtZS5QdWJsaWNN",
+                  "YXRjaFN0YXRlYgZwcm90bzM="));
             descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
                 new pbr::FileDescriptor[] { },
                 new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Stopwatch", "Player", "Npc", "Projectile" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Player.Parser, new[]{ "Id", "LastProcessedClientTick", "Errors", "Health", "Power", "Position", "Rotation", "GlobalCooldown", "Target" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.NPC), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.NPC.Parser, new[]{ "Id", "Type", "Health", "Power", "Position", "Rotation", "Target" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.NPC.Types.Type) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Parser, new[]{ "Id", "Type", "Position", "Rotation", "Target", "Speed", "Damage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Types.Type) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Parser, new[]{ "Id", "Type", "CreatedAtTick", "Position", "Rotation", "Target", "Speed", "Damage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Types.Type) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Character), global::NakamaMinimalGame.PublicMatchState.Client_Character.Parser, new[]{ "ClientTick", "XAxis", "YAxis", "Rotation", "Target" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Cast), global::NakamaMinimalGame.PublicMatchState.Client_Cast.Parser, new[]{ "Spellname" }, null, null, null)
@@ -1131,6 +1132,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 {
                     id_ = other.id_;
                     type_ = other.type_;
+                    createdAtTick_ = other.createdAtTick_;
                     Position = other.position_ != null ? other.Position.Clone() : null;
                     rotation_ = other.rotation_;
                     target_ = other.target_;
@@ -1173,8 +1175,21 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "created_at_tick" field.</summary>
+                public const int CreatedAtTickFieldNumber = 3;
+                private long createdAtTick_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public long CreatedAtTick
+                {
+                    get { return createdAtTick_; }
+                    set
+                    {
+                        createdAtTick_ = value;
+                    }
+                }
+
                 /// <summary>Field number for the "position" field.</summary>
-                public const int PositionFieldNumber = 3;
+                public const int PositionFieldNumber = 4;
                 private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df position_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df Position
@@ -1187,7 +1202,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "rotation" field.</summary>
-                public const int RotationFieldNumber = 4;
+                public const int RotationFieldNumber = 5;
                 private float rotation_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public float Rotation
@@ -1200,7 +1215,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "target" field.</summary>
-                public const int TargetFieldNumber = 5;
+                public const int TargetFieldNumber = 6;
                 private string target_ = "";
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public string Target
@@ -1213,7 +1228,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "speed" field.</summary>
-                public const int SpeedFieldNumber = 6;
+                public const int SpeedFieldNumber = 7;
                 private float speed_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public float Speed
@@ -1226,7 +1241,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "damage" field.</summary>
-                public const int DamageFieldNumber = 7;
+                public const int DamageFieldNumber = 8;
                 private int damage_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public int Damage
@@ -1257,6 +1272,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                     if (Id != other.Id) return false;
                     if (Type != other.Type) return false;
+                    if (CreatedAtTick != other.CreatedAtTick) return false;
                     if (!object.Equals(Position, other.Position)) return false;
                     if (Rotation != other.Rotation) return false;
                     if (Target != other.Target) return false;
@@ -1271,6 +1287,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     int hash = 1;
                     if (Id.Length != 0) hash ^= Id.GetHashCode();
                     if (Type != 0) hash ^= Type.GetHashCode();
+                    if (CreatedAtTick != 0L) hash ^= CreatedAtTick.GetHashCode();
                     if (position_ != null) hash ^= Position.GetHashCode();
                     if (Rotation != 0F) hash ^= Rotation.GetHashCode();
                     if (Target.Length != 0) hash ^= Target.GetHashCode();
@@ -1298,29 +1315,34 @@ namespace NakamaMinimalGame.PublicMatchState
                         output.WriteRawTag(16);
                         output.WriteEnum((int)Type);
                     }
+                    if (CreatedAtTick != 0L)
+                    {
+                        output.WriteRawTag(24);
+                        output.WriteInt64(CreatedAtTick);
+                    }
                     if (position_ != null)
                     {
-                        output.WriteRawTag(26);
+                        output.WriteRawTag(34);
                         output.WriteMessage(Position);
                     }
                     if (Rotation != 0F)
                     {
-                        output.WriteRawTag(37);
+                        output.WriteRawTag(45);
                         output.WriteFloat(Rotation);
                     }
                     if (Target.Length != 0)
                     {
-                        output.WriteRawTag(42);
+                        output.WriteRawTag(50);
                         output.WriteString(Target);
                     }
                     if (Speed != 0F)
                     {
-                        output.WriteRawTag(53);
+                        output.WriteRawTag(61);
                         output.WriteFloat(Speed);
                     }
                     if (Damage != 0)
                     {
-                        output.WriteRawTag(56);
+                        output.WriteRawTag(64);
                         output.WriteInt32(Damage);
                     }
                 }
@@ -1336,6 +1358,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Type != 0)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int)Type);
+                    }
+                    if (CreatedAtTick != 0L)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeInt64Size(CreatedAtTick);
                     }
                     if (position_ != null)
                     {
@@ -1374,6 +1400,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (other.Type != 0)
                     {
                         Type = other.Type;
+                    }
+                    if (other.CreatedAtTick != 0L)
+                    {
+                        CreatedAtTick = other.CreatedAtTick;
                     }
                     if (other.position_ != null)
                     {
@@ -1422,7 +1452,12 @@ namespace NakamaMinimalGame.PublicMatchState
                                     type_ = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Types.Type)input.ReadEnum();
                                     break;
                                 }
-                            case 26:
+                            case 24:
+                                {
+                                    CreatedAtTick = input.ReadInt64();
+                                    break;
+                                }
+                            case 34:
                                 {
                                     if (position_ == null)
                                     {
@@ -1431,22 +1466,22 @@ namespace NakamaMinimalGame.PublicMatchState
                                     input.ReadMessage(position_);
                                     break;
                                 }
-                            case 37:
+                            case 45:
                                 {
                                     Rotation = input.ReadFloat();
                                     break;
                                 }
-                            case 42:
+                            case 50:
                                 {
                                     Target = input.ReadString();
                                     break;
                                 }
-                            case 53:
+                            case 61:
                                 {
                                     Speed = input.ReadFloat();
                                     break;
                                 }
-                            case 56:
+                            case 64:
                                 {
                                     Damage = input.ReadInt32();
                                     break;
