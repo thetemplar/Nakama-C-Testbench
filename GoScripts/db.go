@@ -33,7 +33,7 @@ type GameDB_Spells struct {
 	ThreadModifier		int32
 	Cooldown			float32
 	GlobalCooldown		float32
-	Dispelable			bool
+	Dispellable			bool
 	MissileID			int32
 	EffectID			int32
 	IconID		 		int64
