@@ -38,14 +38,40 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 
 
 func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spells) {
-	for _, spell := range spell.ApplySpell { 
-		fmt.Printf("Apply Spell on Hit %v\n", spell)
+	for _, aura_spell := range spell.ApplySpell { 
+		fmt.Printf("Apply Spell on Hit %v\n", aura_spell)
 		aura := &PublicMatchState_Aura{
 			CreatedAtTick: state.PublicMatchState.Tick,
-			SpellId: spell.Id,
+			SpellId: aura_spell.Id,
+			Creator: projectile.Creator,
 		}
 		target.Auras = append(target.Auras, aura)
+
+		clEntry := &PublicMatchState_CombatLogEntry {
+			Timestamp: state.PublicMatchState.Tick,
+			SourceId: aura.Creator,
+			DestinationId: target.Id,
+			SourceSpellId: aura_spell.Id,
+			Source: PublicMatchState_CombatLogEntry_Spell,
+			Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
+				Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Applied,
+			}},
+		}
+		state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 	}
 
-	target.CurrentHealth -= randomInt(spell.SpellDamageMin, spell.SpellDamageMax)
+	dmg := randomInt(spell.SpellDamageMin, spell.SpellDamageMax);
+	target.CurrentHealth -= dmg;
+
+	clEntry := &PublicMatchState_CombatLogEntry {
+		Timestamp: state.PublicMatchState.Tick,
+		SourceId: projectile.Creator,
+		DestinationId: target.Id,
+		SourceSpellId: spell.Id,
+		Source: PublicMatchState_CombatLogEntry_Spell,
+		Type: &PublicMatchState_CombatLogEntry_Damage{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Damage{
+			Amount: dmg,
+		}},
+	}
+	state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 }

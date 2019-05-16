@@ -87,11 +87,17 @@ public class UnitSelector : MonoBehaviour
         {
             GCD.gameObject.SetActive(false);
             GCDSlider.gameObject.SetActive(false);
-            
+
             //cast 
             if (Input.GetKey("1")) //  && _gcd > Time.time
             {
                 var cast = new Client_Cast { SpellId = 1 };
+                _sendMessages.Add(cast);
+                _gcd = Time.time + 1.5f;
+            }
+            if (Input.GetKey("2")) //  && _gcd > Time.time
+            {
+                var cast = new Client_Cast { SpellId = 2 };
                 _sendMessages.Add(cast);
                 _gcd = Time.time + 1.5f;
             }

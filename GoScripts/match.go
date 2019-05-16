@@ -19,12 +19,14 @@ type MatchState struct {
 
 	//OldMatchState     map[int64]PublicMatchState
 
+	OldMatchState       []PublicMatchState
+
 	ProjectileCounter	int64
 	NpcCounter			int64
 	
 	GameDB				*GameDB
 }  
-  
+
 type InternalPlayer struct {
 	Presence                runtime.Presence
 	Id                      string
@@ -58,6 +60,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		PublicMatchState : PublicMatchState{
 			Interactable: make(map[string]*PublicMatchState_Interactable),
 			Projectile: make(map[string]*PublicMatchState_Projectile),
+			Combatlog: make([]*PublicMatchState_CombatLogEntry, 0),
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
 		//OldMatchState: make(map[int64]PublicMatchState),
@@ -200,6 +203,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	}
 	fmt.Printf(" _ _ _ _ _ new tick %v _ _ _ _ _\n", tick)
 	state.(*MatchState).PublicMatchState.Tick = tick	
+	state.(*MatchState).PublicMatchState.Combatlog = make([]*PublicMatchState_CombatLogEntry, 0)
 	tickrate := ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int);
 
 	//clear states
@@ -208,7 +212,6 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 		player.GlobalCooldown -= float32(1)/float32(ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int));
-		player.Errors = make([]string, 0)
 	}
 
 	//get new input-counts
@@ -251,7 +254,17 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 						target := state.(*MatchState).PublicMatchState.Interactable[targetId]
 						distance = float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - target.Position.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - target.Position.Y), 2)))	
 					} else {
-						currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "No Target!")
+						clEntry := &PublicMatchState_CombatLogEntry {
+							Timestamp: tick,
+							SourceId: message.GetUserId(),
+							SourceSpellId: msg.SpellId,
+							Source: PublicMatchState_CombatLogEntry_Spell,
+							Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
+								Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
+								FailedMessage: "No Target Selected",
+							}},
+						}
+						state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
 						continue
 					}	
 				}		
@@ -274,10 +287,30 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 					state.(*MatchState).PublicMatchState.Projectile[proj.Id] = proj
 					state.(*MatchState).ProjectileCounter++					
 				} else {
-					currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Out of Range!")
+					clEntry := &PublicMatchState_CombatLogEntry {
+						Timestamp: tick,
+						SourceId: message.GetUserId(),
+						SourceSpellId: msg.SpellId,
+						Source: PublicMatchState_CombatLogEntry_Spell,
+						Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
+							Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
+							FailedMessage: "Out of Range!",
+						}},
+					}
+					state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
 				}	
 			} else {
-				currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Cannot do that now!")
+				clEntry := &PublicMatchState_CombatLogEntry {
+					Timestamp: tick,
+					SourceId: message.GetUserId(),
+					SourceSpellId: msg.SpellId,
+					Source: PublicMatchState_CombatLogEntry_Spell,
+					Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
+						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
+						FailedMessage: "Cannot do that now!",
+					}},
+				}
+				state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
 			}
 		}
 	}
@@ -299,11 +332,23 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 
 	//did auras run off?	
 	for _, interactable := range state.(*MatchState).PublicMatchState.Interactable {		
-		/*if interactable == nil{
+		if interactable == nil{
 			continue
-		}*/
+		}
 		for _, aura := range interactable.Auras {
 			if int64(state.(*MatchState).GameDB.Spells[aura.SpellId].Duration * float32(tickrate)) + aura.CreatedAtTick  < tick {
+				clEntry := &PublicMatchState_CombatLogEntry {
+					Timestamp: tick,
+					SourceId: aura.Creator,
+					DestinationId: interactable.Id,
+					SourceSpellId: aura.SpellId,
+					Source: PublicMatchState_CombatLogEntry_Spell,
+					Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
+						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Depleted,
+					}},
+				}
+				state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
+
 				aura = nil
 			}
 		}
