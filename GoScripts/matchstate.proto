@@ -47,20 +47,16 @@ message PublicMatchState {
 	}
 
 	message Projectile {
-		enum Type {
-			FIREBALL = 0;
-		}
 		//system
 		string id = 1;
-		Type type = 2;
+		int64 spell_id = 2;
 		int64 created_at_tick = 3;
 
 		Vector2Df position = 4;
 		float rotation = 5;
 		string target = 6;
-		float speed = 7;
 
-		int32 damage = 8;
+		float speed = 7;
 	}
 		
 	message Vector2Df {
@@ -78,5 +74,5 @@ message Client_Character {
 }
 
 message Client_Cast {
-	string spellname = 1;
+	int64 spell_id = 1;
 }

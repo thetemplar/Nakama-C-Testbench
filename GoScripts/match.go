@@ -6,7 +6,9 @@ import (
 	"database/sql"
 	"github.com/heroiclabs/nakama/runtime"
 	"github.com/golang/protobuf/proto"
-	"time"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 type MatchState struct {
@@ -16,7 +18,11 @@ type MatchState struct {
 
 	InternalPlayer      map[string]*InternalPlayer
 
-	//OldMatchState       map[int64]PublicMatchState
+	//OldMatchState     map[int64]PublicMatchState
+
+	ProjectileCounter	int64
+	NpcCounter			int64
+	
 	GameDB				*GameDB
 }  
   
@@ -52,14 +58,30 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		EmptyCounter : 0,
 		PublicMatchState : PublicMatchState{
 			Player: make(map[string]*PublicMatchState_Player),
+			Projectile: make(map[string]*PublicMatchState_Projectile),
+			Npc: make(map[string]*PublicMatchState_NPC),
 			Stopwatch: []int64{0, 0, 0, 0, 0},
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
 		//OldMatchState: make(map[int64]PublicMatchState),
 	}
-
-	state.GameDB = init_db()
 	
+	//create spellbook
+	state.GameDB = init_db()
+
+	//create map npcs:
+	enemy := &PublicMatchState_NPC{
+		Id: "npc_" + strconv.FormatInt(state.NpcCounter, 16),
+		Type: PublicMatchState_NPC_TRAININGBALL,
+		//Position: currentPlayerPublic.Position,
+		Position: &PublicMatchState_Vector2Df {
+			X: 15,
+			Y: 15,
+		},
+		Health: 100,
+	}
+	state.PublicMatchState.Npc[enemy.Id] = enemy
+	state.NpcCounter++
 
 	if state.Debug {
 		logger.Printf("match init, starting with debug: %v", state.Debug)
@@ -83,9 +105,11 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = &PublicMatchState_Player{
 			Id: presence.GetUserId(),
 			Position: &PublicMatchState_Vector2Df {
-				X: 0,
-				Y: 0,
+				X: -10,
+				Y: -5,
 			},
+			Health: 100,
+			Power: 100,
 		}
 		
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = &InternalPlayer{
@@ -123,56 +147,67 @@ func PublicMatchState_Vector2Df_Rotate(v PublicMatchState_Vector2Df, degrees flo
 }
 
 
-func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData) {
-	const BaseMovementSpeed = 2
+func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData, tickrate int) {
+	BaseMovementSpeed := 20 / float32(tickrate)
 	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Player[message.GetUserId()] == nil {
 		return
 	}
 	currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
 	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
 	
-	msg := &SendPackage{}
+	msg := &Client_Character{}
 	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
-		logger.Printf("Failed to parse incoming SendPackage:", err)
+		logger.Printf("Failed to parse incoming SendPackage Client_Character:", err)
 	}
 
-	if message.GetOpCode() == 0 {
-		//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
-		add := PublicMatchState_Vector2Df {
-			X: msg.XAxis / float32(currentPlayerInternal.MessageCountThisFrame) * BaseMovementSpeed,
-			Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * BaseMovementSpeed,
-		}
-		rotated := PublicMatchState_Vector2Df_Rotate(add, msg.Rotation)
-		currentPlayerPublic.Position.X += rotated.X;
-		currentPlayerPublic.Position.Y += rotated.Y;
-		currentPlayerPublic.Rotation = msg.Rotation;
-
-		//simple "wall"
-		if currentPlayerPublic.Position.X < -25 { currentPlayerPublic.Position.X = -25 }
-		if currentPlayerPublic.Position.X >  25 { currentPlayerPublic.Position.X =  25 }
-		if currentPlayerPublic.Position.Y < -25 { currentPlayerPublic.Position.Y = -25 }
-		if currentPlayerPublic.Position.Y >  25 { currentPlayerPublic.Position.Y =  25 }
+	//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
+	add := PublicMatchState_Vector2Df {
+		X: msg.XAxis / float32(currentPlayerInternal.MessageCountThisFrame) * BaseMovementSpeed,
+		Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * BaseMovementSpeed,
 	}
+	rotated := PublicMatchState_Vector2Df_Rotate(add, msg.Rotation)
+	currentPlayerPublic.Position.X += rotated.X;
+	currentPlayerPublic.Position.Y += rotated.Y;
+	currentPlayerPublic.Rotation = msg.Rotation;
+	
+	currentPlayerPublic.Target = msg.Target;
+
+	//simple "wall"
+	if currentPlayerPublic.Position.X < -25 { currentPlayerPublic.Position.X = -25 }
+	if currentPlayerPublic.Position.X >  25 { currentPlayerPublic.Position.X =  25 }
+	if currentPlayerPublic.Position.Y < -25 { currentPlayerPublic.Position.Y = -25 }
+	if currentPlayerPublic.Position.Y >  25 { currentPlayerPublic.Position.Y =  25 }
+	
 
 	currentPlayerPublic.LastProcessedClientTick = msg.ClientTick
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {
-	start := time.Now()
 	if state.(*MatchState).Debug {
 		logger.Printf("match loop match_id %v tick %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), tick)
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
 	}
+	fmt.Printf(" _ _ _ _ _ new tick %v _ _ _ _ _\n", tick)
+	tickrate := ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int);
+	//clear states
+	for _, player := range state.(*MatchState).PublicMatchState.Player { 
+		if player == nil {
+			continue
+		}
+		player.GlobalCooldown -= float32(1)/float32(ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int));
+		player.Errors = make([]string, 0)
+	}
 
 	state.(*MatchState).PublicMatchState.Tick = tick
-	//get new inputs
+	//get new input-counts
 	for _, message := range messages { 
 		if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil {
 			continue
 		}
-		state.(*MatchState).InternalPlayer[message.GetUserId()].MessageCountThisFrame++
+		if(message.GetOpCode() == 0) {
+			state.(*MatchState).InternalPlayer[message.GetUserId()].MessageCountThisFrame++
+		}
 	}
-	state.(*MatchState).PublicMatchState.Stopwatch[0] = int64(time.Since(start))
 	//get new inputs
 	for _, message := range messages { 
 		//logger.Printf("message from %v with opcode %v", message.GetUserId(), message.GetOpCode())
@@ -180,15 +215,63 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil {
 			continue
 		}
+		currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
+		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
 
-		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage = message
-		state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessageServerTick = tick
-		state.(*MatchState).InternalPlayer[message.GetUserId()].MissingCount = 0
-		
-		PerformInputs(logger, state, state.(*MatchState).InternalPlayer[message.GetUserId()].LastMessage)
+		if message.GetOpCode() == 0 {
+			currentPlayerInternal.LastMessage = message
+			currentPlayerInternal.LastMessageServerTick = tick
+			currentPlayerInternal.MissingCount = 0
+			
+			PerformInputs(logger, state, currentPlayerInternal.LastMessage, tickrate)
+		} else if message.GetOpCode() == 1 {
+			msg := &Client_Cast{}
+			if err := proto.Unmarshal(message.GetData(), msg); err != nil {
+				logger.Printf("Failed to parse incoming SendPackage Client_Cast:", err)
+			}
+
+			if currentPlayerPublic.GlobalCooldown <= 0 {
+				fmt.Printf("cast spell: %v\n", msg.SpellId)
+				fmt.Printf("Target: %v\n", currentPlayerPublic.Target)
+				if currentPlayerPublic.Target != "" {						
+					var targetPosition *PublicMatchState_Vector2Df
+					if strings.HasPrefix(currentPlayerPublic.Target, "npc_") {
+						targetPosition = state.(*MatchState).PublicMatchState.Npc[currentPlayerPublic.Target].Position
+					} else {
+						targetPosition = state.(*MatchState).PublicMatchState.Player[currentPlayerPublic.Target].Position
+					}
+					distance := float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - targetPosition.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - targetPosition.Y), 2)))	
+	
+					if distance <= state.(*MatchState).GameDB.Spells[msg.SpellId].Range {
+						currentPlayerPublic.GlobalCooldown = state.(*MatchState).GameDB.Spells[msg.SpellId].GlobalCooldown
+						proj := &PublicMatchState_Projectile{
+							Id: "p_" + strconv.FormatInt(state.(*MatchState).ProjectileCounter, 16),
+							SpellId: msg.SpellId,
+							Position: &PublicMatchState_Vector2Df {
+								X: currentPlayerPublic.Position.X,
+								Y: currentPlayerPublic.Position.Y,
+							},
+							Rotation: currentPlayerPublic.Rotation,
+							CreatedAtTick: tick,
+							Target: currentPlayerPublic.Target,
+							Speed: state.(*MatchState).GameDB.Spells[msg.SpellId].Speed,
+						}
+						state.(*MatchState).PublicMatchState.Projectile[proj.Id] = proj
+						fmt.Printf("proj: %v\n\n", proj)
+
+						state.(*MatchState).ProjectileCounter++
+					} else {
+						currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Out of Range!")
+					}
+				} else {
+					currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "No Target!")
+				}	
+			} else {
+				currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Cannot do that now!")
+			}
+		}
 	}
 
-	state.(*MatchState).PublicMatchState.Stopwatch[1] = int64(time.Since(start))
 	//did a player not send an package? then re-do his last
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
@@ -197,28 +280,68 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		if player.LastMessageServerTick != tick {
 			player.MissingCount++
 			if player.MissingCount > 1 && player.LastMessage != nil {
+				player.MessageCountThisFrame = 1
 				logger.Printf("2nd missing Package from player %v in a row, inserting last known package.", player.Id)
-				PerformInputs(logger, state, player.LastMessage)
+				PerformInputs(logger, state, player.LastMessage, tickrate)
 			}
 		}
 	}
 	
-	state.(*MatchState).PublicMatchState.Stopwatch[2] = int64(time.Since(start))
 	//calculate game/npcs/objects
+	for _, projectile := range state.(*MatchState).PublicMatchState.Projectile {		
+		if projectile == nil || projectile.CreatedAtTick == tick {
+			continue
+		}
+		fmt.Printf("calc proj %v\n", projectile)
+
+		var targetPosition *PublicMatchState_Vector2Df
+		if strings.HasPrefix(projectile.Target, "npc_") {
+			targetPosition = state.(*MatchState).PublicMatchState.Npc[projectile.Target].Position
+		} else {
+			targetPosition = state.(*MatchState).PublicMatchState.Player[projectile.Target].Position
+		}
+		
+		distance := float32(math.Sqrt(math.Pow(float64(projectile.Position.X - targetPosition.X), 2) + math.Pow(float64(projectile.Position.Y - targetPosition.Y), 2)))	
+		direction := PublicMatchState_Vector2Df {
+			X: targetPosition.X - projectile.Position.X,
+			Y: targetPosition.Y - projectile.Position.Y,
+		}
+		direction.X /= distance
+		direction.Y /= distance
+
+		if distance <= (projectile.Speed / float32(tickrate)) {
+			//impact
+			fmt.Printf("%v impact\n", projectile.Id)
+			state.(*MatchState).GameDB.Spells[projectile.SpellId].OnHit()
+			//target.Health -= projectile.Damage
+			delete(state.(*MatchState).PublicMatchState.Projectile, projectile.Id)
+			projectile = nil
+			continue
+		}
+
+		projectile.Position.X = projectile.Position.X + (direction.X * (projectile.Speed / float32(tickrate)))
+		projectile.Position.Y = projectile.Position.Y + (direction.Y * (projectile.Speed / float32(tickrate)))
+
+		fmt.Printf("%v @ %v | %v\n", projectile.Id, projectile.Position.X, projectile.Position.Y)
+	}
+
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
 			continue
 		}
+
 	}
 
-	state.(*MatchState).PublicMatchState.Stopwatch[3] = int64(time.Since(start))
 	//send new game state (by creating protobuf message)
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
 			continue
 		}
 		player.MessageCountThisFrame = 0
-		
+
+		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[player.Id];
+
+		fmt.Printf("%v @ %v | %v  GCD: %v\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y, currentPlayerPublic.GlobalCooldown)
 
 		out, err := proto.Marshal(&state.(*MatchState).PublicMatchState)
 		if err != nil {
@@ -226,11 +349,12 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		dispatcher.BroadcastMessage(1, out, []runtime.Presence { player.Presence }, nil)
 	}	
-	state.(*MatchState).PublicMatchState.Stopwatch[4] = int64(time.Since(start))
 	
 	//save for history
 	//historyCopy := state.(*MatchState).PublicMatchState
 	//state.(*MatchState).OldMatchState[tick] = historyCopy
+
+
 
 	//end if no ones sending smth (all dc'ed)
 	if len(messages) == 0 {
@@ -239,7 +363,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).EmptyCounter = 0
 	}
 	
-	if state.(*MatchState).EmptyCounter == 50 {
+	if state.(*MatchState).EmptyCounter == 20 {
 		return nil
 	}
 	
@@ -254,3 +378,4 @@ func (m *Match) MatchTerminate(ctx context.Context, logger runtime.Logger, db *s
 
 	return state
 }
+
