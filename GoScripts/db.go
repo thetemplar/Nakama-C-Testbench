@@ -54,7 +54,7 @@ type GameDB_Spells struct {
 	CasterAuraRequired 	int64
 	Mechanic			GameDB_Spells_Mechanic
 	
-	Targets				[]GameDB_Spells_Target
+	Target				GameDB_Spells_Target
 	ApplySpell			[]*GameDB_Spells
 	
 	Interrupt			GameDB_Interrupts
@@ -92,10 +92,10 @@ const (
 	GameDB_Spells_Target_Unit = 1
 	GameDB_Spells_Target_Enemy = 2
 	GameDB_Spells_Target_Ally = 3
-	GameDB_Spells_Target_DeadEnemy = 4
-	GameDB_Spells_Target_DeadAlly = 5
-	GameDB_Spells_Target_AoESelf = 6
-	GameDB_Spells_Target_AoEDestination = 7
+	GameDB_Spells_Target_Dead = 4
+	GameDB_Spells_Target_DeadEnemy = 5
+	GameDB_Spells_Target_DeadAlly = 6
+	GameDB_Spells_Target_AoE = 7
 )
 
 type GameDB_Interrupts int8

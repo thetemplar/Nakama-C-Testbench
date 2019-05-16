@@ -232,35 +232,38 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			}
 
 			if currentPlayerPublic.GlobalCooldown <= 0 {
-				fmt.Printf("cast spell: %v\n", msg.SpellId)
-				fmt.Printf("Target: %v\n", currentPlayerPublic.Target)
-				if currentPlayerPublic.Target != "" {						
-					target := state.(*MatchState).PublicMatchState.Interactable[currentPlayerPublic.Target]
-					distance := float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - target.Position.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - target.Position.Y), 2)))	
-	
-					if distance <= state.(*MatchState).GameDB.Spells[msg.SpellId].Range {
-						currentPlayerPublic.GlobalCooldown = state.(*MatchState).GameDB.Spells[msg.SpellId].GlobalCooldown
-						proj := &PublicMatchState_Projectile{
-							Id: "p_" + strconv.FormatInt(state.(*MatchState).ProjectileCounter, 16),
-							SpellId: msg.SpellId,
-							Position: &PublicMatchState_Vector2Df {
-								X: currentPlayerPublic.Position.X,
-								Y: currentPlayerPublic.Position.Y,
-							},
-							Rotation: currentPlayerPublic.Rotation,
-							CreatedAtTick: tick,
-							Target: currentPlayerPublic.Target,
-							Speed: state.(*MatchState).GameDB.Spells[msg.SpellId].Speed,
-						}
-						state.(*MatchState).PublicMatchState.Projectile[proj.Id] = proj
-						fmt.Printf("proj: %v\n\n", proj)
-
-						state.(*MatchState).ProjectileCounter++
+				targetId := ""
+				distance := float32(0)
+				if state.(*MatchState).GameDB.Spells[msg.SpellId].Target != GameDB_Interrupts_None {
+					if currentPlayerPublic.Target != "" {	
+						targetId = currentPlayerPublic.Target
+						target := state.(*MatchState).PublicMatchState.Interactable[targetId]
+						distance = float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - target.Position.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - target.Position.Y), 2)))	
 					} else {
-						currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Out of Range!")
+						currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "No Target!")
+						continue
+					}	
+				}		
+				
+				if distance <= state.(*MatchState).GameDB.Spells[msg.SpellId].Range {
+					fmt.Printf("cast spell: %v\n", msg.SpellId)
+					currentPlayerPublic.GlobalCooldown = state.(*MatchState).GameDB.Spells[msg.SpellId].GlobalCooldown
+					proj := &PublicMatchState_Projectile{
+						Id: "p_" + strconv.FormatInt(state.(*MatchState).ProjectileCounter, 16),
+						SpellId: msg.SpellId,
+						Position: &PublicMatchState_Vector2Df {
+							X: currentPlayerPublic.Position.X,
+							Y: currentPlayerPublic.Position.Y,
+						},
+						Rotation: currentPlayerPublic.Rotation,
+						CreatedAtTick: tick,
+						Target: targetId,
+						Speed: state.(*MatchState).GameDB.Spells[msg.SpellId].Speed,
 					}
+					state.(*MatchState).PublicMatchState.Projectile[proj.Id] = proj
+					state.(*MatchState).ProjectileCounter++					
 				} else {
-					currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "No Target!")
+					currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Out of Range!")
 				}	
 			} else {
 				currentPlayerPublic.Errors = append(currentPlayerPublic.Errors, "Cannot do that now!")
@@ -289,34 +292,11 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 		fmt.Printf("calc proj %v\n", projectile)
-
-		target := state.(*MatchState).PublicMatchState.Interactable[projectile.Target]					
-		distance := float32(math.Sqrt(math.Pow(float64(projectile.Position.X - target.Position.X), 2) + math.Pow(float64(projectile.Position.Y - target.Position.Y), 2)))	
-		direction := PublicMatchState_Vector2Df {
-			X: target.Position.X - projectile.Position.X,
-			Y: target.Position.Y - projectile.Position.Y,
-		}
-		direction.X /= distance
-		direction.Y /= distance
-
-		if distance <= (projectile.Speed / float32(tickrate)) {
-			//impact
-			fmt.Printf("%v impact\n", projectile.Id)
-			state.(*MatchState).GameDB.Spells[projectile.SpellId].OnHit()
-			//target.Health -= projectile.Damage
-			delete(state.(*MatchState).PublicMatchState.Projectile, projectile.Id)
-			projectile = nil
-			continue
-		}
-
-		projectile.Position.X = projectile.Position.X + (direction.X * (projectile.Speed / float32(tickrate)))
-		projectile.Position.Y = projectile.Position.Y + (direction.Y * (projectile.Speed / float32(tickrate)))
-
-		fmt.Printf("%v @ %v | %v\n", projectile.Id, projectile.Position.X, projectile.Position.Y)
+		projectile.Run(state.(*MatchState), projectile, tickrate)		
 	}
 
-	for _, player := range state.(*MatchState).InternalPlayer {		
-		if player == nil {
+	for _, npc := range state.(*MatchState).PublicMatchState.Interactable {		
+		if npc == nil || npc.Type == PublicMatchState_Interactable_Player {
 			continue
 		}
 
