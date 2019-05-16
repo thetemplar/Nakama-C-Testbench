@@ -8,7 +8,6 @@ import (
 	"github.com/golang/protobuf/proto"
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type MatchState struct {
@@ -57,9 +56,8 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		Debug: false,
 		EmptyCounter : 0,
 		PublicMatchState : PublicMatchState{
-			Player: make(map[string]*PublicMatchState_Player),
+			Interactable: make(map[string]*PublicMatchState_Interactable),
 			Projectile: make(map[string]*PublicMatchState_Projectile),
-			Npc: make(map[string]*PublicMatchState_NPC),
 			Stopwatch: []int64{0, 0, 0, 0, 0},
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
@@ -70,9 +68,10 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 	state.GameDB = init_db()
 
 	//create map npcs:
-	enemy := &PublicMatchState_NPC{
+	enemy := &PublicMatchState_Interactable{
 		Id: "npc_" + strconv.FormatInt(state.NpcCounter, 16),
-		Type: PublicMatchState_NPC_TRAININGBALL,
+		Type: PublicMatchState_Interactable_NPC,
+		CharacterId: 2,
 		//Position: currentPlayerPublic.Position,
 		Position: &PublicMatchState_Vector2Df {
 			X: 15,
@@ -80,7 +79,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		},
 		Health: 100,
 	}
-	state.PublicMatchState.Npc[enemy.Id] = enemy
+	state.PublicMatchState.Interactable[enemy.Id] = enemy
 	state.NpcCounter++
 
 	if state.Debug {
@@ -102,8 +101,9 @@ func (m *Match) MatchJoinAttempt(ctx context.Context, logger runtime.Logger, db 
 
 func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, presences []runtime.Presence) interface{} {
 	for _, presence := range presences {
-		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = &PublicMatchState_Player{
+		state.(*MatchState).PublicMatchState.Interactable[presence.GetUserId()] = &PublicMatchState_Interactable{
 			Id: presence.GetUserId(),
+			Type: PublicMatchState_Interactable_Player,
 			Position: &PublicMatchState_Vector2Df {
 				X: -10,
 				Y: -5,
@@ -125,7 +125,7 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 
 func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, presences []runtime.Presence) interface{} {
 	for _, presence := range presences {		
-		state.(*MatchState).PublicMatchState.Player[presence.GetUserId()] = nil
+		state.(*MatchState).PublicMatchState.Interactable[presence.GetUserId()] = nil
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = nil
 
 		logger.Printf("match leave username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
@@ -149,11 +149,11 @@ func PublicMatchState_Vector2Df_Rotate(v PublicMatchState_Vector2Df, degrees flo
 
 func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData, tickrate int) {
 	BaseMovementSpeed := 20 / float32(tickrate)
-	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Player[message.GetUserId()] == nil {
+	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()] == nil {
 		return
 	}
 	currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
-	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
+	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()];
 	
 	msg := &Client_Character{}
 	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
@@ -188,17 +188,18 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
 	}
 	fmt.Printf(" _ _ _ _ _ new tick %v _ _ _ _ _\n", tick)
+	state.(*MatchState).PublicMatchState.Tick = tick	
 	tickrate := ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int);
+
 	//clear states
-	for _, player := range state.(*MatchState).PublicMatchState.Player { 
-		if player == nil {
+	for _, player := range state.(*MatchState).PublicMatchState.Interactable { 
+		if player == nil || player.Type != PublicMatchState_Interactable_Player {
 			continue
 		}
 		player.GlobalCooldown -= float32(1)/float32(ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int));
 		player.Errors = make([]string, 0)
 	}
 
-	state.(*MatchState).PublicMatchState.Tick = tick
 	//get new input-counts
 	for _, message := range messages { 
 		if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil {
@@ -216,7 +217,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 		currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
-		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[message.GetUserId()];
+		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()];
 
 		if message.GetOpCode() == 0 {
 			currentPlayerInternal.LastMessage = message
@@ -234,13 +235,8 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				fmt.Printf("cast spell: %v\n", msg.SpellId)
 				fmt.Printf("Target: %v\n", currentPlayerPublic.Target)
 				if currentPlayerPublic.Target != "" {						
-					var targetPosition *PublicMatchState_Vector2Df
-					if strings.HasPrefix(currentPlayerPublic.Target, "npc_") {
-						targetPosition = state.(*MatchState).PublicMatchState.Npc[currentPlayerPublic.Target].Position
-					} else {
-						targetPosition = state.(*MatchState).PublicMatchState.Player[currentPlayerPublic.Target].Position
-					}
-					distance := float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - targetPosition.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - targetPosition.Y), 2)))	
+					target := state.(*MatchState).PublicMatchState.Interactable[currentPlayerPublic.Target]
+					distance := float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - target.Position.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - target.Position.Y), 2)))	
 	
 					if distance <= state.(*MatchState).GameDB.Spells[msg.SpellId].Range {
 						currentPlayerPublic.GlobalCooldown = state.(*MatchState).GameDB.Spells[msg.SpellId].GlobalCooldown
@@ -294,17 +290,11 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		fmt.Printf("calc proj %v\n", projectile)
 
-		var targetPosition *PublicMatchState_Vector2Df
-		if strings.HasPrefix(projectile.Target, "npc_") {
-			targetPosition = state.(*MatchState).PublicMatchState.Npc[projectile.Target].Position
-		} else {
-			targetPosition = state.(*MatchState).PublicMatchState.Player[projectile.Target].Position
-		}
-		
-		distance := float32(math.Sqrt(math.Pow(float64(projectile.Position.X - targetPosition.X), 2) + math.Pow(float64(projectile.Position.Y - targetPosition.Y), 2)))	
+		target := state.(*MatchState).PublicMatchState.Interactable[projectile.Target]					
+		distance := float32(math.Sqrt(math.Pow(float64(projectile.Position.X - target.Position.X), 2) + math.Pow(float64(projectile.Position.Y - target.Position.Y), 2)))	
 		direction := PublicMatchState_Vector2Df {
-			X: targetPosition.X - projectile.Position.X,
-			Y: targetPosition.Y - projectile.Position.Y,
+			X: target.Position.X - projectile.Position.X,
+			Y: target.Position.Y - projectile.Position.Y,
 		}
 		direction.X /= distance
 		direction.Y /= distance
@@ -339,7 +329,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 		player.MessageCountThisFrame = 0
 
-		currentPlayerPublic   := state.(*MatchState).PublicMatchState.Player[player.Id];
+		currentPlayerPublic := state.(*MatchState).PublicMatchState.Interactable[player.Id];
 
 		fmt.Printf("%v @ %v | %v  GCD: %v\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y, currentPlayerPublic.GlobalCooldown)
 

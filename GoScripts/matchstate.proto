@@ -5,45 +5,33 @@ option csharp_namespace = "NakamaMinimalGame.PublicMatchState";
 message PublicMatchState {
 	int64 tick = 1;
 	repeated int64 stopwatch = 2;
-	map<string, Player> player = 3;
-	map<string, NPC> npc = 4;
-	map<string, Projectile> projectile = 5;
+	map<string, Interactable> interactable = 3;
+	map<string, Projectile> projectile = 4;
   
-	message Player {
-		//system
-		string id = 1;
-		int64 last_processed_client_tick = 2;
-		repeated string errors = 3;
-
-		int32 health = 4;
-		int32 power = 5;
-		
-		//pos
-		Vector2Df position = 6;
-		float rotation = 7;
-
-		//combat
-		float global_cooldown = 8;
-		string target = 9;
-	}
-
-	message NPC {
+	message Interactable {
 		enum Type {
-			TRAININGBALL = 0;
+			Player = 0;
+			NPC = 1;
 		}
 		//system
 		string id = 1;
 		Type type = 2;
+		int64 character_id = 3;
+		int64 last_processed_client_tick = 4;
+		repeated string errors = 5;
 
-		int32 health = 3;
-		int32 power = 4;
-
+		//vitalities
+		bool invulnerable = 6;
+		int32 health = 7;
+		int32 power = 8;
+		
 		//pos
-		Vector2Df position = 5;
-		float rotation = 6;
+		Vector2Df position = 9;
+		float rotation = 10;
 
 		//combat
-		string target = 7;
+		float global_cooldown = 11;
+		string target = 12;
 	}
 
 	message Projectile {
