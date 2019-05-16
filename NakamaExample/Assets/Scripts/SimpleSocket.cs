@@ -83,7 +83,7 @@ public class SimpleSocket : MonoBehaviour
         var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
         //Debug.Log("Stopwatch-Server: 0:" + (state.Stopwatch[0] / 1000000f) + "ms 1>" + (state.Stopwatch[1] / 1000000f) + "ms 2>" + (state.Stopwatch[2] / 1000000f) + "ms 3>" + (state.Stopwatch[3] / 1000000f) + "ms 4>" + (state.Stopwatch[4] / 1000000f) + "ms");
-        foreach (var player in state.Player)
+        foreach (var player in state.Interactable)
         {
             //handle player character
             if (player.Key == _session.UserId)
@@ -134,52 +134,6 @@ public class SimpleSocket : MonoBehaviour
             }
         }
 
-        foreach (var npc in state.Npc)
-        {
-            if (_gameObjects.ContainsKey(npc.Key))
-            {
-                if (npc.Value?.Position != null)
-                {
-                    _gameObjects[npc.Key].SetLastServerAck(new Vector3(npc.Value.Position.X, 1.5f, npc.Value.Position.Y), npc.Value.Rotation, null, diffTime);
-                }
-                else
-                {
-                    UnityThread.executeInUpdate(() =>
-                    {
-                        if (_gameObjects.ContainsKey(npc.Key))
-                        {
-                            var del = _gameObjects.Where(x => x.Key == npc.Key).FirstOrDefault();
-                            Destroy(del.Value.gameObject);
-                            _gameObjects.Remove(npc.Key);
-                        }
-                    });
-                }
-            }
-            else
-            {
-                if (npc.Value?.Position != null)
-                {
-                    UnityThread.executeInUpdate(() =>
-                    {
-                        if (!_gameObjects.ContainsKey(npc.Key))
-                        {
-                            GameObject toPlace = PrefabUnknown;
-                            switch (npc.Value.Type)
-                            {
-                                case PublicMatchState.Types.NPC.Types.Type.Trainingball:
-                                    toPlace = PrefabTrainingBall;
-                                    break;
-                            }
-                            GameObject obj = Instantiate(toPlace, new Vector3(npc.Value.Position.X, 0f, npc.Value.Position.Y), Quaternion.AngleAxis(npc.Value.Rotation, Vector3.up));
-                            obj.name = npc.Key;
-                            _gameObjects.Add(npc.Key, obj.GetComponent<PlayerController>());
-                        }
-                    });
-                }
-            }
-        }
-
-
         foreach (var projectile in _gameObjects.Where(x => x.Key.StartsWith("p_")))
         {
             if (!state.Projectile.ContainsKey(projectile.Key))
@@ -225,14 +179,7 @@ public class SimpleSocket : MonoBehaviour
                     {
                         if (!_gameObjects.ContainsKey(projectile.Key))
                         {
-                            GameObject toPlace = PrefabUnknown;
-                            
-                            switch (projectile.Value.Type)
-                            {
-                                case PublicMatchState.Types.Projectile.Types.Type.Fireball:
-                                    toPlace = PrefabFireball;
-                                    break;
-                            }
+                            GameObject toPlace = PrefabFireball;
                             GameObject obj = Instantiate(toPlace, new Vector3(projectile.Value.Position.X, 0f, projectile.Value.Position.Y), Quaternion.AngleAxis(projectile.Value.Rotation, Vector3.up));
                             obj.name = projectile.Key;
                             _gameObjects.Add(projectile.Key, obj.GetComponent<PlayerController>());
