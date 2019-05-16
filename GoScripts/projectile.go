@@ -24,7 +24,7 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 		//impact
 		fmt.Printf("%v impact\n", projectile.Id)
 		spell := state.GameDB.Spells[projectile.SpellId]	
-		projectile.Hit(target, projectile, spell)
+		projectile.Hit(state, target, projectile, spell)
 		delete(state.PublicMatchState.Projectile, projectile.Id)
 		projectile = nil
 		return
@@ -37,6 +37,15 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 }
 
 
-func (p PublicMatchState_Projectile) Hit(target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spells) {
+func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spells) {
+	for _, spell := range spell.ApplySpell { 
+		fmt.Printf("Apply Spell on Hit %v\n", spell)
+		aura := &PublicMatchState_Aura{
+			CreatedAtTick: state.PublicMatchState.Tick,
+			SpellId: spell.Id,
+		}
+		target.Auras = append(target.Auras, aura)
+	}
+
 	target.CurrentHealth -= randomInt(spell.SpellDamageMin, spell.SpellDamageMax)
 }

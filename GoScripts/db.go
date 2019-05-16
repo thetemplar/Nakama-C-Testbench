@@ -31,7 +31,7 @@ type GameDB_Spells struct {
 	Id					int64
 	Name 				string
 	Description 		string
-	Visable				bool
+	Visible				bool
 	ThreadModifier		int32
 	Cooldown			float32
 	GlobalCooldown		float32

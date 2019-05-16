@@ -4,7 +4,7 @@ option csharp_namespace = "NakamaMinimalGame.PublicMatchState";
 
 message PublicMatchState {
 	int64 tick = 1;
-	repeated int64 stopwatch = 2;
+	//repeated int64 stopwatch = 2;
 	map<string, Interactable> interactable = 3;
 	map<string, Projectile> projectile = 4;
   
@@ -34,6 +34,14 @@ message PublicMatchState {
 		//combat
 		float global_cooldown = 13;
 		string target = 14;
+
+		//auras
+		repeated Aura auras = 15;
+	}
+
+	message Aura {
+		int64 created_at_tick = 1;
+		int64 spell_id = 2;
 	}
 
 	message Projectile {

@@ -58,7 +58,6 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		PublicMatchState : PublicMatchState{
 			Interactable: make(map[string]*PublicMatchState_Interactable),
 			Projectile: make(map[string]*PublicMatchState_Projectile),
-			Stopwatch: []int64{0, 0, 0, 0, 0},
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
 		//OldMatchState: make(map[int64]PublicMatchState),
@@ -81,6 +80,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		CurrentPower: 0,
 		MaxHealth: 100,
 		MaxPower: 0,
+		Auras: make([]*PublicMatchState_Aura, 0),
 	}
 	state.PublicMatchState.Interactable[enemy.Id] = enemy
 	state.NpcCounter++
@@ -153,12 +153,18 @@ func PublicMatchState_Vector2Df_Rotate(v PublicMatchState_Vector2Df, degrees flo
 
 
 func PerformInputs(logger runtime.Logger, state interface{}, message runtime.MatchData, tickrate int) {
-	BaseMovementSpeed := 20 / float32(tickrate)
 	if state.(*MatchState).InternalPlayer[message.GetUserId()] == nil || state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()] == nil {
 		return
 	}
 	currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
 	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()];
+
+	BaseMovementSpeed := float32(20)
+	for _, aura := range currentPlayerPublic.Auras {
+		if state.(*MatchState).GameDB.Spells[aura.SpellId].Mechanic == GameDB_Spells_Mechanic_Slowed {
+			BaseMovementSpeed = 10
+		}
+	}
 	
 	msg := &Client_Character{}
 	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
@@ -167,8 +173,8 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 
 	//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
 	add := PublicMatchState_Vector2Df {
-		X: msg.XAxis / float32(currentPlayerInternal.MessageCountThisFrame) * BaseMovementSpeed,
-		Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * BaseMovementSpeed,
+		X: msg.XAxis / float32(currentPlayerInternal.MessageCountThisFrame) * (BaseMovementSpeed / float32(tickrate)),
+		Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * (BaseMovementSpeed / float32(tickrate)),
 	}
 	rotated := PublicMatchState_Vector2Df_Rotate(add, msg.Rotation)
 	currentPlayerPublic.Position.X += rotated.X;
@@ -287,6 +293,18 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				player.MessageCountThisFrame = 1
 				logger.Printf("2nd missing Package from player %v in a row, inserting last known package.", player.Id)
 				PerformInputs(logger, state, player.LastMessage, tickrate)
+			}
+		}
+	}
+
+	//did auras run off?	
+	for _, interactable := range state.(*MatchState).PublicMatchState.Interactable {		
+		/*if interactable == nil{
+			continue
+		}*/
+		for _, aura := range interactable.Auras {
+			if int64(state.(*MatchState).GameDB.Spells[aura.SpellId].Duration * float32(tickrate)) + aura.CreatedAtTick  < tick {
+				aura = nil
 			}
 		}
 	}
