@@ -41,10 +41,11 @@ type GameDB_Spells struct {
 	IconID		 		int64
 	Speed				float32
 	Radius				float32
-	BaseCost			float32
-	CostPerSec			float32
-	CostPercentage  	float32
-	SpellDamage			float32
+	BaseCost			int32
+	CostPerSec			int32
+	CostPercentage  	int32
+	SpellDamageMin		int32
+	SpellDamageMax		int32
 	SpellDamageType		GameDB_Spells_DamageType
 	CastDuration		float32
 	Duration			float32

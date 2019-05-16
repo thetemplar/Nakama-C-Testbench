@@ -22,16 +22,18 @@ message PublicMatchState {
 
 		//vitalities
 		bool invulnerable = 6;
-		int32 health = 7;
-		int32 power = 8;
+		int32 max_health = 7;
+		int32 max_power = 8;
+		int32 current_health = 9;
+		int32 current_power = 10;
 		
 		//pos
-		Vector2Df position = 9;
-		float rotation = 10;
+		Vector2Df position = 11;
+		float rotation = 12;
 
 		//combat
-		float global_cooldown = 11;
-		string target = 12;
+		float global_cooldown = 13;
+		string target = 14;
 	}
 
 	message Projectile {

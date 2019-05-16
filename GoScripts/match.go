@@ -77,7 +77,10 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 			X: 15,
 			Y: 15,
 		},
-		Health: 100,
+		CurrentHealth: 100,
+		CurrentPower: 0,
+		MaxHealth: 100,
+		MaxPower: 0,
 	}
 	state.PublicMatchState.Interactable[enemy.Id] = enemy
 	state.NpcCounter++
@@ -108,8 +111,10 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 				X: -10,
 				Y: -5,
 			},
-			Health: 100,
-			Power: 100,
+			CurrentHealth: 100,
+			CurrentPower: 100,
+			MaxHealth: 100,
+			MaxPower: 100,
 		}
 		
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = &InternalPlayer{

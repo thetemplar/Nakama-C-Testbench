@@ -24,6 +24,9 @@ public class PlayerController : MonoBehaviour
     public bool UseInterpolation;
     public bool ShowGhost;
 
+    public int MaxHealth;
+    public int CurrentHealth;
+
     CharacterController controller;
 
     class LerpingParameters<T> {
@@ -56,7 +59,7 @@ public class PlayerController : MonoBehaviour
             Value = initial;
         }
 
-        public void SetNext(T value, float timeToLerp, bool debug = false)
+        public void SetNext(T value, float timeToLerp)
         {
             LastValue = Value;
             Value = value;
@@ -73,6 +76,7 @@ public class PlayerController : MonoBehaviour
     private LerpingParameters<float> _lerpRotation;
 
     public float Rotation => _lerpRotation.Value;
+    public Vector3 Position => _lerpPosition.Value;
     
 
     void Awake()
@@ -131,10 +135,14 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Character> notAcknowledgedPackages, float timeToLerp, bool debug = false)
+    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Character> notAcknowledgedPackages, float timeToLerp, NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable player = null)
     {
-        if(debug)
-            Debug.Log(" SetLastServerAck> " + position);
+        if (player != null)
+        {
+            this.CurrentHealth = player.CurrentHealth;
+            this.MaxHealth = player.MaxHealth;
+        }
+
         position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)
         {
@@ -149,8 +157,8 @@ public class PlayerController : MonoBehaviour
         
         if(!IsLocalPlayer)
         {
-            _lerpPosition.SetNext(position, timeToLerp, debug);
-            _lerpRotation.SetNext(rotation, timeToLerp, debug);
+            _lerpPosition.SetNext(position, timeToLerp);
+            _lerpRotation.SetNext(rotation, timeToLerp);
             return;
         }
 

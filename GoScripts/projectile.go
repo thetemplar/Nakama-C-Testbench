@@ -3,7 +3,12 @@ package main
 import (
 	"math"
 	"fmt"
+	"math/rand"
 )
+
+func randomInt(min, max int32) int32 {
+    return min + rand.Int31n(max-min)
+}
 
 func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMatchState_Projectile, tickrate int) {
 	target := state.PublicMatchState.Interactable[projectile.Target]					
@@ -18,8 +23,8 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 	if distance <= (projectile.Speed / float32(tickrate)) {
 		//impact
 		fmt.Printf("%v impact\n", projectile.Id)
-		state.GameDB.Spells[projectile.SpellId].OnHit()
-		//target.Health -= projectile.Damage
+		spell := state.GameDB.Spells[projectile.SpellId]	
+		projectile.Hit(target, projectile, spell)
 		delete(state.PublicMatchState.Projectile, projectile.Id)
 		projectile = nil
 		return
@@ -29,4 +34,9 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 	projectile.Position.Y = projectile.Position.Y + (direction.Y * (projectile.Speed / float32(tickrate)))
 
 	fmt.Printf("%v @ %v | %v\n", projectile.Id, projectile.Position.X, projectile.Position.Y)
+}
+
+
+func (p PublicMatchState_Projectile) Hit(target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spells) {
+	target.CurrentHealth -= randomInt(spell.SpellDamageMin, spell.SpellDamageMax)
 }

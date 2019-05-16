@@ -15,6 +15,8 @@ public class UnitSelector : MonoBehaviour
     public Slider GCDSlider;
 
     public GameObject SelectedUnit;
+    private PlayerController _selectedUnitPlayerController;
+    public PlayerController MyPlayerController;
     private float _gcd;
 
     private List<Client_Cast> _sendMessages = new List<Client_Cast>();
@@ -26,14 +28,19 @@ public class UnitSelector : MonoBehaviour
         EnemySlider.gameObject.SetActive(false);
         GCDSlider.gameObject.SetActive(false);
 
-        Me.text = "100HP";
-        MeSlider.value = 100;
+        Me.text = MyPlayerController.CurrentHealth + "HP";
+        MeSlider.value = MyPlayerController.CurrentHealth;
+        MeSlider.maxValue = MyPlayerController.MaxHealth;
         Enemy.text = "";
     }
 
     // Update is called once per frame
     void Update()
     {
+        Me.text = MyPlayerController.CurrentHealth + "HP";
+        MeSlider.value = MyPlayerController.CurrentHealth;
+        MeSlider.maxValue = MyPlayerController.MaxHealth;
+        
         if (Input.GetMouseButton(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -45,18 +52,23 @@ public class UnitSelector : MonoBehaviour
                 if (go.layer == 8)
                 {
                     SelectedUnit = go;
+                    _selectedUnitPlayerController = go.GetComponent<PlayerController>();
+                    EnemySlider.maxValue = _selectedUnitPlayerController.MaxHealth;
                 }
             }
         }
 
         if (SelectedUnit != null && Input.GetKey(KeyCode.Escape))
+        {
             SelectedUnit = null;
+            _selectedUnitPlayerController = null;
+        }
 
         if (SelectedUnit != null)
         {
             EnemySlider.gameObject.SetActive(true);
-            Enemy.text = "100HP";
-            EnemySlider.value = 100;
+            EnemySlider.value = _selectedUnitPlayerController.CurrentHealth;
+            Enemy.text = _selectedUnitPlayerController.CurrentHealth + "HP";
         }
         else
         {

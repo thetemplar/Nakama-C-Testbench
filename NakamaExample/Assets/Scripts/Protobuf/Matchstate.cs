@@ -24,7 +24,7 @@ namespace NakamaMinimalGame.PublicMatchState {
     static MatchstateReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIo0HChBQdWJsaWNNYXRjaFN0YXRl",
+            "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIsQHChBQdWJsaWNNYXRjaFN0YXRl",
             "EgwKBHRpY2sYASABKAMSEQoJc3RvcHdhdGNoGAIgAygDEj4KDGludGVyYWN0",
             "YWJsZRgDIAMoCzIoLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5JbnRlcmFjdGFi",
             "bGVFbnRyeRI6Cgpwcm9qZWN0aWxlGAQgAygLMiYubWFpbi5QdWJsaWNNYXRj",
@@ -32,27 +32,29 @@ namespace NakamaMinimalGame.PublicMatchState {
             "CgNrZXkYASABKAkSMgoFdmFsdWUYAiABKAsyIy5tYWluLlB1YmxpY01hdGNo",
             "U3RhdGUuSW50ZXJhY3RhYmxlOgI4ARpUCg9Qcm9qZWN0aWxlRW50cnkSCwoD",
             "a2V5GAEgASgJEjAKBXZhbHVlGAIgASgLMiEubWFpbi5QdWJsaWNNYXRjaFN0",
-            "YXRlLlByb2plY3RpbGU6AjgBGt0CCgxJbnRlcmFjdGFibGUSCgoCaWQYASAB",
+            "YXRlLlByb2plY3RpbGU6AjgBGpQDCgxJbnRlcmFjdGFibGUSCgoCaWQYASAB",
             "KAkSNgoEdHlwZRgCIAEoDjIoLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5JbnRl",
             "cmFjdGFibGUuVHlwZRIUCgxjaGFyYWN0ZXJfaWQYAyABKAMSIgoabGFzdF9w",
             "cm9jZXNzZWRfY2xpZW50X3RpY2sYBCABKAMSDgoGZXJyb3JzGAUgAygJEhQK",
-            "DGludnVsbmVyYWJsZRgGIAEoCBIOCgZoZWFsdGgYByABKAUSDQoFcG93ZXIY",
-            "CCABKAUSMgoIcG9zaXRpb24YCSABKAsyIC5tYWluLlB1YmxpY01hdGNoU3Rh",
-            "dGUuVmVjdG9yMkRmEhAKCHJvdGF0aW9uGAogASgCEhcKD2dsb2JhbF9jb29s",
-            "ZG93bhgLIAEoAhIOCgZ0YXJnZXQYDCABKAkiGwoEVHlwZRIKCgZQbGF5ZXIQ",
-            "ABIHCgNOUEMQARqoAQoKUHJvamVjdGlsZRIKCgJpZBgBIAEoCRIQCghzcGVs",
-            "bF9pZBgCIAEoAxIXCg9jcmVhdGVkX2F0X3RpY2sYAyABKAMSMgoIcG9zaXRp",
-            "b24YBCABKAsyIC5tYWluLlB1YmxpY01hdGNoU3RhdGUuVmVjdG9yMkRmEhAK",
-            "CHJvdGF0aW9uGAUgASgCEg4KBnRhcmdldBgGIAEoCRINCgVzcGVlZBgHIAEo",
-            "AhohCglWZWN0b3IyRGYSCQoBeBgBIAEoAhIJCgF5GAIgASgCImkKEENsaWVu",
-            "dF9DaGFyYWN0ZXISEwoLY2xpZW50X3RpY2sYASABKAMSDgoGeF9heGlzGAIg",
-            "ASgCEg4KBnlfYXhpcxgDIAEoAhIQCghyb3RhdGlvbhgEIAEoAhIOCgZ0YXJn",
-            "ZXQYBSABKAkiHwoLQ2xpZW50X0Nhc3QSEAoIc3BlbGxfaWQYASABKANCJaoC",
-            "Ik5ha2FtYU1pbmltYWxHYW1lLlB1YmxpY01hdGNoU3RhdGViBnByb3RvMw=="));
+            "DGludnVsbmVyYWJsZRgGIAEoCBISCgptYXhfaGVhbHRoGAcgASgFEhEKCW1h",
+            "eF9wb3dlchgIIAEoBRIWCg5jdXJyZW50X2hlYWx0aBgJIAEoBRIVCg1jdXJy",
+            "ZW50X3Bvd2VyGAogASgFEjIKCHBvc2l0aW9uGAsgASgLMiAubWFpbi5QdWJs",
+            "aWNNYXRjaFN0YXRlLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgMIAEoAhIXCg9n",
+            "bG9iYWxfY29vbGRvd24YDSABKAISDgoGdGFyZ2V0GA4gASgJIhsKBFR5cGUS",
+            "CgoGUGxheWVyEAASBwoDTlBDEAEaqAEKClByb2plY3RpbGUSCgoCaWQYASAB",
+            "KAkSEAoIc3BlbGxfaWQYAiABKAMSFwoPY3JlYXRlZF9hdF90aWNrGAMgASgD",
+            "EjIKCHBvc2l0aW9uGAQgASgLMiAubWFpbi5QdWJsaWNNYXRjaFN0YXRlLlZl",
+            "Y3RvcjJEZhIQCghyb3RhdGlvbhgFIAEoAhIOCgZ0YXJnZXQYBiABKAkSDQoF",
+            "c3BlZWQYByABKAIaIQoJVmVjdG9yMkRmEgkKAXgYASABKAISCQoBeRgCIAEo",
+            "AiJpChBDbGllbnRfQ2hhcmFjdGVyEhMKC2NsaWVudF90aWNrGAEgASgDEg4K",
+            "BnhfYXhpcxgCIAEoAhIOCgZ5X2F4aXMYAyABKAISEAoIcm90YXRpb24YBCAB",
+            "KAISDgoGdGFyZ2V0GAUgASgJIh8KC0NsaWVudF9DYXN0EhAKCHNwZWxsX2lk",
+            "GAEgASgDQiWqAiJOYWthbWFNaW5pbWFsR2FtZS5QdWJsaWNNYXRjaFN0YXRl",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Stopwatch", "Interactable", "Projectile" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Parser, new[]{ "Id", "Type", "CharacterId", "LastProcessedClientTick", "Errors", "Invulnerable", "Health", "Power", "Position", "Rotation", "GlobalCooldown", "Target" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Stopwatch", "Interactable", "Projectile" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Parser, new[]{ "Id", "Type", "CharacterId", "LastProcessedClientTick", "Errors", "Invulnerable", "MaxHealth", "MaxPower", "CurrentHealth", "CurrentPower", "Position", "Rotation", "GlobalCooldown", "Target" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Parser, new[]{ "Id", "SpellId", "CreatedAtTick", "Position", "Rotation", "Target", "Speed" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Character), global::NakamaMinimalGame.PublicMatchState.Client_Character.Parser, new[]{ "ClientTick", "XAxis", "YAxis", "Rotation", "Target" }, null, null, null),
@@ -286,8 +288,10 @@ namespace NakamaMinimalGame.PublicMatchState {
           lastProcessedClientTick_ = other.lastProcessedClientTick_;
           errors_ = other.errors_.Clone();
           invulnerable_ = other.invulnerable_;
-          health_ = other.health_;
-          power_ = other.power_;
+          maxHealth_ = other.maxHealth_;
+          maxPower_ = other.maxPower_;
+          currentHealth_ = other.currentHealth_;
+          currentPower_ = other.currentPower_;
           position_ = other.position_ != null ? other.position_.Clone() : null;
           rotation_ = other.rotation_;
           globalCooldown_ = other.globalCooldown_;
@@ -371,30 +375,52 @@ namespace NakamaMinimalGame.PublicMatchState {
           }
         }
 
-        /// <summary>Field number for the "health" field.</summary>
-        public const int HealthFieldNumber = 7;
-        private int health_;
+        /// <summary>Field number for the "max_health" field.</summary>
+        public const int MaxHealthFieldNumber = 7;
+        private int maxHealth_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public int Health {
-          get { return health_; }
+        public int MaxHealth {
+          get { return maxHealth_; }
           set {
-            health_ = value;
+            maxHealth_ = value;
           }
         }
 
-        /// <summary>Field number for the "power" field.</summary>
-        public const int PowerFieldNumber = 8;
-        private int power_;
+        /// <summary>Field number for the "max_power" field.</summary>
+        public const int MaxPowerFieldNumber = 8;
+        private int maxPower_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public int Power {
-          get { return power_; }
+        public int MaxPower {
+          get { return maxPower_; }
           set {
-            power_ = value;
+            maxPower_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "current_health" field.</summary>
+        public const int CurrentHealthFieldNumber = 9;
+        private int currentHealth_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int CurrentHealth {
+          get { return currentHealth_; }
+          set {
+            currentHealth_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "current_power" field.</summary>
+        public const int CurrentPowerFieldNumber = 10;
+        private int currentPower_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int CurrentPower {
+          get { return currentPower_; }
+          set {
+            currentPower_ = value;
           }
         }
 
         /// <summary>Field number for the "position" field.</summary>
-        public const int PositionFieldNumber = 9;
+        public const int PositionFieldNumber = 11;
         private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df position_;
         /// <summary>
         ///pos
@@ -408,7 +434,7 @@ namespace NakamaMinimalGame.PublicMatchState {
         }
 
         /// <summary>Field number for the "rotation" field.</summary>
-        public const int RotationFieldNumber = 10;
+        public const int RotationFieldNumber = 12;
         private float rotation_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public float Rotation {
@@ -419,7 +445,7 @@ namespace NakamaMinimalGame.PublicMatchState {
         }
 
         /// <summary>Field number for the "global_cooldown" field.</summary>
-        public const int GlobalCooldownFieldNumber = 11;
+        public const int GlobalCooldownFieldNumber = 13;
         private float globalCooldown_;
         /// <summary>
         ///combat
@@ -433,7 +459,7 @@ namespace NakamaMinimalGame.PublicMatchState {
         }
 
         /// <summary>Field number for the "target" field.</summary>
-        public const int TargetFieldNumber = 12;
+        public const int TargetFieldNumber = 14;
         private string target_ = "";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public string Target {
@@ -462,8 +488,10 @@ namespace NakamaMinimalGame.PublicMatchState {
           if (LastProcessedClientTick != other.LastProcessedClientTick) return false;
           if(!errors_.Equals(other.errors_)) return false;
           if (Invulnerable != other.Invulnerable) return false;
-          if (Health != other.Health) return false;
-          if (Power != other.Power) return false;
+          if (MaxHealth != other.MaxHealth) return false;
+          if (MaxPower != other.MaxPower) return false;
+          if (CurrentHealth != other.CurrentHealth) return false;
+          if (CurrentPower != other.CurrentPower) return false;
           if (!object.Equals(Position, other.Position)) return false;
           if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Rotation, other.Rotation)) return false;
           if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(GlobalCooldown, other.GlobalCooldown)) return false;
@@ -480,8 +508,10 @@ namespace NakamaMinimalGame.PublicMatchState {
           if (LastProcessedClientTick != 0L) hash ^= LastProcessedClientTick.GetHashCode();
           hash ^= errors_.GetHashCode();
           if (Invulnerable != false) hash ^= Invulnerable.GetHashCode();
-          if (Health != 0) hash ^= Health.GetHashCode();
-          if (Power != 0) hash ^= Power.GetHashCode();
+          if (MaxHealth != 0) hash ^= MaxHealth.GetHashCode();
+          if (MaxPower != 0) hash ^= MaxPower.GetHashCode();
+          if (CurrentHealth != 0) hash ^= CurrentHealth.GetHashCode();
+          if (CurrentPower != 0) hash ^= CurrentPower.GetHashCode();
           if (position_ != null) hash ^= Position.GetHashCode();
           if (Rotation != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Rotation);
           if (GlobalCooldown != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(GlobalCooldown);
@@ -520,28 +550,36 @@ namespace NakamaMinimalGame.PublicMatchState {
             output.WriteRawTag(48);
             output.WriteBool(Invulnerable);
           }
-          if (Health != 0) {
+          if (MaxHealth != 0) {
             output.WriteRawTag(56);
-            output.WriteInt32(Health);
+            output.WriteInt32(MaxHealth);
           }
-          if (Power != 0) {
+          if (MaxPower != 0) {
             output.WriteRawTag(64);
-            output.WriteInt32(Power);
+            output.WriteInt32(MaxPower);
+          }
+          if (CurrentHealth != 0) {
+            output.WriteRawTag(72);
+            output.WriteInt32(CurrentHealth);
+          }
+          if (CurrentPower != 0) {
+            output.WriteRawTag(80);
+            output.WriteInt32(CurrentPower);
           }
           if (position_ != null) {
-            output.WriteRawTag(74);
+            output.WriteRawTag(90);
             output.WriteMessage(Position);
           }
           if (Rotation != 0F) {
-            output.WriteRawTag(85);
+            output.WriteRawTag(101);
             output.WriteFloat(Rotation);
           }
           if (GlobalCooldown != 0F) {
-            output.WriteRawTag(93);
+            output.WriteRawTag(109);
             output.WriteFloat(GlobalCooldown);
           }
           if (Target.Length != 0) {
-            output.WriteRawTag(98);
+            output.WriteRawTag(114);
             output.WriteString(Target);
           }
           if (_unknownFields != null) {
@@ -568,11 +606,17 @@ namespace NakamaMinimalGame.PublicMatchState {
           if (Invulnerable != false) {
             size += 1 + 1;
           }
-          if (Health != 0) {
-            size += 1 + pb::CodedOutputStream.ComputeInt32Size(Health);
+          if (MaxHealth != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxHealth);
           }
-          if (Power != 0) {
-            size += 1 + pb::CodedOutputStream.ComputeInt32Size(Power);
+          if (MaxPower != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxPower);
+          }
+          if (CurrentHealth != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(CurrentHealth);
+          }
+          if (CurrentPower != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(CurrentPower);
           }
           if (position_ != null) {
             size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
@@ -613,11 +657,17 @@ namespace NakamaMinimalGame.PublicMatchState {
           if (other.Invulnerable != false) {
             Invulnerable = other.Invulnerable;
           }
-          if (other.Health != 0) {
-            Health = other.Health;
+          if (other.MaxHealth != 0) {
+            MaxHealth = other.MaxHealth;
           }
-          if (other.Power != 0) {
-            Power = other.Power;
+          if (other.MaxPower != 0) {
+            MaxPower = other.MaxPower;
+          }
+          if (other.CurrentHealth != 0) {
+            CurrentHealth = other.CurrentHealth;
+          }
+          if (other.CurrentPower != 0) {
+            CurrentPower = other.CurrentPower;
           }
           if (other.position_ != null) {
             if (position_ == null) {
@@ -670,29 +720,37 @@ namespace NakamaMinimalGame.PublicMatchState {
                 break;
               }
               case 56: {
-                Health = input.ReadInt32();
+                MaxHealth = input.ReadInt32();
                 break;
               }
               case 64: {
-                Power = input.ReadInt32();
+                MaxPower = input.ReadInt32();
                 break;
               }
-              case 74: {
+              case 72: {
+                CurrentHealth = input.ReadInt32();
+                break;
+              }
+              case 80: {
+                CurrentPower = input.ReadInt32();
+                break;
+              }
+              case 90: {
                 if (position_ == null) {
                   position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
                 }
                 input.ReadMessage(position_);
                 break;
               }
-              case 85: {
+              case 101: {
                 Rotation = input.ReadFloat();
                 break;
               }
-              case 93: {
+              case 109: {
                 GlobalCooldown = input.ReadFloat();
                 break;
               }
-              case 98: {
+              case 114: {
                 Target = input.ReadString();
                 break;
               }

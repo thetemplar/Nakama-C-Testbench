@@ -25,7 +25,8 @@ func init_db() *GameDB {
 		BaseCost			:0,
 		CostPerSec			:0,
 		CostPercentage  	:0,
-		SpellDamage			:10,
+		SpellDamageMin		:10,
+		SpellDamageMax		:20,
 		SpellDamageType		:GameDB_Spells_DamageType_Fire,
 		CastDuration		:0,
 		Duration			:0,
@@ -35,7 +36,7 @@ func init_db() *GameDB {
 		CasterAuraRequired  :0,
 		Mechanic			:GameDB_Spells_Mechanic_None,
 		
-		Targets				:[]GameDB_Spells_Target { GameDB_Spells_Target_Unit },
+		Target				:GameDB_Spells_Target_Unit,
 		ApplySpell			:[]*GameDB_Spells {},
 		
 		Interrupt			:GameDB_Interrupts_None,
@@ -43,9 +44,4 @@ func init_db() *GameDB {
 	GameDB.Spells[1] = fireball
 
 	return GameDB
-}
-
-
-func (spell GameDB_Spells) OnHit() {
-	
 }
