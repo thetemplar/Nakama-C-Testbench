@@ -12,6 +12,16 @@ func randomInt(min, max int32) int32 {
 func typeof(v interface{}) string {
 	return fmt.Sprintf("%T", v)
 }
+func containsEffectId(auras []*PublicMatchState_Aura, id int64, creator string) int64 {
+	i := int64(-1)
+    for _, a := range auras {
+		i++
+        if a.EffectId == id && a.Creator == creator{
+            return i
+        }
+    }
+    return -1
+}
 
 func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMatchState_Projectile, tickrate int) {
 	target := state.PublicMatchState.Interactable[projectile.Target]					
@@ -40,31 +50,49 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 }
 
 
-func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spells) {
+func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spell) {
 	for _, effect := range spell.Effect { 
 		fmt.Printf("Apply Effect on Hit %v\n", effect)
-		if(effect.Duration > 0) {
-			aura := &PublicMatchState_Aura{
-				CreatedAtTick: state.PublicMatchState.Tick,
-				EffectId: effect.Id,
-				Creator: projectile.Creator,
-			}
-			target.Auras = append(target.Auras, aura)
+		if effect.Duration > 0 {
+			i := containsEffectId(target.Auras, effect.Id, projectile.Creator)
+			if i == -1 {
+				aura := &PublicMatchState_Aura{
+					CreatedAtTick: state.PublicMatchState.Tick,
+					EffectId: effect.Id,
+					Creator: projectile.Creator,
+				}
+				target.Auras = append(target.Auras, aura)
 
-			clEntry := &PublicMatchState_CombatLogEntry {
-				Timestamp: state.PublicMatchState.Tick,
-				SourceId: aura.Creator,
-				DestinationId: target.Id,
-				SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{effect.Id},
-				Source: PublicMatchState_CombatLogEntry_Spell,
-				Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
-					Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Applied,
-				}},
+				clEntry := &PublicMatchState_CombatLogEntry {
+					Timestamp: state.PublicMatchState.Tick,
+					SourceId: aura.Creator,
+					DestinationId: target.Id,
+					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{effect.Id},
+					Source: PublicMatchState_CombatLogEntry_Spell,
+					Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
+						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Applied,
+					}},
+				}
+				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+			} else {
+				target.Auras[i].CreatedAtTick = state.PublicMatchState.Tick
+				target.Auras[i].AuraTickCount = 0
+
+				clEntry := &PublicMatchState_CombatLogEntry {
+					Timestamp: state.PublicMatchState.Tick,
+					SourceId: target.Auras[i].Creator,
+					DestinationId: target.Id,
+					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{effect.Id},
+					Source: PublicMatchState_CombatLogEntry_Spell,
+					Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
+						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Refreshed,
+					}},
+				}
+				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 			}
-			state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 		} else {
-
-			if typeof(effect.Type) == "GameDB_Effect_Damage" {
+			switch effect.Type.(type) {
+			case *GameDB_Effect_Damage:
 				dmg := randomInt(effect.Type.(*GameDB_Effect_Damage).ValueMin, effect.Type.(*GameDB_Effect_Damage).ValueMax);
 				target.CurrentHealth -= dmg;
 			
@@ -79,6 +107,10 @@ func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchS
 					}},
 				}
 				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+			default:
+			}
+			if typeof(effect.Type) == "*main.GameDB_Effect_Damage" {
+				
 			}
 		}
 	}

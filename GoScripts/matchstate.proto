@@ -34,6 +34,7 @@ message PublicMatchState {
 			CombatLogEntry_Interrupted interrupted = 9;
 			CombatLogEntry_Aura aura = 10;
 			CombatLogEntry_Cast cast = 11;
+			string system_message = 12;
 		}
 
 		message CombatLogEntry_Damage {
@@ -70,6 +71,9 @@ message PublicMatchState {
 				Failed = 2;
 			}
 			string failed_message = 2;
+		}
+		message CombatLogEntry_SystemMessage {
+			string message = 1;
 		}
 	}
 
@@ -108,6 +112,7 @@ message PublicMatchState {
 		int64 created_at_tick = 1;
 		string creator = 2;
 		int64 effect_id = 3;
+		int32 aura_tick_count = 4;
 	}
 
 	message Projectile {

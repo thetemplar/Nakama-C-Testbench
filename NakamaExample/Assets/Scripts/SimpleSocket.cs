@@ -82,6 +82,8 @@ public class SimpleSocket : MonoBehaviour
 
         var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
+        CombatLog.CombatLogList.AddRange(state.Combatlog.ToArray());
+
         //Debug.Log("Stopwatch-Server: 0:" + (state.Stopwatch[0] / 1000000f) + "ms 1>" + (state.Stopwatch[1] / 1000000f) + "ms 2>" + (state.Stopwatch[2] / 1000000f) + "ms 3>" + (state.Stopwatch[3] / 1000000f) + "ms 4>" + (state.Stopwatch[4] / 1000000f) + "ms");
         foreach (var player in state.Interactable)
         {
@@ -196,6 +198,7 @@ public class SimpleSocket : MonoBehaviour
     private async void _socket_OnConnect(object sender, EventArgs e)
     {
         Debug.Log("Socket connected.");
+        CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Socket connected." });
         _socket.OnMatchmakerMatched += _socket_OnMatchmakerMatched;
         //_socket.AddMatchmakerAsync();
 
@@ -212,6 +215,7 @@ public class SimpleSocket : MonoBehaviour
 
         await _socket.JoinMatchAsync(_matchId);
         Debug.Log("Created & joined match with ID: " + _matchId);
+        CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "reated & joined match with ID: " + _matchId });
         _socket.OnMatchState += _socket_OnMatchState;
 
         _socket.OnMatchPresence += (_, presence) =>
@@ -236,6 +240,7 @@ public class SimpleSocket : MonoBehaviour
     private void _socket_OnDisconnect(object sender, EventArgs e)
     {
         Debug.Log("Socket disconnected.");
+        CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Socket disconnected." });
     }
 
     private async void OnApplicationQuit()

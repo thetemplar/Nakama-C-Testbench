@@ -101,6 +101,12 @@ public class UnitSelector : MonoBehaviour
                 _sendMessages.Add(cast);
                 _gcd = Time.time + 1.5f;
             }
+            if (Input.GetKey("3")) //  && _gcd > Time.time
+            {
+                var cast = new Client_Cast { SpellId = 3 };
+                _sendMessages.Add(cast);
+                _gcd = Time.time + 1.5f;
+            }
         }
     }
 

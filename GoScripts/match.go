@@ -243,7 +243,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			if currentPlayerPublic.GlobalCooldown <= 0 {
 				targetId := ""
 				distance := float32(0)
-				if state.(*MatchState).GameDB.Spells[msg.SpellId].Target != GameDB_Interrupts_None {
+				if state.(*MatchState).GameDB.Spells[msg.SpellId].Target != GameDB_Interrupt_None {
 					if currentPlayerPublic.Target != "" {	
 						targetId = currentPlayerPublic.Target
 						target := state.(*MatchState).PublicMatchState.Interactable[targetId]
@@ -325,13 +325,39 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		}
 	}
 
-	//did auras run off?	
+	//auras
 	for _, interactable := range state.(*MatchState).PublicMatchState.Interactable {		
 		if interactable == nil{
 			continue
 		}
+		i := 0
 		for _, aura := range interactable.Auras {
-			if int64(state.(*MatchState).GameDB.Effects[aura.EffectId].Duration * float32(tickrate)) + aura.CreatedAtTick  < tick {
+			effect := state.(*MatchState).GameDB.Effects[aura.EffectId]
+
+			switch effect.Type.(type) {
+			case *GameDB_Effect_Apply_Aura_Periodic_Damage:
+				if int64(float32(aura.AuraTickCount + 1) * effect.Type.(*GameDB_Effect_Apply_Aura_Periodic_Damage).Intervall * float32(tickrate)) + aura.CreatedAtTick < tick {
+					aura.AuraTickCount++
+					dmg := randomInt(effect.Type.(*GameDB_Effect_Apply_Aura_Periodic_Damage).ValueMin, effect.Type.(*GameDB_Effect_Apply_Aura_Periodic_Damage).ValueMax);
+					interactable.CurrentHealth -= dmg;
+				
+					clEntry := &PublicMatchState_CombatLogEntry {
+						Timestamp: state.(*MatchState).PublicMatchState.Tick,
+						SourceId: aura.Creator,
+						DestinationId: interactable.Id,
+						SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{effect.Id},
+						Source: PublicMatchState_CombatLogEntry_Spell,
+						Type: &PublicMatchState_CombatLogEntry_Damage{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Damage{
+							Amount: dmg,
+						}},
+					}
+					state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
+				}
+			}
+			
+
+			//is it depleted?
+			if int64(effect.Duration * float32(tickrate)) + aura.CreatedAtTick < tick {
 				clEntry := &PublicMatchState_CombatLogEntry {
 					Timestamp: tick,
 					SourceId: aura.Creator,
@@ -344,9 +370,13 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				}
 				state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
 
-				aura = nil
+				fmt.Printf("did auras run off > %v\n", aura)
+			} else { //stays in the list			
+				interactable.Auras[i] = aura
+				i++				
 			}
 		}
+		interactable.Auras = interactable.Auras[:i]
 	}
 	
 	//calculate game/npcs/objects
