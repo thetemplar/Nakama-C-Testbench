@@ -9,6 +9,9 @@ import (
 func randomInt(min, max int32) int32 {
     return min + rand.Int31n(max-min)
 }
+func typeof(v interface{}) string {
+	return fmt.Sprintf("%T", v)
+}
 
 func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMatchState_Projectile, tickrate int) {
 	target := state.PublicMatchState.Interactable[projectile.Target]					
@@ -38,40 +41,46 @@ func (p PublicMatchState_Projectile) Run(state *MatchState, projectile *PublicMa
 
 
 func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchState_Interactable, projectile *PublicMatchState_Projectile, spell *GameDB_Spells) {
-	for _, aura_spell := range spell.ApplySpell { 
-		fmt.Printf("Apply Spell on Hit %v\n", aura_spell)
-		aura := &PublicMatchState_Aura{
-			CreatedAtTick: state.PublicMatchState.Tick,
-			SpellId: aura_spell.Id,
-			Creator: projectile.Creator,
-		}
-		target.Auras = append(target.Auras, aura)
+	for _, effect := range spell.Effect { 
+		fmt.Printf("Apply Effect on Hit %v\n", effect)
+		if(effect.Duration > 0) {
+			aura := &PublicMatchState_Aura{
+				CreatedAtTick: state.PublicMatchState.Tick,
+				EffectId: effect.Id,
+				Creator: projectile.Creator,
+			}
+			target.Auras = append(target.Auras, aura)
 
-		clEntry := &PublicMatchState_CombatLogEntry {
-			Timestamp: state.PublicMatchState.Tick,
-			SourceId: aura.Creator,
-			DestinationId: target.Id,
-			SourceSpellId: aura_spell.Id,
-			Source: PublicMatchState_CombatLogEntry_Spell,
-			Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
-				Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Applied,
-			}},
+			clEntry := &PublicMatchState_CombatLogEntry {
+				Timestamp: state.PublicMatchState.Tick,
+				SourceId: aura.Creator,
+				DestinationId: target.Id,
+				SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{effect.Id},
+				Source: PublicMatchState_CombatLogEntry_Spell,
+				Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
+					Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Applied,
+				}},
+			}
+			state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+		} else {
+
+			if typeof(effect.Type) == "GameDB_Effect_Damage" {
+				dmg := randomInt(effect.Type.(*GameDB_Effect_Damage).ValueMin, effect.Type.(*GameDB_Effect_Damage).ValueMax);
+				target.CurrentHealth -= dmg;
+			
+				clEntry := &PublicMatchState_CombatLogEntry {
+					Timestamp: state.PublicMatchState.Tick,
+					SourceId: projectile.Creator,
+					DestinationId: target.Id,
+					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{effect.Id},
+					Source: PublicMatchState_CombatLogEntry_Spell,
+					Type: &PublicMatchState_CombatLogEntry_Damage{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Damage{
+						Amount: dmg,
+					}},
+				}
+				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+			}
 		}
-		state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 	}
 
-	dmg := randomInt(spell.SpellDamageMin, spell.SpellDamageMax);
-	target.CurrentHealth -= dmg;
-
-	clEntry := &PublicMatchState_CombatLogEntry {
-		Timestamp: state.PublicMatchState.Tick,
-		SourceId: projectile.Creator,
-		DestinationId: target.Id,
-		SourceSpellId: spell.Id,
-		Source: PublicMatchState_CombatLogEntry_Spell,
-		Type: &PublicMatchState_CombatLogEntry_Damage{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Damage{
-			Amount: dmg,
-		}},
-	}
-	state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 }

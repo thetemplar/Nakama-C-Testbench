@@ -16,103 +16,181 @@ func init_db() *GameDB {
 		ThreadModifier		:1,
 		Cooldown			:0,
 		GlobalCooldown		:1.5,
-		Dispellable			:false,
+	
 		MissileID			:1,
 		EffectID			:0,
 		IconID		 		:1,
-		Speed				:100,
-		Radius				:0,
-		BaseCost			:0,
+		Speed				:60,
+		ApplicationType     :GameDB_Spells_ApplicationType_Missile,
+	
+		BaseCost			:10,
 		CostPerSec			:0,
 		CostPercentage  	:0,
-		SpellDamageMin		:10,
-		SpellDamageMax		:20,
-		SpellDamageType		:GameDB_Spells_DamageType_Fire,
-		CastDuration		:1,
-		Duration			:0,
+		
+		CastTime 			:1,
 		Range				:100,
 		FacingFront			:true,
-		TargetAuraRequired  :0,
-		CasterAuraRequired  :0,
-		Mechanic			:GameDB_Spells_Mechanic_None,
+	
+		TargetAuraRequired 	:0,
+		CasterAuraRequired 	:0,
 		
 		Target				:GameDB_Spells_Target_Unit,
-		ApplySpell			:[]*GameDB_Spells {},
+	
+		Effect			    :[]*GameDB_Effect { GameDB.Effects[1] },
 		
-		Interrupt			:GameDB_Interrupts_None,
+		InterruptedBy		:GameDB_Interrupts_OnMovement,
 	}
 	GameDB.Spells[1] = fireball
-
 	
-	chilled := &GameDB_Spells{
-		Id					:3,
-		Name 				:"Chilled",
-		Description 		:"Chilled",
-		Visible				:true,
-		ThreadModifier		:1,
-		Cooldown			:0,
-		GlobalCooldown		:1.5,
-		Dispellable			:false,
-		MissileID			:0,
-		EffectID			:1,
-		IconID		 		:3,
-		Speed				:0,
-		Radius				:0,
-		BaseCost			:0,
-		CostPerSec			:0,
-		CostPercentage  	:0,
-		SpellDamageMin		:0,
-		SpellDamageMax		:0,
-		SpellDamageType		:GameDB_Spells_DamageType_Frost,
-		CastDuration		:0,
-		Duration			:5,
-		Range				:0,
-		FacingFront			:false,
-		TargetAuraRequired  :0,
-		CasterAuraRequired  :0,
-		Mechanic			:GameDB_Spells_Mechanic_Slowed,
-		
-		Target				:GameDB_Spells_Target_None,
-		ApplySpell			:[]*GameDB_Spells {},
-		
-		Interrupt			:GameDB_Interrupts_None,
-	}
-	GameDB.Spells[3] = chilled
-
-	
-	frostball := &GameDB_Spells{
+	frostbolt := &GameDB_Spells{
 		Id					:2,
-		Name 				:"Frostball",
-		Description 		:"Frostball",
+		Name 				:"Frostbolt",
+		Description 		:"Frostbolt",
 		Visible				:true,
 		ThreadModifier		:1,
 		Cooldown			:0,
 		GlobalCooldown		:1.5,
-		Dispellable			:false,
+	
 		MissileID			:2,
 		EffectID			:0,
 		IconID		 		:2,
-		Speed				:50,
-		Radius				:0,
-		BaseCost			:0,
+		Speed				:40,
+		ApplicationType     :GameDB_Spells_ApplicationType_Missile,
+	
+		BaseCost			:5,
 		CostPerSec			:0,
 		CostPercentage  	:0,
-		SpellDamageMin		:5,
-		SpellDamageMax		:10,
-		SpellDamageType		:GameDB_Spells_DamageType_Frost,
-		CastDuration		:0,
-		Duration			:0,
-		Range				:100,
+		
+		CastTime 			:0,
+		Range				:70,
 		FacingFront			:true,
-		TargetAuraRequired  :0,
-		CasterAuraRequired  :0,
-		Mechanic			:GameDB_Spells_Mechanic_None,
+	
+		TargetAuraRequired 	:0,
+		CasterAuraRequired 	:0,
 		
 		Target				:GameDB_Spells_Target_Unit,
-		ApplySpell			:[]*GameDB_Spells { GameDB.Spells[3] },
+	
+		Effect			    :[]*GameDB_Effect { GameDB.Effects[2], GameDB.Effects[3] },
 		
-		Interrupt			:GameDB_Interrupts_None,
+		InterruptedBy		:GameDB_Interrupts_None,
 	}
-	GameDB.Spells[2] = frostball
+	GameDB.Spells[2] = frostbolt
+
+	sunburn := &GameDB_Spells{
+		Id					:3,
+		Name 				:"Sunburn",
+		Description 		:"Sunburn",
+		Visible				:true,
+		ThreadModifier		:1,
+		Cooldown			:0,
+		GlobalCooldown		:1.5,
+	
+		MissileID			:3,
+		EffectID			:0,
+		IconID		 		:3,
+		Speed				:1000,
+		ApplicationType     :GameDB_Spells_ApplicationType_Beam,
+	
+		BaseCost			:5,
+		CostPerSec			:0,
+		CostPercentage  	:0,
+		
+		CastTime 			:0,
+		Range				:70,
+		FacingFront			:true,
+	
+		TargetAuraRequired 	:0,
+		CasterAuraRequired 	:0,
+		
+		Target				:GameDB_Spells_Target_Unit,
+	
+		Effect			    :[]*GameDB_Effect { GameDB.Effects[4], GameDB.Effects[5] },
+		
+		InterruptedBy		:GameDB_Interrupts_None,
+	}
+	GameDB.Spells[3] = sunburn
+
+
+	
+	fireball_dmg := &GameDB_Effect{
+		Id				:1,
+		Name 			:"Fireball",
+		Description 	:"Fireball",
+		Visible			:true,
+		Dispellable		:false,
+		Duration 		:0,
+		EffectID		:0,
+		Type 			: &GameDB_Effect_Damage {
+			Type: GameDB_Spells_DamageType_Fire,
+			ValueMin: 20,
+			ValueMax: 30,
+		},
+	}
+	GameDB.Effects[1] = fireball_dmg
+	
+	frostbolt_dmg := &GameDB_Effect{
+		Id				:2,
+		Name 			:"Frostbolt",
+		Description 	:"Frostbolt",
+		Visible			:true,
+		Dispellable		:false,
+		Duration 		:0,
+		EffectID		:0,
+		Type 			: &GameDB_Effect_Damage {
+			Type: GameDB_Spells_DamageType_Frost,
+			ValueMin: 10,
+			ValueMax: 15,
+		},
+	}
+	GameDB.Effects[2] = frostbolt_dmg
+
+	chilled := &GameDB_Effect{
+		Id				:3,
+		Name 			:"Chilled",
+		Description 	:"Chilled",
+		Visible			:true,
+		Dispellable		:true,
+		Duration 		:5,
+		EffectID		:1,
+		Type 			: &GameDB_Effect_Apply_Aura_Mod {
+			Stat: GameDB_Stats_Speed,
+			Value: -10,
+		},
+	}
+	GameDB.Effects[3] = chilled
+
+	sunburn_dmg := &GameDB_Effect{
+		Id				:4,
+		Name 			:"Sunburn",
+		Description 	:"Sunburn Initial Damage",
+		Visible			:true,
+		Dispellable		:false,
+		Duration 		:0,
+		EffectID		:0,
+		Type 			: &GameDB_Effect_Damage {
+			Type: GameDB_Spells_DamageType_Fire,
+			ValueMin: 5,
+			ValueMax: 10,
+		},
+	}
+	GameDB.Effects[4] = sunburn_dmg
+
+	sunburn_dot := &GameDB_Effect{
+		Id				:5,
+		Name 			:"Sunburn",
+		Description 	:"Sunburn DoT",
+		Visible			:true,
+		Dispellable		:false,
+		Duration 		:10,
+		EffectID		:2,
+		Type 			: &GameDB_Effect_Apply_Aura_Periodic_Damage {
+			Type: GameDB_Spells_DamageType_Fire,
+			ValueMin: 2,
+			ValueMax: 4,
+			Intervall: 2,
+		},
+	}
+	GameDB.Effects[5] = sunburn_dot
+
 	return GameDB
 }

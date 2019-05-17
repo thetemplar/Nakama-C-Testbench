@@ -163,11 +163,6 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()];
 
 	BaseMovementSpeed := float32(20)
-	for _, aura := range currentPlayerPublic.Auras {
-		if state.(*MatchState).GameDB.Spells[aura.SpellId].Mechanic == GameDB_Spells_Mechanic_Slowed {
-			BaseMovementSpeed = 10
-		}
-	}
 	
 	msg := &Client_Character{}
 	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
@@ -257,7 +252,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 						clEntry := &PublicMatchState_CombatLogEntry {
 							Timestamp: tick,
 							SourceId: message.GetUserId(),
-							SourceSpellId: msg.SpellId,
+							SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{msg.SpellId},
 							Source: PublicMatchState_CombatLogEntry_Spell,
 							Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
 								Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
@@ -290,7 +285,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 					clEntry := &PublicMatchState_CombatLogEntry {
 						Timestamp: tick,
 						SourceId: message.GetUserId(),
-						SourceSpellId: msg.SpellId,
+						SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{msg.SpellId},
 						Source: PublicMatchState_CombatLogEntry_Spell,
 						Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
 							Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
@@ -303,7 +298,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				clEntry := &PublicMatchState_CombatLogEntry {
 					Timestamp: tick,
 					SourceId: message.GetUserId(),
-					SourceSpellId: msg.SpellId,
+					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{msg.SpellId},
 					Source: PublicMatchState_CombatLogEntry_Spell,
 					Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
 						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
@@ -336,12 +331,12 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 		for _, aura := range interactable.Auras {
-			if int64(state.(*MatchState).GameDB.Spells[aura.SpellId].Duration * float32(tickrate)) + aura.CreatedAtTick  < tick {
+			if int64(state.(*MatchState).GameDB.Effects[aura.EffectId].Duration * float32(tickrate)) + aura.CreatedAtTick  < tick {
 				clEntry := &PublicMatchState_CombatLogEntry {
 					Timestamp: tick,
 					SourceId: aura.Creator,
 					DestinationId: interactable.Id,
-					SourceSpellId: aura.SpellId,
+					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceEffectId{aura.EffectId},
 					Source: PublicMatchState_CombatLogEntry_Spell,
 					Type: &PublicMatchState_CombatLogEntry_Aura{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Aura{
 						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Aura_Depleted,

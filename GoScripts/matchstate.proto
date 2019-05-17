@@ -16,7 +16,10 @@ message PublicMatchState {
 		string destination_id = 3;
 
 		CombatLogEntry_Source source = 4;
-		int64 source_spell_id = 5;
+		oneof source_spell_effect_id {
+			int64 source_spell_id = 5;
+			int64 source_effect_id = 6;
+		}
 		enum CombatLogEntry_Source {
 			Swing = 0;
 			Range = 1;
@@ -26,11 +29,11 @@ message PublicMatchState {
 		}
 
 		oneof type {
-			CombatLogEntry_Damage damage = 6;
-			bool missed = 7;
-			CombatLogEntry_Interrupted interrupted = 8;
-			CombatLogEntry_Aura aura = 9;
-			CombatLogEntry_Cast cast = 10;
+			CombatLogEntry_Damage damage = 7;
+			bool missed = 8;
+			CombatLogEntry_Interrupted interrupted = 9;
+			CombatLogEntry_Aura aura = 10;
+			CombatLogEntry_Cast cast = 11;
 		}
 
 		message CombatLogEntry_Damage {
@@ -104,7 +107,7 @@ message PublicMatchState {
 	message Aura {
 		int64 created_at_tick = 1;
 		string creator = 2;
-		int64 spell_id = 3;
+		int64 effect_id = 3;
 	}
 
 	message Projectile {

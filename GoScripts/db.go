@@ -2,6 +2,7 @@ package main
 
 type GameDB struct {
 	Spells				map[int64]*GameDB_Spells
+	Effects				map[int64]*GameDB_Effect
 	Procs				map[int64]*GameDB_Procs
 	
 	Spellbook			[]*GameDB_Spells
@@ -35,32 +36,85 @@ type GameDB_Spells struct {
 	ThreadModifier		int32
 	Cooldown			float32
 	GlobalCooldown		float32
-	Dispellable			bool
+
 	MissileID			int32
 	EffectID			int32
 	IconID		 		int64
 	Speed				float32
-	Radius				float32
+	ApplicationType     GameDB_Spells_ApplicationType
+
 	BaseCost			int32
 	CostPerSec			int32
 	CostPercentage  	int32
-	SpellDamageMin		int32
-	SpellDamageMax		int32
-	SpellDamageType		GameDB_Spells_DamageType
-	CastDuration		float32
-	Duration			float32
+	
+	CastTime 			float32
 	Range				float32
 	FacingFront			bool
+
 	TargetAuraRequired 	int64
 	CasterAuraRequired 	int64
-	Mechanic			GameDB_Spells_Mechanic
 	
 	Target				GameDB_Spells_Target
-	ApplySpell			[]*GameDB_Spells
+
+	Effect			    []*GameDB_Effect
 	
-	Interrupt			GameDB_Interrupts
+	InterruptedBy		GameDB_Interrupts
 }
 
+type GameDB_Spells_ApplicationType int
+const (
+	GameDB_Spells_ApplicationType_Instant = 0
+	GameDB_Spells_ApplicationType_Missile = 1
+	GameDB_Spells_ApplicationType_Beam = 2
+	GameDB_Spells_ApplicationType_AoE = 3
+	GameDB_Spells_ApplicationType_Cone = 4
+	GameDB_Spells_ApplicationType_Summon = 5
+)
+
+type GameDB_Effect struct {
+	Id				int64
+	Name 			string
+	Description 	string
+	Visible			bool
+	EffectID		int64
+	Duration 		float32
+	Dispellable		bool
+	Type 			interface{}
+}
+
+type GameDB_Effect_Damage struct {
+	Type 			GameDB_Spells_DamageType
+	ValueMin 		int32
+	ValueMax 		int32
+}
+
+type GameDB_Effect_Heal struct {
+	ValueMin 		int32
+	ValueMax 		int32
+}
+
+type GameDB_Effect_Apply_Aura_Periodic_Damage struct {
+	Type 			GameDB_Spells_DamageType
+	ValueMin 		int32
+	ValueMax 		int32
+	Intervall   	float32
+}
+
+type GameDB_Effect_Apply_Aura_Periodic_Heal struct {
+	ValueMin 		int32
+	ValueMax 		int32
+	Intervall   	float32
+}
+
+type GameDB_Effect_Apply_Aura_Mod struct {
+	Stat			GameDB_Stats
+	Value 			int32
+}
+
+type GameDB_Stats int
+const (
+	GameDB_Stats_Speed = 0
+)
 
 type GameDB_Spells_DamageType int
 const (
