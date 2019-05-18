@@ -97,10 +97,10 @@ func (p PublicMatchState_Interactable) finishCast(state *MatchState, spellId int
 }
 
 func (p PublicMatchState_Interactable) recalcStats(state *MatchState) {
+	p.getInternalPlayer(state).StatModifiers = PlayerStats {}
 	for _, aura := range p.Auras {
 		effect := state.GameDB.Effects[aura.EffectId]
 		
-		p.getInternalPlayer(state).StatModifiers.MovementSpeed = 0.0
 		switch effect.Type.(type) {
 		case *GameDB_Effect_Apply_Aura_Mod:
 			if effect.Type.(*GameDB_Effect_Apply_Aura_Mod).Stat == GameDB_Stat_Speed && effect.Type.(*GameDB_Effect_Apply_Aura_Mod).Value > p.getInternalPlayer(state).StatModifiers.MovementSpeed {
