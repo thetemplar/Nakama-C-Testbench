@@ -74,6 +74,11 @@ func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchS
 					}},
 				}
 				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+
+				switch effect.Type.(type) {
+				case *GameDB_Effect_Apply_Aura_Mod:
+					target.recalcStats(state)
+				}
 			} else {
 				target.Auras[i].CreatedAtTick = state.PublicMatchState.Tick
 				target.Auras[i].AuraTickCount = 0
@@ -107,10 +112,6 @@ func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchS
 					}},
 				}
 				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
-			default:
-			}
-			if typeof(effect.Type) == "*main.GameDB_Effect_Damage" {
-				
 			}
 		}
 	}

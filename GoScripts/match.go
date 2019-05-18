@@ -17,26 +17,11 @@ type MatchState struct {
 
 	InternalPlayer      map[string]*InternalPlayer
 
-	//OldMatchState     map[int64]PublicMatchState
-
-	OldMatchState       []PublicMatchState
-
 	ProjectileCounter	int64
 	NpcCounter			int64
 	
 	GameDB				*GameDB
 }  
-
-type InternalPlayer struct {
-	Presence                runtime.Presence
-	Id                      string
-
-	LastMessage             runtime.MatchData
-	LastMessageServerTick   int64
-	LastMessageClientTick   int64
-	MissingCount			int
-	MessageCountThisFrame   int
-}
 
 type Match struct{
 
@@ -48,12 +33,7 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 	for _, entry := range params { 
 		logger.Printf("%+v\n", entry)
 	}
-	/*
-	if d, ok := params["debug"]; ok {
-		if dv, ok := d.(bool); ok {
-			debugFlag = dv
-		}
-	}*/
+
 	state := &MatchState{
 		Debug: false,
 		EmptyCounter : 0,
@@ -63,7 +43,6 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 			Combatlog: make([]*PublicMatchState_CombatLogEntry, 0),
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
-		//OldMatchState: make(map[int64]PublicMatchState),
 	}
 	
 	//create spellbook
@@ -86,14 +65,25 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 		Auras: make([]*PublicMatchState_Aura, 0),
 	}
 	state.PublicMatchState.Interactable[enemy.Id] = enemy
+	enemyInternal := &InternalPlayer{
+		Id: "npc_" + strconv.FormatInt(state.NpcCounter, 16),
+		Presence: nil,
+		BasePlayerStats: PlayerStats {
+			MovementSpeed: 20.0,
+			MaxHealth: 100,
+			MaxPower: 100,
+		},
+		StatModifiers: PlayerStats {},
+	}
+	state.InternalPlayer[enemyInternal.Id] = enemyInternal
 	state.NpcCounter++
 
-	if state.Debug {
-		logger.Printf("match init, starting with debug: %v", state.Debug)
-	}
 	tickRate := 10
 	label := ""
 
+	if state.Debug {
+		logger.Printf("match init, starting with debug: %v at tickrate %v", state.Debug, tickRate)
+	} 
 	return state, tickRate, label
 }
 
@@ -101,7 +91,6 @@ func (m *Match) MatchJoinAttempt(ctx context.Context, logger runtime.Logger, db 
 	if state.(*MatchState).Debug {
 		logger.Printf("match join attempt username %v user_id %v session_id %v node %v with metadata %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId(), metadata)
 	}
-
 	return state, true, ""
 }
 
@@ -123,6 +112,12 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).InternalPlayer[presence.GetUserId()] = &InternalPlayer{
 			Id: presence.GetUserId(),
 			Presence: presence,
+			BasePlayerStats: PlayerStats {
+				MovementSpeed: 20.0,
+				MaxHealth: 100,
+				MaxPower: 100,
+			},
+			StatModifiers: PlayerStats {},
 		}
 		
 		logger.Printf("match join username %v user_id %v session_id %v node %v", presence.GetUsername(), presence.GetUserId(), presence.GetSessionId(), presence.GetNodeId())
@@ -161,8 +156,6 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 	}
 	currentPlayerInternal := state.(*MatchState).InternalPlayer[message.GetUserId()];
 	currentPlayerPublic   := state.(*MatchState).PublicMatchState.Interactable[message.GetUserId()];
-
-	BaseMovementSpeed := float32(20)
 	
 	msg := &Client_Character{}
 	if err := proto.Unmarshal(message.GetData(), msg); err != nil {
@@ -171,10 +164,11 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 
 	//ClientState := state.(*MatchState).OldMatchState[msg.ServerTickPerformingOn]
 	add := PublicMatchState_Vector2Df {
-		X: msg.XAxis / float32(currentPlayerInternal.MessageCountThisFrame) * (BaseMovementSpeed / float32(tickrate)),
-		Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * (BaseMovementSpeed / float32(tickrate)),
+		X: msg.XAxis / float32(currentPlayerInternal.MessageCountThisFrame) * ((currentPlayerInternal.BasePlayerStats.MovementSpeed - currentPlayerInternal.StatModifiers.MovementSpeed) / float32(tickrate)),
+		Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * ((currentPlayerInternal.BasePlayerStats.MovementSpeed - currentPlayerInternal.StatModifiers.MovementSpeed) / float32(tickrate)),
 	}
-	rotated := PublicMatchState_Vector2Df_Rotate(add, msg.Rotation)
+
+	rotated := add.rotate(msg.Rotation)
 	currentPlayerPublic.Position.X += rotated.X;
 	currentPlayerPublic.Position.Y += rotated.Y;
 	currentPlayerPublic.Rotation = msg.Rotation;
@@ -201,12 +195,22 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	state.(*MatchState).PublicMatchState.Combatlog = make([]*PublicMatchState_CombatLogEntry, 0)
 	tickrate := ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int);
 
-	//clear states
-	for _, player := range state.(*MatchState).PublicMatchState.Interactable { 
-		if player == nil || player.Type != PublicMatchState_Interactable_Player {
+	
+	for _, player := range state.(*MatchState).InternalPlayer {		
+		if player == nil || player.CastingSpellId <= 0 {
 			continue
 		}
-		player.GlobalCooldown -= float32(1)/float32(ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int));
+		
+		//finish casts
+		if int64(state.(*MatchState).GameDB.Spells[player.CastingSpellId].CastTime * float32(tickrate)) + player.CastingTickStarted < tick {
+			state.(*MatchState).PublicMatchState.Interactable[player.Id].finishCast(state.(*MatchState), player.CastingSpellId, player.CastingTargeted)
+			player.CastingSpellId = -1
+			player.CastingTickStarted = 0
+			player.CastingTargeted = ""
+		}
+			
+		//substract GCD
+		player.getPublicPlayer(state.(*MatchState)).GlobalCooldown -= float32(1)/float32(ctx.Value(runtime.RUNTIME_CTX_MATCH_TICK_RATE).(int));
 	}
 
 	//get new input-counts
@@ -239,77 +243,10 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			if err := proto.Unmarshal(message.GetData(), msg); err != nil {
 				logger.Printf("Failed to parse incoming SendPackage Client_Cast:", err)
 			}
-
-			if currentPlayerPublic.GlobalCooldown <= 0 {
-				targetId := ""
-				distance := float32(0)
-				if state.(*MatchState).GameDB.Spells[msg.SpellId].Target != GameDB_Interrupt_None {
-					if currentPlayerPublic.Target != "" {	
-						targetId = currentPlayerPublic.Target
-						target := state.(*MatchState).PublicMatchState.Interactable[targetId]
-						distance = float32(math.Sqrt(math.Pow(float64(currentPlayerPublic.Position.X - target.Position.X), 2) + math.Pow(float64(currentPlayerPublic.Position.Y - target.Position.Y), 2)))	
-					} else {
-						clEntry := &PublicMatchState_CombatLogEntry {
-							Timestamp: tick,
-							SourceId: message.GetUserId(),
-							SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{msg.SpellId},
-							Source: PublicMatchState_CombatLogEntry_Spell,
-							Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
-								Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-								FailedMessage: "No Target Selected",
-							}},
-						}
-						state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
-						continue
-					}	
-				}		
-				
-				if distance <= state.(*MatchState).GameDB.Spells[msg.SpellId].Range {
-					fmt.Printf("cast spell: %v\n", msg.SpellId)
-					currentPlayerPublic.GlobalCooldown = state.(*MatchState).GameDB.Spells[msg.SpellId].GlobalCooldown
-					proj := &PublicMatchState_Projectile{
-						Id: "p_" + strconv.FormatInt(state.(*MatchState).ProjectileCounter, 16),
-						SpellId: msg.SpellId,
-						Position: &PublicMatchState_Vector2Df {
-							X: currentPlayerPublic.Position.X,
-							Y: currentPlayerPublic.Position.Y,
-						},
-						Rotation: currentPlayerPublic.Rotation,
-						CreatedAtTick: tick,
-						Target: targetId,
-						Speed: state.(*MatchState).GameDB.Spells[msg.SpellId].Speed,
-					}
-					state.(*MatchState).PublicMatchState.Projectile[proj.Id] = proj
-					state.(*MatchState).ProjectileCounter++					
-				} else {
-					clEntry := &PublicMatchState_CombatLogEntry {
-						Timestamp: tick,
-						SourceId: message.GetUserId(),
-						SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{msg.SpellId},
-						Source: PublicMatchState_CombatLogEntry_Spell,
-						Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
-							Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-							FailedMessage: "Out of Range!",
-						}},
-					}
-					state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
-				}	
-			} else {
-				clEntry := &PublicMatchState_CombatLogEntry {
-					Timestamp: tick,
-					SourceId: message.GetUserId(),
-					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{msg.SpellId},
-					Source: PublicMatchState_CombatLogEntry_Spell,
-					Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
-						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-						FailedMessage: "Cannot do that now!",
-					}},
-				}
-				state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
-			}
+			currentPlayerPublic.startCast(state.(*MatchState), msg.SpellId)
 		}
 	}
-
+	
 	//did a player not send an package? then re-do his last
 	for _, player := range state.(*MatchState).InternalPlayer {		
 		if player == nil {
@@ -331,6 +268,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			continue
 		}
 		i := 0
+		doRecalc := false
 		for _, aura := range interactable.Auras {
 			effect := state.(*MatchState).GameDB.Effects[aura.EffectId]
 
@@ -353,8 +291,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 					}
 					state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
 				}
-			}
-			
+			}			
 
 			//is it depleted?
 			if int64(effect.Duration * float32(tickrate)) + aura.CreatedAtTick < tick {
@@ -370,13 +307,22 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				}
 				state.(*MatchState).PublicMatchState.Combatlog = append(state.(*MatchState).PublicMatchState.Combatlog, clEntry)
 
-				fmt.Printf("did auras run off > %v\n", aura)
+				fmt.Printf("auras run off > %v\n", aura)
+
+				switch effect.Type.(type) {
+				case *GameDB_Effect_Apply_Aura_Mod:
+					doRecalc = true //cant do "recalcStats" here, since its not "deleted" yes. only after the loop is complete and Auras[:i] is called!
+				}
 			} else { //stays in the list			
 				interactable.Auras[i] = aura
 				i++				
 			}
 		}
 		interactable.Auras = interactable.Auras[:i]
+
+		if doRecalc {			
+			interactable.recalcStats(state.(*MatchState))
+		}
 	}
 	
 	//calculate game/npcs/objects
@@ -397,19 +343,18 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 
 	//send new game state (by creating protobuf message)
 	for _, player := range state.(*MatchState).InternalPlayer {		
-		if player == nil {
+		if player == nil || player.Presence == nil {
 			continue
 		}
 		player.MessageCountThisFrame = 0
 
 		currentPlayerPublic := state.(*MatchState).PublicMatchState.Interactable[player.Id];
 
-		fmt.Printf("%v @ %v | %v  GCD: %v\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y, currentPlayerPublic.GlobalCooldown)
-
 		out, err := proto.Marshal(&state.(*MatchState).PublicMatchState)
 		if err != nil {
 				logger.Printf("Failed to encode PublicMatchState:", err)
 		}
+		fmt.Printf("%v @ %v | %v  GCD: %v | bytes: %v kB/s\n", player.Id, currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y, currentPlayerPublic.GlobalCooldown, float64(len(out) * tickrate) / 1000.0)
 		dispatcher.BroadcastMessage(1, out, []runtime.Presence { player.Presence }, nil)
 	}	
 	
@@ -426,7 +371,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		state.(*MatchState).EmptyCounter = 0
 	}
 	
-	if state.(*MatchState).EmptyCounter == 20 {
+	if state.(*MatchState).EmptyCounter == 10 {
 		return nil
 	}
 	

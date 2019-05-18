@@ -108,7 +108,7 @@ func init_db() *GameDB {
 		CostPerSec			:0,
 		CostPercentage  	:0,
 		
-		CastTime 			:1,
+		CastTime 			:2,
 		Range				:100,
 		FacingFront			:true,
 	

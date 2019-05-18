@@ -108,7 +108,7 @@ type GameDB_Effect_Apply_Aura_Periodic_Heal struct {
 
 type GameDB_Effect_Apply_Aura_Mod struct {
 	Stat			GameDB_Stat
-	Value 			int32
+	Value 			float32
 }
 
 type GameDB_Stat int
