@@ -12,6 +12,9 @@ type InternalPlayer struct {
 	LastMessageClientTick   int64
 	MissingCount			int
 	MessageCountThisFrame   int
+
+	//movement	
+	TriangleIndex 			int64
 	
 	//casts
 	CastingSpellId 			int64

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"math"
+	"time"
 	"database/sql"
 	"github.com/heroiclabs/nakama/runtime"
 	"github.com/golang/protobuf/proto"
@@ -21,10 +22,13 @@ type MatchState struct {
 	NpcCounter			int64
 	
 	GameDB				*GameDB
+	Map					*Map
+	
+	runtimeSet			[]int64
+	runtimeSetIndex		int
 }  
 
 type Match struct{
-
 }
 
 
@@ -43,10 +47,12 @@ func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB
 			Combatlog: make([]*PublicMatchState_CombatLogEntry, 0),
 		},
 		InternalPlayer: make(map[string]*InternalPlayer),
+		runtimeSet: make([]int64, 20),
 	}
 	
 	//create spellbook
 	state.GameDB = init_db()
+	state.Map = map_init()
 
 	//create map npcs:
 	enemy := &PublicMatchState_Interactable{
@@ -100,8 +106,8 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 			Id: presence.GetUserId(),
 			Type: PublicMatchState_Interactable_Player,
 			Position: &PublicMatchState_Vector2Df {
-				X: -10,
-				Y: -5,
+				X: 22,
+				Y: 7.555557,
 			},
 			CurrentHealth: 100,
 			CurrentPower: 100,
@@ -116,7 +122,8 @@ func (m *Match) MatchJoin(ctx context.Context, logger runtime.Logger, db *sql.DB
 				MovementSpeed: 20.0,
 				MaxHealth: 100,
 				MaxPower: 100,
-			},
+			},			
+			TriangleIndex: -1,
 			StatModifiers: PlayerStats {},
 		}
 		
@@ -168,19 +175,46 @@ func PerformInputs(logger runtime.Logger, state interface{}, message runtime.Mat
 		Y: msg.YAxis / float32(currentPlayerInternal.MessageCountThisFrame) * ((currentPlayerInternal.BasePlayerStats.MovementSpeed - currentPlayerInternal.StatModifiers.MovementSpeed) / float32(tickrate)),
 	}
 
-	rotated := add.rotate(msg.Rotation)
-	currentPlayerPublic.Position.X += rotated.X;
-	currentPlayerPublic.Position.Y += rotated.Y;
+	if currentPlayerInternal.CastingSpellId > 0 && state.(*MatchState).GameDB.Spells[currentPlayerInternal.CastingSpellId].InterruptedBy != GameDB_Interrupt_None && (msg.YAxis != 0 || msg.XAxis != 0) {
+		fmt.Printf("cancelCast %v\n", currentPlayerInternal.CastingSpellId)
+		currentPlayerPublic.cancelCast(state.(*MatchState))
+	}
+
+	rotatedAdd := add.rotate(msg.Rotation)
+	currentPlayerPublic.Position.X += rotatedAdd.X;
+	currentPlayerPublic.Position.Y += rotatedAdd.Y;
 	currentPlayerPublic.Rotation = msg.Rotation;
 	
 	currentPlayerPublic.Target = msg.Target;
 
-	//simple "wall"
-	if currentPlayerPublic.Position.X < -25 { currentPlayerPublic.Position.X = -25 }
-	if currentPlayerPublic.Position.X >  25 { currentPlayerPublic.Position.X =  25 }
-	if currentPlayerPublic.Position.Y < -25 { currentPlayerPublic.Position.Y = -25 }
-	if currentPlayerPublic.Position.Y >  25 { currentPlayerPublic.Position.Y =  25 }
-	
+	//am i still in my triangle?	
+	if currentPlayerInternal.TriangleIndex >= 0 {
+		isItIn, w1, w2, w3 := state.(*MatchState).Map.Triangles[currentPlayerInternal.TriangleIndex].isInTriangle(currentPlayerPublic.Position)
+		fmt.Printf("am i still in my triangle?: %v %v (w1:%v  w2:%v  w3:%v)\n", currentPlayerInternal.TriangleIndex, isItIn, w1, w2, w3)
+		if !isItIn {
+			currentPlayerInternal.TriangleIndex = -1
+		}
+	}
+
+	//no current triangle_index?
+	if currentPlayerInternal.TriangleIndex < 0 {
+		//find triangle I am in
+		found := false
+		for i, triangle := range state.(*MatchState).Map.Triangles {
+			isItIn, w1, w2, w3 := triangle.isInTriangle(currentPlayerPublic.Position)
+			if isItIn {
+				currentPlayerInternal.TriangleIndex = int64(i)
+				found = true
+				fmt.Printf("triangle.isInTriangle: %v  (w1:%v  w2:%v  w3:%v)\n", i, w1, w2, w3)
+				break;
+			}
+		}
+		if !found {
+			fmt.Printf("ERROR @ triangle.isInTriangle %v|%v\n", currentPlayerPublic.Position.X, currentPlayerPublic.Position.Y )
+			currentPlayerPublic.Position.X -= rotatedAdd.X;
+			currentPlayerPublic.Position.Y -= rotatedAdd.Y;
+		} 
+	}
 
 	currentPlayerPublic.LastProcessedClientTick = msg.ClientTick
 }
@@ -190,6 +224,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		logger.Printf("match loop match_id %v tick %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), tick)
 		logger.Printf("match loop match_id %v message count %v", ctx.Value(runtime.RUNTIME_CTX_MATCH_ID), len(messages))
 	}
+    start := time.Now()
 	fmt.Printf(" _ _ _ _ _ new tick %v _ _ _ _ _\n", tick)
 	state.(*MatchState).PublicMatchState.Tick = tick	
 	state.(*MatchState).PublicMatchState.Combatlog = make([]*PublicMatchState_CombatLogEntry, 0)
@@ -374,6 +409,14 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	if state.(*MatchState).EmptyCounter == 10 {
 		return nil
 	}
+	state.(*MatchState).runtimeSet[state.(*MatchState).runtimeSetIndex] = int64(time.Since(start))
+	avg := int64(0)
+	for _, time := range state.(*MatchState).runtimeSet {
+		avg += time
+	}
+	avg /= 20
+	state.(*MatchState).runtimeSetIndex = (state.(*MatchState).runtimeSetIndex + 1) % 20
+	fmt.Printf(" - - duration %v - avg:  %vµs - - \n", time.Since(start), avg/1000.0)
 	
 	return state
 }

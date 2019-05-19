@@ -77,6 +77,25 @@ func (p PublicMatchState_Interactable) startCast(state *MatchState, spellId int6
 }
 
 
+func (p PublicMatchState_Interactable) cancelCast(state *MatchState) {	
+
+	clEntry := &PublicMatchState_CombatLogEntry {
+		Timestamp: state.PublicMatchState.Tick,
+		SourceId: p.Id,
+		SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{p.getInternalPlayer(state).CastingSpellId},
+		Source: PublicMatchState_CombatLogEntry_Spell,
+		Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
+			Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
+			FailedMessage: "Cast canceled by Movement!",
+		}},
+	}
+	state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+
+	p.getInternalPlayer(state).CastingSpellId = -1
+	p.getInternalPlayer(state).CastingTickStarted = 0
+	p.getInternalPlayer(state).CastingTargeted = ""
+}
+
 func (p PublicMatchState_Interactable) finishCast(state *MatchState, spellId int64, targetId string) {
 	fmt.Printf("cast spell: %v\n", spellId)
 	p.GlobalCooldown = state.GameDB.Spells[spellId].GlobalCooldown

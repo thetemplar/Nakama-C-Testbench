@@ -51,7 +51,7 @@ func init_db() *GameDB {
 		EffectID		:1,
 		Type 			: &GameDB_Effect_Apply_Aura_Mod {
 			Stat: GameDB_Stat_Speed,
-			Value: -10,
+			Value: 15,
 		},
 	}
 	GameDB.Effects[3] = chilled
