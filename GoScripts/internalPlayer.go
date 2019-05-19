@@ -28,8 +28,6 @@ type InternalPlayer struct {
 
 type PlayerStats struct{
 	MovementSpeed			float32
-	MaxHealth				int
-	MaxPower				int
 }
 
 func (p InternalPlayer) getPublicPlayer(state *MatchState) (*PublicMatchState_Interactable) {

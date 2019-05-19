@@ -10,72 +10,40 @@ func (p PublicMatchState_Interactable) getInternalPlayer(state *MatchState) (*In
 	return state.InternalPlayer[p.Id];
 }
 
+func (p PublicMatchState_Interactable) applyDamage(dmg int32) (overkill int32){	
+	overkill = dmg -  p.CurrentHealth
+	if overkill <= 0 {
+		overkill = 0
+	}
+	p.CurrentHealth -= dmg - overkill;
+	return overkill
+}
 
 func (p PublicMatchState_Interactable) startCast(state *MatchState, spellId int64) {
 	currentPlayerInternal := p.getInternalPlayer(state)
+	failedMessage := ""
 
-	if p.GlobalCooldown <= 0 && currentPlayerInternal.CastingSpellId <= 0 {
-		targetId := ""
-		distance := float32(0)
-		if state.GameDB.Spells[spellId].Target != GameDB_Spell_Target_None {
-			if p.Target != "" {	
-				targetId = p.Target
-				target := state.PublicMatchState.Interactable[targetId]
-				distance = float32(math.Sqrt(math.Pow(float64(p.Position.X - target.Position.X), 2) + math.Pow(float64(p.Position.Y - target.Position.Y), 2)))	
-				if distance <= state.GameDB.Spells[spellId].Range {
-					if !IntersectingBorders(p.Position, target.Position, state.Map) {
-						if state.GameDB.Spells[spellId].CastTime > 0 {
-							currentPlayerInternal.CastingSpellId = spellId
-							currentPlayerInternal.CastingTickStarted = state.PublicMatchState.Tick
-							if state.GameDB.Spells[spellId].Target != GameDB_Spell_Target_None {
-								currentPlayerInternal.CastingTargeted = targetId
-							} else {
-								currentPlayerInternal.CastingTargeted = ""
-							}
-						} else {
-							p.finishCast(state, spellId, targetId)
-						}
-					} else {
-						clEntry := &PublicMatchState_CombatLogEntry {
-							Timestamp: state.PublicMatchState.Tick,
-							SourceId: p.Id,
-							SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{spellId},
-							Source: PublicMatchState_CombatLogEntry_Spell,
-							Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
-								Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-								FailedMessage: "Not in Line of Sight!",
-							}},
-						}
-						state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
-					}
-				} else {
-					clEntry := &PublicMatchState_CombatLogEntry {
-						Timestamp: state.PublicMatchState.Tick,
-						SourceId: p.Id,
-						SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{spellId},
-						Source: PublicMatchState_CombatLogEntry_Spell,
-						Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
-							Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-							FailedMessage: "Out of Range!",
-						}},
-					}
-					state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
-				}	
-			} else {
-				clEntry := &PublicMatchState_CombatLogEntry {
-					Timestamp: state.PublicMatchState.Tick,
-					SourceId: p.Id,
-					SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{spellId},
-					Source: PublicMatchState_CombatLogEntry_Spell,
-					Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
-						Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-						FailedMessage: "No Target Selected",
-					}},
-				}
-				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
-			}	
-		}	
-	} else {
+	if p.GlobalCooldown > 0 || currentPlayerInternal.CastingSpellId > 0 {
+		failedMessage = "Cannot do that now!"
+	}
+
+	if state.GameDB.Spells[spellId].Target != GameDB_Spell_Target_None && p.Target == "" {
+		failedMessage = "No Target!"
+	}
+
+	targetId := p.Target
+	target := state.PublicMatchState.Interactable[targetId]
+	distance := float32(math.Sqrt(math.Pow(float64(p.Position.X - target.Position.X), 2) + math.Pow(float64(p.Position.Y - target.Position.Y), 2)))	
+	
+	if distance > state.GameDB.Spells[spellId].Range {
+		failedMessage = "Out of Range!"
+	}
+
+	if IntersectingBorders(p.Position, target.Position, state.Map) {
+		failedMessage = "Not in Line of Sight!"
+	}
+
+	if failedMessage != "" {
 		clEntry := &PublicMatchState_CombatLogEntry {
 			Timestamp: state.PublicMatchState.Tick,
 			SourceId: p.Id,
@@ -83,13 +51,26 @@ func (p PublicMatchState_Interactable) startCast(state *MatchState, spellId int6
 			Source: PublicMatchState_CombatLogEntry_Spell,
 			Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
 				Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
-				FailedMessage: "Cannot do that now!",
+				FailedMessage: failedMessage,
 			}},
 		}
 		state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+
+		return
+	}
+	
+	if state.GameDB.Spells[spellId].CastTime == 0 {
+		p.finishCast(state, spellId, targetId)
+	} else {
+		currentPlayerInternal.CastingSpellId = spellId
+		currentPlayerInternal.CastingTickStarted = state.PublicMatchState.Tick
+		if state.GameDB.Spells[spellId].Target != GameDB_Spell_Target_None {
+			currentPlayerInternal.CastingTargeted = targetId
+		} else {
+			currentPlayerInternal.CastingTargeted = ""
+		}
 	}
 }
-
 
 func (p PublicMatchState_Interactable) cancelCast(state *MatchState) {	
 
@@ -111,7 +92,7 @@ func (p PublicMatchState_Interactable) cancelCast(state *MatchState) {
 }
 
 func (p PublicMatchState_Interactable) finishCast(state *MatchState, spellId int64, targetId string) {
-	if !IntersectingBorders(p.Position, target.Position, state.Map) {		
+	if !IntersectingBorders(p.Position, state.PublicMatchState.Interactable[targetId].Position, state.Map) {		
 		fmt.Printf("finish cast spell: %v\n", spellId)
 		p.GlobalCooldown = state.GameDB.Spells[spellId].GlobalCooldown
 		proj := &PublicMatchState_Projectile{
@@ -142,6 +123,7 @@ func (p PublicMatchState_Interactable) finishCast(state *MatchState, spellId int
 		state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 	}		
 }
+
 
 func (p PublicMatchState_Interactable) recalcStats(state *MatchState) {
 	p.getInternalPlayer(state).StatModifiers = PlayerStats {}

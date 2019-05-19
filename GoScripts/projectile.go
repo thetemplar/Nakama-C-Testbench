@@ -99,7 +99,11 @@ func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchS
 			switch effect.Type.(type) {
 			case *GameDB_Effect_Damage:
 				dmg := randomInt(effect.Type.(*GameDB_Effect_Damage).ValueMin, effect.Type.(*GameDB_Effect_Damage).ValueMax);
-				target.CurrentHealth -= dmg;
+				dmgCrit := int32(0)
+				if randomInt(0, 100) > 20 {
+					dmgCrit = dmg
+				}
+				overkill := target.applyDamage(dmg + dmgCrit)
 			
 				clEntry := &PublicMatchState_CombatLogEntry {
 					Timestamp: state.PublicMatchState.Tick,
@@ -109,6 +113,8 @@ func (p PublicMatchState_Projectile) Hit(state *MatchState, target *PublicMatchS
 					Source: PublicMatchState_CombatLogEntry_Spell,
 					Type: &PublicMatchState_CombatLogEntry_Damage{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Damage{
 						Amount: dmg,
+						Critical: dmgCrit,
+						Overkill: overkill,
 					}},
 				}
 				state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
