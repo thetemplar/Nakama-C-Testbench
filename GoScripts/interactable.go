@@ -23,16 +23,30 @@ func (p PublicMatchState_Interactable) startCast(state *MatchState, spellId int6
 				target := state.PublicMatchState.Interactable[targetId]
 				distance = float32(math.Sqrt(math.Pow(float64(p.Position.X - target.Position.X), 2) + math.Pow(float64(p.Position.Y - target.Position.Y), 2)))	
 				if distance <= state.GameDB.Spells[spellId].Range {
-					if state.GameDB.Spells[spellId].CastTime > 0 {
-						currentPlayerInternal.CastingSpellId = spellId
-						currentPlayerInternal.CastingTickStarted = state.PublicMatchState.Tick
-						if state.GameDB.Spells[spellId].Target != GameDB_Spell_Target_None {
-							currentPlayerInternal.CastingTargeted = targetId
+					if !IntersectingBorders(p.Position, target.Position, state.Map) {
+						if state.GameDB.Spells[spellId].CastTime > 0 {
+							currentPlayerInternal.CastingSpellId = spellId
+							currentPlayerInternal.CastingTickStarted = state.PublicMatchState.Tick
+							if state.GameDB.Spells[spellId].Target != GameDB_Spell_Target_None {
+								currentPlayerInternal.CastingTargeted = targetId
+							} else {
+								currentPlayerInternal.CastingTargeted = ""
+							}
 						} else {
-							currentPlayerInternal.CastingTargeted = ""
+							p.finishCast(state, spellId, targetId)
 						}
 					} else {
-						p.finishCast(state, spellId, targetId)
+						clEntry := &PublicMatchState_CombatLogEntry {
+							Timestamp: state.PublicMatchState.Tick,
+							SourceId: p.Id,
+							SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{spellId},
+							Source: PublicMatchState_CombatLogEntry_Spell,
+							Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
+								Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
+								FailedMessage: "Not in Line of Sight!",
+							}},
+						}
+						state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
 					}
 				} else {
 					clEntry := &PublicMatchState_CombatLogEntry {

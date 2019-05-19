@@ -1,25 +1,28 @@
 package main
+ 
+func Intersection (p0, p1, p2, p3 PublicMatchState_Vector2Df) (bool, PublicMatchState_Vector2Df) {
+	s1_x := p1.X - p0.X
+	s1_y := p1.Y - p0.Y
+	s2_x := p3.X - p2.X
+	s2_y := p3.Y - p2.Y
 
-type Line struct {
-	slope float32
-	yint float32
+	s := (-s1_y * (p0.X - p2.X) + s1_x * (p0.Y - p2.Y)) / (-s2_x * s1_y + s1_x * s2_y);
+	t := ( s2_x * (p0.Y - p2.Y) - s2_y * (p0.X - p2.X)) / (-s2_x * s1_y + s1_x * s2_y);
+	
+	if s >= 0 && s <= 1 && t >= 0 && t <= 1 {
+        return true, PublicMatchState_Vector2Df {X: p0.X + (t * s1_x), Y: p0.Y + (t * s1_y)};
+    }
+
+    return false, PublicMatchState_Vector2Df {}; 
 }
- 
-func CreateLine (a, b PublicMatchState_Vector2Df) Line {
-	slope := (b.Y-a.Y) / (b.X-a.X)
-	yint := a.Y - slope*a.X
-	return Line{slope, yint}
-} 
- 
-func EvalX (l Line, x float32) float32 {
-	return l.slope*x + l.yint
-}
- 
-func Intersection (l1, l2 Line) (bool, PublicMatchState_Vector2Df) {
-	if l1.slope == l2.slope {
-		return false, PublicMatchState_Vector2Df{}
+
+
+func IntersectingBorders (start *PublicMatchState_Vector2Df, target *PublicMatchState_Vector2Df, m *Map) (bool) {
+	for _, b := range m.Borders {
+		hasIntersection, _ := Intersection(*start, *target, b.A, b.B)
+		if hasIntersection {
+			return true
+		}
 	}
-	x := (l2.yint-l1.yint) / (l1.slope-l2.slope)
-	y := EvalX(l1, x)
-	return true, PublicMatchState_Vector2Df{X:x, Y:y}
+	return false
 }
