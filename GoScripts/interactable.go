@@ -111,22 +111,36 @@ func (p PublicMatchState_Interactable) cancelCast(state *MatchState) {
 }
 
 func (p PublicMatchState_Interactable) finishCast(state *MatchState, spellId int64, targetId string) {
-	fmt.Printf("cast spell: %v\n", spellId)
-	p.GlobalCooldown = state.GameDB.Spells[spellId].GlobalCooldown
-	proj := &PublicMatchState_Projectile{
-		Id: "p_" + strconv.FormatInt(state.ProjectileCounter, 16),
-		SpellId: spellId,
-		Position: &PublicMatchState_Vector2Df {
-			X: p.Position.X,
-			Y: p.Position.Y,
-		},
-		Rotation: p.Rotation,
-		CreatedAtTick: state.PublicMatchState.Tick,
-		Target: targetId,
-		Speed: state.GameDB.Spells[spellId].Speed,
-	}
-	state.PublicMatchState.Projectile[proj.Id] = proj
-	state.ProjectileCounter++			
+	if !IntersectingBorders(p.Position, target.Position, state.Map) {		
+		fmt.Printf("finish cast spell: %v\n", spellId)
+		p.GlobalCooldown = state.GameDB.Spells[spellId].GlobalCooldown
+		proj := &PublicMatchState_Projectile{
+			Id: "p_" + strconv.FormatInt(state.ProjectileCounter, 16),
+			SpellId: spellId,
+			Position: &PublicMatchState_Vector2Df {
+				X: p.Position.X,
+				Y: p.Position.Y,
+			},
+			Rotation: p.Rotation,
+			CreatedAtTick: state.PublicMatchState.Tick,
+			Target: targetId,
+			Speed: state.GameDB.Spells[spellId].Speed,
+		}
+		state.PublicMatchState.Projectile[proj.Id] = proj
+		state.ProjectileCounter++	
+	} else {
+		clEntry := &PublicMatchState_CombatLogEntry {
+			Timestamp: state.PublicMatchState.Tick,
+			SourceId: p.Id,
+			SourceSpellEffectId: &PublicMatchState_CombatLogEntry_SourceSpellId{spellId},
+			Source: PublicMatchState_CombatLogEntry_Spell,
+			Type: &PublicMatchState_CombatLogEntry_Cast{ &PublicMatchState_CombatLogEntry_CombatLogEntry_Cast{
+				Event: PublicMatchState_CombatLogEntry_CombatLogEntry_Cast_Failed,
+				FailedMessage: "Not in Line of Sight!",
+			}},
+		}
+		state.PublicMatchState.Combatlog = append(state.PublicMatchState.Combatlog, clEntry)
+	}		
 }
 
 func (p PublicMatchState_Interactable) recalcStats(state *MatchState) {
