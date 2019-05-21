@@ -24,8 +24,8 @@ public class PlayerController : MonoBehaviour
     public bool UseInterpolation;
     public bool ShowGhost;
 
-    public int MaxHealth;
-    public int CurrentHealth;
+    public float MaxHealth;
+    public float CurrentHealth;
 
     CharacterController controller;
 
@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
         if (player != null)
         {
             this.CurrentHealth = player.CurrentHealth;
-            this.MaxHealth = player.MaxHealth;
+            this.MaxHealth = 100;
         }
 
         position.y = 0;

@@ -21,7 +21,7 @@ public class UnitSelector : MonoBehaviour
     private float _gcd;
     private float _cast;
 
-    private List<Client_Cast> _sendMessages = new List<Client_Cast>();
+    private List<object> _sendMessages = new List<object>();
 
 
     // Start is called before the first frame update
@@ -119,10 +119,21 @@ public class UnitSelector : MonoBehaviour
                 _sendMessages.Add(cast);
                 _gcd = Time.time + 1.5f;
             }
+            if (Input.GetKey(KeyCode.Escape)) //  && _gcd > Time.time
+            {
+                var stop = new Client_CancelAttack { };
+                _sendMessages.Add(stop);
+                _cast = Time.time;
+            }
+            if (Input.GetKey(KeyCode.Space)) //  && _gcd > Time.time
+            {
+                var cast = new Client_Autoattack { Attacktype = Client_Autoattack.Types.Type.Meele };
+                _sendMessages.Add(cast);
+            }
         }
     }
     
-    internal Client_Cast[] GetCastMessages()
+    internal object[] GetCastMessages()
     {
         var tmp = _sendMessages.ToArray();
         _sendMessages.Clear();

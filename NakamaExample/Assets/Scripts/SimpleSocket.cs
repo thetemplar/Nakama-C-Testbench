@@ -67,10 +67,24 @@ public class SimpleSocket : MonoBehaviour
         _notAcknowledgedPackages.Add(send);
         _socket.SendMatchState(_matchId, 0, send.ToByteArray());
 
-        Client_Cast[] sendMsg = UnitSelector.GetCastMessages();
+        object[] sendMsg = UnitSelector.GetCastMessages();
         foreach(var msg in sendMsg)
         {
-            _socket.SendMatchState(_matchId, 1, msg.ToByteArray());
+            switch (msg.GetType().ToString()) {
+            case "NakamaMinimalGame.PublicMatchState.Client_Cast":
+                _socket.SendMatchState(_matchId, 1, ((NakamaMinimalGame.PublicMatchState.Client_Cast)msg).ToByteArray());
+                break;
+            case "NakamaMinimalGame.PublicMatchState.Client_Autoattack":
+                _socket.SendMatchState(_matchId, 2, ((NakamaMinimalGame.PublicMatchState.Client_Autoattack)msg).ToByteArray());
+                break;
+            case "NakamaMinimalGame.PublicMatchState.Client_CancelAttack":
+                _socket.SendMatchState(_matchId, 3, ((NakamaMinimalGame.PublicMatchState.Client_CancelAttack)msg).ToByteArray());
+                break;
+            default:
+                Debug.Log(msg.GetType().ToString() + " not known in sender list");
+                break;
+            }
+            //
         }
 
         _clientTick++;            
