@@ -80,6 +80,9 @@ public class SimpleSocket : MonoBehaviour
             case "NakamaMinimalGame.PublicMatchState.Client_CancelAttack":
                 _socket.SendMatchState(_matchId, 3, ((NakamaMinimalGame.PublicMatchState.Client_CancelAttack)msg).ToByteArray());
                 break;
+            case "NakamaMinimalGame.PublicMatchState.Client_SelectCharacter":
+                _socket.SendMatchState(_matchId, 100, ((NakamaMinimalGame.PublicMatchState.Client_SelectCharacter)msg).ToByteArray());
+                break;
             default:
                 Debug.Log(msg.GetType().ToString() + " not known in sender list");
                 break;

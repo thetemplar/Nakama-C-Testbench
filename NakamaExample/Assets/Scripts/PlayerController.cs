@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
     {
         if (player != null)
         {
-            this.CurrentHealth = player.CurrentHealth;
+            this.CurrentHealth = player.Character.CurrentHealth;
             this.MaxHealth = 100;
         }
 

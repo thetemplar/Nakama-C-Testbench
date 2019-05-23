@@ -20,6 +20,7 @@ public class UnitSelector : MonoBehaviour
     public PlayerController MyPlayerController;
     private float _gcd;
     private float _cast;
+    private float _autoattackCD;
 
     private List<object> _sendMessages = new List<object>();
 
@@ -125,12 +126,20 @@ public class UnitSelector : MonoBehaviour
                 _sendMessages.Add(stop);
                 _cast = Time.time;
             }
-            if (Input.GetKey(KeyCode.Space)) //  && _gcd > Time.time
+            if (Input.GetKey(KeyCode.Space) && _autoattackCD < Time.time) //  && _gcd > Time.time
             {
                 var cast = new Client_Autoattack { Attacktype = Client_Autoattack.Types.Type.Meele };
                 _sendMessages.Add(cast);
+                _autoattackCD = Time.time + .5f;
             }
         }
+    }
+
+    public void GetCharacter()
+    {
+        var cast = new Client_SelectCharacter { Class = NakamaMinimalGame.Character.Character.Types.ClassName.Warrior };
+        _sendMessages.Add(cast);
+        //CastBarSlider.gameObject.SetActive(false);
     }
     
     internal object[] GetCastMessages()
