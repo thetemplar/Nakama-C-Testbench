@@ -91,16 +91,16 @@ namespace NakamaMinimalGame.PublicMatchState
                   "ASgDEg8KB2NyZWF0b3IYBCABKAkSMgoIcG9zaXRpb24YBSABKAsyIC5tYWlu",
                   "LlB1YmxpY01hdGNoU3RhdGUuVmVjdG9yMkRmEhAKCHJvdGF0aW9uGAYgASgC",
                   "Eg4KBnRhcmdldBgHIAEoCRINCgVzcGVlZBgIIAEoAhohCglWZWN0b3IyRGYS",
-                  "CQoBeBgBIAEoAhIJCgF5GAIgASgCImkKEENsaWVudF9DaGFyYWN0ZXISEwoL",
-                  "Y2xpZW50X3RpY2sYASABKAMSDgoGeF9heGlzGAIgASgCEg4KBnlfYXhpcxgD",
-                  "IAEoAhIQCghyb3RhdGlvbhgEIAEoAhIOCgZ0YXJnZXQYBSABKAkiHwoLQ2xp",
-                  "ZW50X0Nhc3QSEAoIc3BlbGxfaWQYASABKAMibQoRQ2xpZW50X0F1dG9hdHRh",
-                  "Y2sSMAoKYXR0YWNrdHlwZRgBIAEoDjIcLm1haW4uQ2xpZW50X0F1dG9hdHRh",
-                  "Y2suVHlwZSImCgRUeXBlEgkKBU1lZWxlEAASCQoFUmFuZ2UQARIICgRXYW5k",
-                  "EAIiFQoTQ2xpZW50X0NhbmNlbEF0dGFjayJCChZDbGllbnRfU2VsZWN0Q2hh",
-                  "cmFjdGVyEigKBWNsYXNzGAEgASgOMhkubWFpbi5DaGFyYWN0ZXIuQ2xhc3NO",
-                  "YW1lQiWqAiJOYWthbWFNaW5pbWFsR2FtZS5QdWJsaWNNYXRjaFN0YXRlYgZw",
-                  "cm90bzM="));
+                  "CQoBeBgBIAEoAhIJCgF5GAIgASgCIo0BChBDbGllbnRfQ2hhcmFjdGVyEiIK",
+                  "Gmxhc3RfY29uZmlybWVkX3NlcnZlcl90aWNrGAEgASgDEhMKC2NsaWVudF90",
+                  "aWNrGAIgASgDEg4KBnhfYXhpcxgDIAEoAhIOCgZ5X2F4aXMYBCABKAISEAoI",
+                  "cm90YXRpb24YBSABKAISDgoGdGFyZ2V0GAYgASgJIh8KC0NsaWVudF9DYXN0",
+                  "EhAKCHNwZWxsX2lkGAEgASgDIm0KEUNsaWVudF9BdXRvYXR0YWNrEjAKCmF0",
+                  "dGFja3R5cGUYASABKA4yHC5tYWluLkNsaWVudF9BdXRvYXR0YWNrLlR5cGUi",
+                  "JgoEVHlwZRIJCgVNZWVsZRAAEgkKBVJhbmdlEAESCAoEV2FuZBACIhUKE0Ns",
+                  "aWVudF9DYW5jZWxBdHRhY2siQgoWQ2xpZW50X1NlbGVjdENoYXJhY3RlchIo",
+                  "CgVjbGFzcxgBIAEoDjIZLm1haW4uQ2hhcmFjdGVyLkNsYXNzTmFtZUIlqgIi",
+                  "TmFrYW1hTWluaW1hbEdhbWUuUHVibGljTWF0Y2hTdGF0ZWIGcHJvdG8z"));
             descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
                 new pbr::FileDescriptor[] { global::NakamaMinimalGame.Character.CharacterReflection.Descriptor, },
                 new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -115,7 +115,7 @@ namespace NakamaMinimalGame.PublicMatchState
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura.Parser, new[]{ "CreatedAtTick", "Creator", "EffectId", "AuraTickCount" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Parser, new[]{ "Id", "SpellId", "CreatedAtTick", "Creator", "Position", "Rotation", "Target", "Speed" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Character), global::NakamaMinimalGame.PublicMatchState.Client_Character.Parser, new[]{ "ClientTick", "XAxis", "YAxis", "Rotation", "Target" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Character), global::NakamaMinimalGame.PublicMatchState.Client_Character.Parser, new[]{ "LastConfirmedServerTick", "ClientTick", "XAxis", "YAxis", "Rotation", "Target" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Cast), global::NakamaMinimalGame.PublicMatchState.Client_Cast.Parser, new[]{ "SpellId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Autoattack), global::NakamaMinimalGame.PublicMatchState.Client_Autoattack.Parser, new[]{ "Attacktype" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.Client_Autoattack.Types.Type) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_CancelAttack), global::NakamaMinimalGame.PublicMatchState.Client_CancelAttack.Parser, null, null, null, null),
@@ -3727,6 +3727,7 @@ namespace NakamaMinimalGame.PublicMatchState
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public Client_Character(Client_Character other) : this()
         {
+            lastConfirmedServerTick_ = other.lastConfirmedServerTick_;
             clientTick_ = other.clientTick_;
             xAxis_ = other.xAxis_;
             yAxis_ = other.yAxis_;
@@ -3740,8 +3741,21 @@ namespace NakamaMinimalGame.PublicMatchState
             return new Client_Character(this);
         }
 
+        /// <summary>Field number for the "last_confirmed_server_tick" field.</summary>
+        public const int LastConfirmedServerTickFieldNumber = 1;
+        private long lastConfirmedServerTick_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public long LastConfirmedServerTick
+        {
+            get { return lastConfirmedServerTick_; }
+            set
+            {
+                lastConfirmedServerTick_ = value;
+            }
+        }
+
         /// <summary>Field number for the "client_tick" field.</summary>
-        public const int ClientTickFieldNumber = 1;
+        public const int ClientTickFieldNumber = 2;
         private long clientTick_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public long ClientTick
@@ -3754,7 +3768,7 @@ namespace NakamaMinimalGame.PublicMatchState
         }
 
         /// <summary>Field number for the "x_axis" field.</summary>
-        public const int XAxisFieldNumber = 2;
+        public const int XAxisFieldNumber = 3;
         private float xAxis_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public float XAxis
@@ -3767,7 +3781,7 @@ namespace NakamaMinimalGame.PublicMatchState
         }
 
         /// <summary>Field number for the "y_axis" field.</summary>
-        public const int YAxisFieldNumber = 3;
+        public const int YAxisFieldNumber = 4;
         private float yAxis_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public float YAxis
@@ -3780,7 +3794,7 @@ namespace NakamaMinimalGame.PublicMatchState
         }
 
         /// <summary>Field number for the "rotation" field.</summary>
-        public const int RotationFieldNumber = 4;
+        public const int RotationFieldNumber = 5;
         private float rotation_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public float Rotation
@@ -3793,7 +3807,7 @@ namespace NakamaMinimalGame.PublicMatchState
         }
 
         /// <summary>Field number for the "target" field.</summary>
-        public const int TargetFieldNumber = 5;
+        public const int TargetFieldNumber = 6;
         private string target_ = "";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public string Target
@@ -3822,6 +3836,7 @@ namespace NakamaMinimalGame.PublicMatchState
             {
                 return true;
             }
+            if (LastConfirmedServerTick != other.LastConfirmedServerTick) return false;
             if (ClientTick != other.ClientTick) return false;
             if (XAxis != other.XAxis) return false;
             if (YAxis != other.YAxis) return false;
@@ -3834,6 +3849,7 @@ namespace NakamaMinimalGame.PublicMatchState
         public override int GetHashCode()
         {
             int hash = 1;
+            if (LastConfirmedServerTick != 0L) hash ^= LastConfirmedServerTick.GetHashCode();
             if (ClientTick != 0L) hash ^= ClientTick.GetHashCode();
             if (XAxis != 0F) hash ^= XAxis.GetHashCode();
             if (YAxis != 0F) hash ^= YAxis.GetHashCode();
@@ -3851,29 +3867,34 @@ namespace NakamaMinimalGame.PublicMatchState
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public void WriteTo(pb::CodedOutputStream output)
         {
-            if (ClientTick != 0L)
+            if (LastConfirmedServerTick != 0L)
             {
                 output.WriteRawTag(8);
+                output.WriteInt64(LastConfirmedServerTick);
+            }
+            if (ClientTick != 0L)
+            {
+                output.WriteRawTag(16);
                 output.WriteInt64(ClientTick);
             }
             if (XAxis != 0F)
             {
-                output.WriteRawTag(21);
+                output.WriteRawTag(29);
                 output.WriteFloat(XAxis);
             }
             if (YAxis != 0F)
             {
-                output.WriteRawTag(29);
+                output.WriteRawTag(37);
                 output.WriteFloat(YAxis);
             }
             if (Rotation != 0F)
             {
-                output.WriteRawTag(37);
+                output.WriteRawTag(45);
                 output.WriteFloat(Rotation);
             }
             if (Target.Length != 0)
             {
-                output.WriteRawTag(42);
+                output.WriteRawTag(50);
                 output.WriteString(Target);
             }
         }
@@ -3882,6 +3903,10 @@ namespace NakamaMinimalGame.PublicMatchState
         public int CalculateSize()
         {
             int size = 0;
+            if (LastConfirmedServerTick != 0L)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastConfirmedServerTick);
+            }
             if (ClientTick != 0L)
             {
                 size += 1 + pb::CodedOutputStream.ComputeInt64Size(ClientTick);
@@ -3911,6 +3936,10 @@ namespace NakamaMinimalGame.PublicMatchState
             if (other == null)
             {
                 return;
+            }
+            if (other.LastConfirmedServerTick != 0L)
+            {
+                LastConfirmedServerTick = other.LastConfirmedServerTick;
             }
             if (other.ClientTick != 0L)
             {
@@ -3947,25 +3976,30 @@ namespace NakamaMinimalGame.PublicMatchState
                         break;
                     case 8:
                         {
-                            ClientTick = input.ReadInt64();
+                            LastConfirmedServerTick = input.ReadInt64();
                             break;
                         }
-                    case 21:
+                    case 16:
                         {
-                            XAxis = input.ReadFloat();
+                            ClientTick = input.ReadInt64();
                             break;
                         }
                     case 29:
                         {
-                            YAxis = input.ReadFloat();
+                            XAxis = input.ReadFloat();
                             break;
                         }
                     case 37:
                         {
+                            YAxis = input.ReadFloat();
+                            break;
+                        }
+                    case 45:
+                        {
                             Rotation = input.ReadFloat();
                             break;
                         }
-                    case 42:
+                    case 50:
                         {
                             Target = input.ReadString();
                             break;

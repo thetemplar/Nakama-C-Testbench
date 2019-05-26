@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Manager;
 using NakamaMinimalGame.PublicMatchState;
 using UnityEditor;
 using UnityEngine;
@@ -21,9 +22,6 @@ public class UnitSelector : MonoBehaviour
     private float _gcd;
     private float _cast;
     private float _autoattackCD;
-
-    private List<object> _sendMessages = new List<object>();
-
 
     // Start is called before the first frame update
     void Start()
@@ -95,7 +93,7 @@ public class UnitSelector : MonoBehaviour
             GCDSlider.gameObject.SetActive(true);
             GCDSlider.value = (_gcd - Time.time);
         }
-        else
+        else if (_cast - Time.time <= 0)
         {
             GCDSlider.gameObject.SetActive(false);
 
@@ -103,7 +101,7 @@ public class UnitSelector : MonoBehaviour
             if (Input.GetKey("1")) //  && _gcd > Time.time
             {
                 var cast = new Client_Cast { SpellId = 1 };
-                _sendMessages.Add(cast);
+                GameManager.Instance.AddMessageToSend(cast);
                 _gcd = Time.time + 1.5f;
                 _cast = Time.time + 2f;
                 CastBarSlider.maxValue = 2f;
@@ -111,41 +109,27 @@ public class UnitSelector : MonoBehaviour
             if (Input.GetKey("2")) //  && _gcd > Time.time
             {
                 var cast = new Client_Cast { SpellId = 2 };
-                _sendMessages.Add(cast);
+                GameManager.Instance.AddMessageToSend(cast);
                 _gcd = Time.time + 1.5f;
             }
             if (Input.GetKey("3")) //  && _gcd > Time.time
             {
                 var cast = new Client_Cast { SpellId = 3 };
-                _sendMessages.Add(cast);
+                GameManager.Instance.AddMessageToSend(cast);
                 _gcd = Time.time + 1.5f;
             }
             if (Input.GetKey(KeyCode.Escape)) //  && _gcd > Time.time
             {
                 var stop = new Client_CancelAttack { };
-                _sendMessages.Add(stop);
+                GameManager.Instance.AddMessageToSend(stop);
                 _cast = Time.time;
             }
             if (Input.GetKey(KeyCode.Space) && _autoattackCD < Time.time) //  && _gcd > Time.time
             {
                 var cast = new Client_Autoattack { Attacktype = Client_Autoattack.Types.Type.Meele };
-                _sendMessages.Add(cast);
+                GameManager.Instance.AddMessageToSend(cast);
                 _autoattackCD = Time.time + .5f;
             }
         }
-    }
-
-    public void GetCharacter()
-    {
-        var cast = new Client_SelectCharacter { Class = NakamaMinimalGame.Character.Character.Types.ClassName.Warrior };
-        _sendMessages.Add(cast);
-        //CastBarSlider.gameObject.SetActive(false);
-    }
-    
-    internal object[] GetCastMessages()
-    {
-        var tmp = _sendMessages.ToArray();
-        _sendMessages.Clear();
-        return tmp;
     }
 }

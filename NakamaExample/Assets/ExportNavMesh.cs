@@ -13,6 +13,7 @@ using UnityEngine.AI;
 
 public class ExportNavMeshToObj : MonoBehaviour
 {
+    /*
     struct TriangleEdgeF
     {
         public class EdgeF
@@ -53,7 +54,7 @@ public class ExportNavMeshToObj : MonoBehaviour
     static List<TriangleEdgeF.EdgeF> _e = new List<TriangleEdgeF.EdgeF>();
     static List<TriangleEdgeF.EdgeF> _e_single = new List<TriangleEdgeF.EdgeF>();
 
-    [MenuItem("Custom/Export NavMesh to mesh")]
+    //[MenuItem("Custom/Export NavMesh to mesh")]
     static void Export()
     {
         _t.Clear();

@@ -35,6 +35,8 @@ public class SimpleSocket : MonoBehaviour
 
     private async void Awake()
     {
+        DontDestroyOnLoad(gameObject);
+
         UnityThread.initUnityThread();
         Screen.SetResolution(400, 400, false, 144);
 
@@ -153,20 +155,17 @@ public class SimpleSocket : MonoBehaviour
             }
         }
 
-        foreach (var projectile in _gameObjects.Where(x => x.Key.StartsWith("p_")))
+        foreach (var projectile in _gameObjects.Where(x => x.Key.StartsWith("p_") && !state.Projectile.ContainsKey(x.Key)))
         {
-            if (!state.Projectile.ContainsKey(projectile.Key))
+            UnityThread.executeInUpdate(() =>
             {
-                UnityThread.executeInUpdate(() =>
+                if (_gameObjects.ContainsKey(projectile.Key))
                 {
-                    if (_gameObjects.ContainsKey(projectile.Key))
-                    {
-                        var del = _gameObjects.Where(x => x.Key == projectile.Key).FirstOrDefault();
-                        Destroy(del.Value.gameObject);
-                        _gameObjects.Remove(projectile.Key);
-                    }
-                });
-            }
+                    var del = _gameObjects.Where(x => x.Key == projectile.Key).FirstOrDefault();
+                    Destroy(del.Value.gameObject);
+                    _gameObjects.Remove(projectile.Key);
+                }
+            });            
         }
 
         foreach (var projectile in state.Projectile)
@@ -232,7 +231,7 @@ public class SimpleSocket : MonoBehaviour
 
         await _socket.JoinMatchAsync(_matchId);
         Debug.Log("Created & joined match with ID: " + _matchId);
-        CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "reated & joined match with ID: " + _matchId });
+        CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "created & joined match with ID: " + _matchId });
         _socket.OnMatchState += _socket_OnMatchState;
 
         _socket.OnMatchPresence += (_, presence) =>
