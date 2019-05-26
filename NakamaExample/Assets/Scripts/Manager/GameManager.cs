@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Google.Protobuf;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 namespace Assets.Scripts.Manager
 {
@@ -24,6 +25,10 @@ namespace Assets.Scripts.Manager
         private long _lastConfirmedServerTick;
         private long _clientTick;
 
+#if UNITY_EDITOR
+        private bool _startJoin = false;
+#endif
+
         private void Start()
         {
             MatchManager.Instance.OnNewWorldUpdate += OnNewWorldUpdate;
@@ -33,7 +38,15 @@ namespace Assets.Scripts.Manager
         {
             if (string.IsNullOrEmpty(MatchManager.Instance.MatchId) || !NakamaManager.Instance.IsConnected)
             {
+#if UNITY_EDITOR
+                if (!_startJoin)
+                {
+                    MatchManager.Instance.StartOrJoin();
+                    _startJoin = true;
+                }
+#else
                 SceneManager.LoadScene("MainMenu");
+#endif
                 return;
             }
 
@@ -64,10 +77,12 @@ namespace Assets.Scripts.Manager
 
         void OnGUI()
         {
+#if UNITY_EDITOR
             if (Application.isEditor)  // or check the app debug flag
             {
-                GUI.Label(new Rect(Screen.width - 100, 0,100,100), _notAcknowledgedPackages.Count.ToString());
+                GUI.Label(new Rect(Screen.width - 100, 0, 100, 100), _notAcknowledgedPackages.Count.ToString());
             }
+#endif
         }
 
         public void AddMessageToSend(object msg)

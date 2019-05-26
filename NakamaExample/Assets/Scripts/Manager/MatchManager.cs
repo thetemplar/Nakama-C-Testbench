@@ -4,6 +4,7 @@ using Nakama;
 using NakamaMinimalGame.PublicMatchState;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,11 +34,29 @@ namespace Assets.Scripts.Manager
 
         public void StartOrJoin(Dropdown classSelected)
         {
+            Debug.Log("StartOrJoin started");
             Task.Run(async () => {
                 string id = await NakamaManager.Instance.StartOrJoinGameAsync();
+                Debug.Log("StartOrJoin: " + id);
                 JoinMatchAsync(id, NakamaMinimalGame.Character.Character.Types.ClassName.Warrior);
             });
+#if !UNITY_EDITOR
             SceneManager.LoadScene("Main");
+#endif
+        }
+
+        public void StartOrJoin()
+        {
+            Debug.Log("StartOrJoin started");
+            Task.Run(async () => {
+                Thread.Sleep(1000);
+                string id = await NakamaManager.Instance.StartOrJoinGameAsync();
+                Debug.Log("StartOrJoin: " + id);
+                JoinMatchAsync(id, NakamaMinimalGame.Character.Character.Types.ClassName.Warrior);
+            });
+#if !UNITY_EDITOR
+            SceneManager.LoadScene("Main");
+#endif
         }
 
         public async void JoinMatchAsync(string matchId, NakamaMinimalGame.Character.Character.Types.ClassName className)
@@ -57,6 +76,7 @@ namespace Assets.Scripts.Manager
                 CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
 
                 var c = new Client_SelectCharacter { Class = className };
+                Thread.Sleep(50);
                 SendMatchStateMessage(100, c.ToByteArray());
 
                 // Add all players already connected to the match
