@@ -177,5 +177,12 @@ namespace Assets.Scripts.Manager
                 _gameObjects.Add(key, obj.GetComponent<PlayerController>());
             }
         }
+
+        public Vector3 GetGameObjectPosition(string name)
+        {
+            if(!_gameObjects.ContainsKey(name))
+                Debug.LogError("key not found!");
+            return _gameObjects[name].Position;
+        }
     }
 }

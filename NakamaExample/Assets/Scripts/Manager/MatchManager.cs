@@ -34,8 +34,9 @@ namespace Assets.Scripts.Manager
 
         public void StartOrJoin(Dropdown classSelected)
         {
-            Debug.Log("StartOrJoin started");
+            Debug.Log("StartOrJoin started1");
             Task.Run(async () => {
+                Thread.Sleep(1000);
                 string id = await NakamaManager.Instance.StartOrJoinGameAsync();
                 Debug.Log("StartOrJoin: " + id);
                 JoinMatchAsync(id, NakamaMinimalGame.Character.Character.Types.ClassName.Warrior);
@@ -47,8 +48,8 @@ namespace Assets.Scripts.Manager
 
         public void StartOrJoin()
         {
-            Debug.Log("StartOrJoin started");
             Task.Run(async () => {
+                Debug.Log("StartOrJoin started2");
                 Thread.Sleep(1000);
                 string id = await NakamaManager.Instance.StartOrJoinGameAsync();
                 Debug.Log("StartOrJoin: " + id);
@@ -73,11 +74,13 @@ namespace Assets.Scripts.Manager
                 // Set current match id
                 // It will be used to leave the match later
                 MatchId = match.Id;
-                CombatLog.CombatLogList.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
+                CombatLogGUI.CombatLog.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
 
                 var c = new Client_SelectCharacter { Class = className };
                 Thread.Sleep(50);
                 SendMatchStateMessage(100, c.ToByteArray());
+
+
 
                 // Add all players already connected to the match
                 // If both players uses the same account, exit the game
@@ -111,7 +114,7 @@ namespace Assets.Scripts.Manager
             var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
             PublicMatchState state = PublicMatchState.Parser.ParseFrom(e.State);
-            CombatLog.CombatLogList.AddRange(state.Combatlog.ToArray());
+            CombatLogGUI.CombatLog.AddRange(state.Combatlog.ToArray());
             OnNewWorldUpdate?.Invoke(state, diffTime);
 
             _timeOfLastState = DateTime.Now;

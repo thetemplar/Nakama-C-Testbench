@@ -124,15 +124,18 @@ namespace Assets.Scripts.Manager
 
         public async Task<string> StartOrJoinGameAsync()
         {
-            var list = await Client.ListMatchesAsync(Session, 0, 10, 10, true, "");
-            if (list.Matches.Count() == 0)
+            Debug.Log("ListMatchesAsync ->");
+            //var list = await Client.ListMatchesAsync(Session, 0, 10, 10, true, "");
+            //Debug.Log("ListMatchesAsync l=" + list.Matches.Count());
+            //if (list.Matches.Count() == 0)
             {
                 var match = await _client.RpcAsync(Session, "createMatch");
+            Debug.Log("ListMatchesAsync ->" + match);
                 return match.Payload;
             }
-            else
+            //else
             {
-                return list.Matches.FirstOrDefault()?.MatchId;
+                //return list.Matches.FirstOrDefault()?.MatchId;
             }
         }
     }

@@ -1,12 +1,26 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static NakamaMinimalGame.PublicMatchState.PublicMatchState.Types;
 
-public class CombatLog : MonoBehaviour
+public class CombatLogGUI : MonoBehaviour
 {
-    public static List<CombatLogEntry> CombatLogList = new List<CombatLogEntry>();
+    public static CombatLog CombatLog = new CombatLog();
     public Vector2 scrollPosition = Vector2.zero;
+
+    void Start()
+    {
+        CombatLog.OnNewDamage += Log_OnNewDamage;
+        PopupTextController.Init();
+    }
+
+    private void Log_OnNewDamage(string source, CombatLog.FloatingDamageEvent e)
+    {
+        var o = Assets.Scripts.Manager.GameManager.Instance.GetGameObjectPosition(e.Target);
+        Debug.Log("calling CreatePopupText" + o);
+        PopupTextController.CreatePopupText((Math.Round(e.Value * 100)/100).ToString(), Assets.Scripts.Manager.GameManager.Instance.GetGameObjectPosition(e.Target), e.Critical);
+    }
 
     void OnGUI()
     {
@@ -22,7 +36,7 @@ public class CombatLog : MonoBehaviour
         scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525), GUILayout.Height(150));
 
         GUILayout.BeginVertical();
-        var copy = CombatLogList.ToArray();
+        var copy = CombatLog.ToArray();
         for(int i = copy.Length - 1; i >= 0; i--)
         {
             var entry = copy[i];
