@@ -39,7 +39,7 @@ namespace Assets.Scripts.Manager
                 Thread.Sleep(1000);
                 string id = await NakamaManager.Instance.StartOrJoinGameAsync();
                 Debug.Log("StartOrJoin: " + id);
-                JoinMatchAsync(id, NakamaMinimalGame.Character.Character.Types.ClassName.Warrior);
+                JoinMatchAsync(id, "Mage");
             });
 #if !UNITY_EDITOR
             SceneManager.LoadScene("Main");
@@ -53,14 +53,14 @@ namespace Assets.Scripts.Manager
                 Thread.Sleep(1000);
                 string id = await NakamaManager.Instance.StartOrJoinGameAsync();
                 Debug.Log("StartOrJoin: " + id);
-                JoinMatchAsync(id, NakamaMinimalGame.Character.Character.Types.ClassName.Warrior);
+                JoinMatchAsync(id, "Mage");
             });
 #if !UNITY_EDITOR
             SceneManager.LoadScene("Main");
 #endif
         }
 
-        public async void JoinMatchAsync(string matchId, NakamaMinimalGame.Character.Character.Types.ClassName className)
+        public async void JoinMatchAsync(string matchId, string className)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Assets.Scripts.Manager
                 MatchId = match.Id;
                 CombatLogGUI.CombatLog.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
 
-                var c = new Client_SelectCharacter { Class = className };
+                var c = new Client_SelectCharacter { Classname = "Mage" };
                 Thread.Sleep(50);
                 SendMatchStateMessage(100, c.ToByteArray());
 

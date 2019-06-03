@@ -130,13 +130,18 @@ namespace Assets.Scripts.Manager
             //if (list.Matches.Count() == 0)
             {
                 var match = await _client.RpcAsync(Session, "createMatch");
-            Debug.Log("ListMatchesAsync ->" + match);
                 return match.Payload;
             }
             //else
             {
                 //return list.Matches.FirstOrDefault()?.MatchId;
             }
+        }
+
+        public async Task<string> GetGameDatabase()
+        {
+            var res = await _client.RpcAsync(Session, "getGameDatabase", "");
+            return res.Payload;
         }
     }
 }

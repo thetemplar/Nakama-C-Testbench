@@ -7,27 +7,28 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-
-    public enum LevelOfNetworking
+    [SerializeField] public enum LevelOfNetworking
     {
         A_Dumb,
         B_Prediction,
         C_Reconciliation,
     };
 
-    [SerializeField]
-    public LevelOfNetworking Level = LevelOfNetworking.A_Dumb;
+    [SerializeField] public LevelOfNetworking Level = LevelOfNetworking.A_Dumb;
 
-    [SerializeField]
-    public bool IsLocalPlayer;
-    public bool UseInterpolation;
-    public bool ShowGhost;
+    [SerializeField] private bool isLocalPlayer;
+    [SerializeField] private bool useInterpolation;
+    [SerializeField] public bool ShowGhost;
 
-    public float MaxHealth;
-    public float CurrentHealth;
+    [HideInInspector] public float MaxHealth;
+    [HideInInspector] public float CurrentHealth;
 
-    CharacterController controller;
+    [HideInInspector] public float CastTimeUntil;
+    [HideInInspector] public float FullCastTime;
+
+    [HideInInspector] public float GCDUntil;
+
+    private CharacterController controller;
 
     class LerpingParameters<T> {
         public bool IsLerping;
@@ -104,14 +105,14 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 GetPosition()
     {
-        if (!UseInterpolation || !_lerpPosition.IsLerping)
+        if (!useInterpolation || !_lerpPosition.IsLerping)
             return _lerpPosition.Value;
         return Vector3.Lerp(_lerpPosition.LastValue, _lerpPosition.Value, _lerpPosition.Percentage);
     }
 
     private Quaternion GetRotation()
     {
-        if (!UseInterpolation || !_lerpRotation.IsLerping)
+        if (!useInterpolation || !_lerpRotation.IsLerping)
             return Quaternion.AngleAxis(_lerpRotation.Value, Vector3.up);
 
         return Quaternion.Lerp(Quaternion.AngleAxis(_lerpRotation.LastValue, Vector3.up), Quaternion.AngleAxis(_lerpRotation.Value, Vector3.up), _lerpRotation.Percentage);
@@ -119,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPredictedInput(float XAxis, float YAxis, float rotation, float timeToLerp)
     {
-        if (Level >= LevelOfNetworking.B_Prediction && IsLocalPlayer)
+        if (Level >= LevelOfNetworking.B_Prediction && isLocalPlayer)
         {
             var rotated = Rotate(new Vector2(XAxis, YAxis), _lerpRotation.Value);
             var newPos = _lerpPosition.Value + new Vector3(rotated.x, 0, rotated.y);
@@ -144,7 +145,7 @@ public class PlayerController : MonoBehaviour
         }
 
         position.y = 0;
-        if (Level >= LevelOfNetworking.C_Reconciliation && IsLocalPlayer)
+        if (Level >= LevelOfNetworking.C_Reconciliation && isLocalPlayer)
         {
             foreach (var package in notAcknowledgedPackages.ToArray())
             {
@@ -155,7 +156,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if(!IsLocalPlayer)
+        if(!isLocalPlayer)
         {
             _lerpPosition.SetNext(position, timeToLerp);
             _lerpRotation.SetNext(rotation, timeToLerp);

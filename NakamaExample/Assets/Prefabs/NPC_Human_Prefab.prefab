@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8c32c2d7b472ea04d94b324fa779f68e, type: 2}
+  - {fileID: 2100000, guid: 3b74f08581afd4b489bd52f7f5697e1e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -66,6 +66,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -150,7 +151,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: df471d34eb0b92f4faec0d475a0b964a, type: 2}
+  - {fileID: 2100000, guid: 655c68d012250da4fb32ba9d44831da3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -158,6 +159,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -226,15 +228,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 4021254320924456548}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef0e751a8a962f4448cdb1cd2bcd53e9, type: 3}
+  m_Script: {fileID: 11500000, guid: 5c06c1dfe25d18f4d9baec4f0dfda4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Level: 0
-  IsLocalPlayer: 0
-  UseInterpolation: 1
+  isLocalPlayer: 0
+  useInterpolation: 1
   ShowGhost: 0
   MaxHealth: 0
   CurrentHealth: 0
+  CastTimeUntil: 0
+  FullCastTime: 0
+  GCDUntil: 0
 --- !u!143 &4021254320924456549
 CharacterController:
   m_ObjectHideFlags: 0

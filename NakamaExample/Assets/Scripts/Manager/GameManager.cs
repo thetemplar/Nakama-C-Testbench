@@ -20,7 +20,7 @@ namespace Assets.Scripts.Manager
 
         private Dictionary<string, PlayerController> _gameObjects = new Dictionary<string, PlayerController>();
         private List<Client_Character> _notAcknowledgedPackages = new List<Client_Character>();
-        private Stack<object> _messagesToSend = new Stack<object>();
+        private Queue<object> _messagesToSend = new Queue<object>();
 
         private long _lastConfirmedServerTick;
         private long _clientTick;
@@ -49,7 +49,7 @@ namespace Assets.Scripts.Manager
 #endif
                 return;
             }
-
+            
             Client_Character send = new Client_Character
             {
                 XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0),
@@ -68,7 +68,8 @@ namespace Assets.Scripts.Manager
             
             while(_messagesToSend.Count > 0)
             {
-                var msg = _messagesToSend.Pop();
+                var msg = _messagesToSend.Dequeue();
+                Debug.Log("SendMatchStateMessage> " + msg);
                 MatchManager.Instance.SendMatchStateMessage(msg);
             }
 
@@ -87,7 +88,7 @@ namespace Assets.Scripts.Manager
 
         public void AddMessageToSend(object msg)
         {
-            _messagesToSend.Push(msg);
+            _messagesToSend.Enqueue(msg);
         }
 
         private void OnNewWorldUpdate(PublicMatchState state, float diffTime)
