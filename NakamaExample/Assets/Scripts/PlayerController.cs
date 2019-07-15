@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float MaxHealth;
     [HideInInspector] public float CurrentHealth;
 
+    [HideInInspector] public float MaxPower;
+    [HideInInspector] public float CurrentPower;
+
     [HideInInspector] public float CastTimeUntil;
     [HideInInspector] public float FullCastTime;
 

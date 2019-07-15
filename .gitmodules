@@ -1,3 +1,6 @@
 [submodule "Nakama-Go-Modules"]
 	path = Nakama-Go-Modules
 	url = https://github.com/thetemplar/Nakama-Go-Modules
+[submodule "Nakama-GameDB-CodeGen"]
+	path = Nakama-GameDB-CodeGen
+	url = https://github.com/thetemplar/Nakama-GameDB-CodeGen.git

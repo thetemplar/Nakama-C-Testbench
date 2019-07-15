@@ -17,9 +17,9 @@ public class CombatLogGUI : MonoBehaviour
 
     private void Log_OnNewDamage(string source, CombatLog.FloatingDamageEvent e)
     {
-        var o = Assets.Scripts.Manager.GameManager.Instance.GetGameObjectPosition(e.Target);
+        var o = Assets.Scripts.Manager.PlayerManager.Instance.GetGameObjectPosition(e.Target);
         Debug.Log("calling CreatePopupText" + o);
-        PopupTextController.CreatePopupText((Math.Round(e.Value * 100)/100).ToString(), Assets.Scripts.Manager.GameManager.Instance.GetGameObjectPosition(e.Target), e.Critical);
+        PopupTextController.CreatePopupText((Math.Round(e.Value * 100)/100).ToString(), Assets.Scripts.Manager.PlayerManager.Instance.GetGameObjectPosition(e.Target), e.Critical);
     }
 
     void OnGUI()
