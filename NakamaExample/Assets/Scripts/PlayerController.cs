@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Manager;
 using NakamaMinimalGame.PublicMatchState;
 using UnityEngine;
 
@@ -143,8 +144,11 @@ public class PlayerController : MonoBehaviour
     {
         if (player != null)
         {
+            var playerClass = GameManager.Instance.GameDB.Classes[player.Character.Classname];
             this.CurrentHealth = player.Character.CurrentHealth;
-            this.MaxHealth = 100;
+            this.CurrentPower = player.Character.CurrentPower;
+            this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Character.Level) * 10;
+            this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Character.Level) * 10;
         }
 
         position.y = 0;

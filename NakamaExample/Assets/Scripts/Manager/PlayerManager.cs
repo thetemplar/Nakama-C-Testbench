@@ -121,7 +121,6 @@ namespace Assets.Scripts.Manager
                         ServerShadow.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime, null);
 
                     Player.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, _notAcknowledgedPackages, diffTime, player.Value);
-                    
                 }
                 else
                 {

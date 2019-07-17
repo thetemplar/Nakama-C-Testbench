@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Manager;
 using NakamaMinimalGame.PublicMatchState;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,7 +49,7 @@ public class PlayerGUI : MonoBehaviour
     // Update is called once per frame
     void OnGUI()
     {
-        Me.text = MyPlayerController.CurrentHealth + "HP\n" + MyPlayerController.CurrentPower + "Mana";
+        Me.text = MyPlayerController.CurrentHealth + " HP\n" + MyPlayerController.CurrentPower + " Mana";
         MeHPSlider.value = MyPlayerController.CurrentHealth;
         MeHPSlider.maxValue = MyPlayerController.MaxHealth;
         MePowerSlider.value = MyPlayerController.CurrentPower;
@@ -84,13 +85,34 @@ public class PlayerGUI : MonoBehaviour
             EnemyPowerSlider.gameObject.SetActive(true);
             EnemyHPSlider.value = _selectedUnitPlayerController.CurrentHealth;
             EnemyPowerSlider.value = _selectedUnitPlayerController.CurrentPower;
-            Enemy.text = _selectedUnitPlayerController.CurrentHealth + "HP\n" + _selectedUnitPlayerController.CurrentPower + "Mana";
+            Enemy.text = _selectedUnitPlayerController.CurrentHealth + " HP\n" + _selectedUnitPlayerController.CurrentPower + " Mana";
         }
         else
         {
             Enemy.text = "";
             EnemyHPSlider.gameObject.SetActive(false);
             EnemyPowerSlider.gameObject.SetActive(false);
+        }
+
+        //casting?
+        if (_player.GCDUntil > Time.time)
+        {
+            GCDSlider.gameObject.SetActive(true);
+            GCDSlider.value = _player.GCDUntil - Time.time;
+        }
+        else
+        {
+            GCDSlider.gameObject.SetActive(false);
+        }
+
+        if (_player.CastTimeUntil > Time.time)
+        {
+            CastBarSlider.gameObject.SetActive(true);
+            CastBarSlider.value = _player.CastTimeUntil - Time.time;
+        }
+        else
+        {
+            CastBarSlider.gameObject.SetActive(false);
         }
     }
 
@@ -103,13 +125,34 @@ public class PlayerGUI : MonoBehaviour
         }
     }
 
-    public void ButtonBarClick(long spellId)
+    public void ButtonBarClick(GameDB_Lib.GameDB_Spell spell, Button button)
     {
         if (_player.GCDUntil < Time.time && _player.CastTimeUntil < Time.time)
         {
-            var cast = new Client_Cast { SpellId = spellId };
-            Assets.Scripts.Manager.PlayerManager.Instance.AddMessageToSend(cast);
-            _player.GCDUntil = Time.time + 1.5f;
+            var cast = new Client_Cast { SpellId = spell.Id};
+            PlayerManager.Instance.AddMessageToSend(cast);
+            if (!spell.IgnoresGCD)
+            {
+                GCDSlider.maxValue = spell.GlobalCooldown;
+                _player.GCDUntil = Time.time + spell.GlobalCooldown;
+            }
+            if (spell.CastTime > 0)
+            {
+                CastBarSlider.maxValue = spell.CastTime;
+                _player.CastTimeUntil = Time.time + spell.CastTime;
+            }
+
+            if (spell.Cooldown > 0)
+            {
+                button.GetComponent<UnityEngine.UI.Image>().color = Color.gray;
+
+                System.Threading.Timer timer = null;
+                timer = new System.Threading.Timer((obj) =>
+                {
+                    UnityThread.executeInUpdate(() => button.GetComponent<UnityEngine.UI.Image>().color = Color.white);
+                    timer.Dispose();
+                }, null, (int)(spell.Cooldown * 1000), System.Threading.Timeout.Infinite);
+            }
         }
     }
 
@@ -121,8 +164,8 @@ public class PlayerGUI : MonoBehaviour
             Button button = Instantiate(ButtonPrefab);
             button.transform.SetParent(GUIFrame.transform);
             button.transform.position = new Vector3(60 * i + 50, 50, 0);
-            button.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick(spell.Id));
-            button.transform.GetChild(0).GetComponent<Text>().text = spell.Name;
+            button.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick(spell, button));
+            button.transform.GetChild(0).GetComponent<Text>().text = spell.Name + "\nCD:" + spell.Cooldown + "\nCast:" + spell.CastTime;
             i++;
         }
     }
