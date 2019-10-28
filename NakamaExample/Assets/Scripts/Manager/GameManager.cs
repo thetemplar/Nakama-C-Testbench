@@ -69,7 +69,13 @@ namespace Assets.Scripts.Manager
 
         public void Spawn(Dropdown classSelected)
         {
-            var c = new Client_SelectCharacter { Classname = classSelected.options[classSelected.value].text };
+            var c = new Client_Message
+            {
+                SelectChar = new Client_Message.Types.Client_SelectCharacter
+                {
+                    Classname = classSelected.options[classSelected.value].text
+                }
+            };
             Thread.Sleep(50);
             SendMatchStateMessage(100, c.ToByteArray());
         }
@@ -128,27 +134,15 @@ namespace Assets.Scripts.Manager
             _timeOfLastState = DateTime.Now;
         }
 
-        public void SendMatchStateMessage(object msg)
+        public void SendMatchStateMessage(Client_Message msg)
         {
             byte[] toSend;
             long opCode = -1;
             switch (msg.GetType().ToString())
             {
                 case "NakamaMinimalGame.PublicMatchState.Client_Cast":
-                    toSend = ((Client_Cast)msg).ToByteArray();
+                    toSend = msg.ToByteArray();
                     opCode = 1;
-                    break;
-                case "NakamaMinimalGame.PublicMatchState.Client_Autoattack":
-                    toSend = ((Client_Autoattack)msg).ToByteArray();
-                    opCode = 2;
-                    break;
-                case "NakamaMinimalGame.PublicMatchState.Client_CancelAttack":
-                    toSend = ((Client_CancelAttack)msg).ToByteArray();
-                    opCode = 3;
-                    break;
-                case "NakamaMinimalGame.PublicMatchState.Client_SelectCharacter":
-                    toSend = ((Client_SelectCharacter)msg).ToByteArray();
-                    opCode = 100;
                     break;
                 default:
                     Debug.Log(msg.GetType().ToString() + " not known in sender list");

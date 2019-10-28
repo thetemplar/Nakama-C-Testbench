@@ -54,7 +54,7 @@ public class PlayerGUI : MonoBehaviour
         MeHPSlider.maxValue = MyPlayerController.MaxHealth;
         MePowerSlider.value = MyPlayerController.CurrentPower;
         MePowerSlider.maxValue = MyPlayerController.MaxPower;
-        
+
         if (Input.GetMouseButton(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -69,6 +69,31 @@ public class PlayerGUI : MonoBehaviour
                     _selectedUnitPlayerController = go.GetComponent<PlayerController>();
                     EnemyHPSlider.maxValue = _selectedUnitPlayerController.MaxHealth;
                     EnemyPowerSlider.maxValue = _selectedUnitPlayerController.MaxPower;
+                }
+            }
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                GameObject go = hit.transform.root.gameObject;
+                if (go.layer == 9)
+                {
+                    var targetPoint = hit.point;
+                    var move = new Client_Message
+                    {
+                        Move = new Client_Message.Types.Client_Movement
+                        {
+                            AbsoluteCoordinates = true,
+                            XAxis = targetPoint.x,
+                            YAxis = targetPoint.y
+                        }
+                    };
+                    PlayerManager.Instance.AddMessageToSend(move);
                 }
             }
         }
@@ -129,7 +154,13 @@ public class PlayerGUI : MonoBehaviour
     {
         if (_player.GCDUntil < Time.time && _player.CastTimeUntil < Time.time)
         {
-            var cast = new Client_Cast { SpellId = spell.Id};
+            var cast = new Client_Message
+            {
+                Cast = new Client_Message.Types.Client_Cast
+                {
+                    SpellId = spell.Id
+                }
+            };
             PlayerManager.Instance.AddMessageToSend(cast);
             if (!spell.IgnoresGCD)
             {
@@ -144,12 +175,12 @@ public class PlayerGUI : MonoBehaviour
 
             if (spell.Cooldown > 0)
             {
-                button.GetComponent<UnityEngine.UI.Image>().color = Color.gray;
+                button.GetComponent<Image>().color = Color.gray;
 
                 System.Threading.Timer timer = null;
                 timer = new System.Threading.Timer((obj) =>
                 {
-                    UnityThread.executeInUpdate(() => button.GetComponent<UnityEngine.UI.Image>().color = Color.white);
+                    UnityThread.executeInUpdate(() => button.GetComponent<Image>().color = Color.white);
                     timer.Dispose();
                 }, null, (int)(spell.Cooldown * 1000), System.Threading.Timeout.Infinite);
             }

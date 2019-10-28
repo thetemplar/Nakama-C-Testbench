@@ -22,8 +22,8 @@ namespace Assets.Scripts.Manager
         public string ClassName = "";
 
         private Dictionary<string, PlayerController> _gameObjects = new Dictionary<string, PlayerController>();
-        private List<Client_Character> _notAcknowledgedPackages = new List<Client_Character>();
-        private Queue<object> _messagesToSend = new Queue<object>();
+        private List<Client_Message> _notAcknowledgedPackages = new List<Client_Message>();
+        private Queue<Client_Message> _messagesToSend = new Queue<Client_Message>();
 
         private long _lastConfirmedServerTick;
         private long _clientTick;
@@ -55,20 +55,36 @@ namespace Assets.Scripts.Manager
             }
             if (Player.gameObject.activeSelf)
             {
-                Client_Character send = new Client_Character
+
+                Client_Message send = new Client_Message
                 {
-                    XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0),
-                    YAxis = Input.GetAxis("Vertical"),
-                    Rotation = Player.Rotation,
-                    LastConfirmedServerTick = _lastConfirmedServerTick,
                     ClientTick = _clientTick,
-                    Target = (UnitSelector.SelectedUnit != null) ? UnitSelector.SelectedUnit.name : "",
+                    Character = new Client_Message.Types.Client_Character
+                    {
+                        LastConfirmedServerTick = _lastConfirmedServerTick,
+                        Target = (UnitSelector.SelectedUnit != null) ? UnitSelector.SelectedUnit.name : ""
+                    }
                 };
-
-                Player.ApplyPredictedInput(send.XAxis, send.YAxis, send.Rotation, Time.fixedDeltaTime);
-
                 _notAcknowledgedPackages.Add(send);
                 GameManager.Instance.SendMatchStateMessage(0, send.ToByteArray());
+
+                if (Input.GetAxis("Horizontal") != 0 && Input.GetAxis("Vertical") != 0) // TODO: AND ROTATION DID NOT CHANGE!
+                {
+                    var move = new Client_Message
+                    {
+                        ClientTick = _clientTick,
+                        Move = new Client_Message.Types.Client_Movement
+                        {
+                            AbsoluteCoordinates = false,
+                            XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0),
+                            YAxis = Input.GetAxis("Vertical"),
+                            Rotation = Player.Rotation
+                        }
+                    };
+                    _notAcknowledgedPackages.Add(move);
+                    GameManager.Instance.SendMatchStateMessage(0, move.ToByteArray());
+                    Player.ApplyPredictedInput(move.Move.XAxis, move.Move.YAxis, move.Move.Rotation, Time.fixedDeltaTime);
+                }
             }
             else
             {
@@ -96,8 +112,9 @@ namespace Assets.Scripts.Manager
 #endif
         }
 
-        public void AddMessageToSend(object msg)
+        public void AddMessageToSend(Client_Message msg)
         {
+            msg.ClientTick = _clientTick;
             _messagesToSend.Enqueue(msg);
         }
 

@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Character> notAcknowledgedPackages, float timeToLerp, NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable player = null)
+    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Message> notAcknowledgedPackages, float timeToLerp, NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable player = null)
     {
         if (player != null)
         {
@@ -156,10 +156,12 @@ public class PlayerController : MonoBehaviour
         {
             foreach (var package in notAcknowledgedPackages.ToArray())
             {
-                var rotated = Rotate(new Vector2(package.XAxis, package.YAxis), package.Rotation);
+                if (package.TypeCase != Client_Message.TypeOneofCase.Move)
+                    continue;
+                var rotated = Rotate(new Vector2(package.Move.XAxis, package.Move.YAxis), package.Move.Rotation);
                 position.x += rotated.x;
                 position.z += rotated.y;
-                rotation = package.Rotation;
+                rotation = package.Move.Rotation;
             }
         }
         
