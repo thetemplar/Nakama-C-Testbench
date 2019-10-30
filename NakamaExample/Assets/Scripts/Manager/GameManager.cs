@@ -71,13 +71,14 @@ namespace Assets.Scripts.Manager
         {
             var c = new Client_Message
             {
+                ClientTick = 1,
                 SelectChar = new Client_Message.Types.Client_SelectCharacter
                 {
                     Classname = classSelected.options[classSelected.value].text
                 }
             };
             Thread.Sleep(50);
-            SendMatchStateMessage(100, c.ToByteArray());
+            SendMatchStateMessage(c);
         }
 
         public async void JoinMatchAsync(string matchId)
@@ -138,31 +139,30 @@ namespace Assets.Scripts.Manager
         {
             byte[] toSend;
             long opCode = -1;
-            switch (msg.GetType().ToString())
+            if (msg == null)
             {
-                case "NakamaMinimalGame.PublicMatchState.Client_Cast":
-                    toSend = msg.ToByteArray();
-                    opCode = 1;
-                    break;
-                default:
-                    Debug.Log(msg.GetType().ToString() + " not known in sender list");
-                    return;
+                toSend = new byte[] { };
+                opCode = 255;
+            } 
+            else
+            {
+                toSend = msg.ToByteArray();
+                switch (msg.TypeCase)
+                {
+                    case Client_Message.TypeOneofCase.Move:
+                        opCode = 2;
+                        break;
+                    case Client_Message.TypeOneofCase.SelectChar:
+                        opCode = 100;
+                        break;
+                    default:
+                        opCode = 1;
+                        break;
+                }
             }
             try
             {
                 _socket.SendMatchState(MatchId, opCode, toSend);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Error while sending match state: " + e.Message);
-            }
-        }
-
-        public void SendMatchStateMessage(long opCode, byte[] msg)
-        {
-            try
-            {
-                _socket.SendMatchState(MatchId, opCode, msg);
             }
             catch (Exception e)
             {

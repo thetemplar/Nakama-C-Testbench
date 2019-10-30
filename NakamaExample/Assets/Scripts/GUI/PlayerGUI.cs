@@ -75,6 +75,7 @@ public class PlayerGUI : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
+            /*
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -95,7 +96,7 @@ public class PlayerGUI : MonoBehaviour
                     };
                     PlayerManager.Instance.AddMessageToSend(move);
                 }
-            }
+            }*/
         }
 
         if (SelectedUnit != null && Input.GetKey(KeyCode.Escape))

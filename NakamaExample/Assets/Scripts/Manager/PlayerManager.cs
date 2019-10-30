@@ -66,9 +66,9 @@ namespace Assets.Scripts.Manager
                     }
                 };
                 _notAcknowledgedPackages.Add(send);
-                GameManager.Instance.SendMatchStateMessage(0, send.ToByteArray());
+                GameManager.Instance.SendMatchStateMessage(send);
 
-                if (Input.GetAxis("Horizontal") != 0 && Input.GetAxis("Vertical") != 0) // TODO: AND ROTATION DID NOT CHANGE!
+                if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // TODO: AND ROTATION DID NOT CHANGE!
                 {
                     var move = new Client_Message
                     {
@@ -82,14 +82,14 @@ namespace Assets.Scripts.Manager
                         }
                     };
                     _notAcknowledgedPackages.Add(move);
-                    GameManager.Instance.SendMatchStateMessage(0, move.ToByteArray());
+                    GameManager.Instance.SendMatchStateMessage(move);
                     Player.ApplyPredictedInput(move.Move.XAxis, move.Move.YAxis, move.Move.Rotation, Time.fixedDeltaTime);
                 }
             }
             else
             {
                 if(_clientTick%10==0)
-                    GameManager.Instance.SendMatchStateMessage(255, new byte[] { }); //no-op
+                    GameManager.Instance.SendMatchStateMessage(null); //no-op
             }
             
             while(_messagesToSend.Count > 0)

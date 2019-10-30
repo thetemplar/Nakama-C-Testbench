@@ -32,8 +32,6 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public float GCDUntil;
 
-    private CharacterController controller;
-
     class LerpingParameters<T> {
         public bool IsLerping;
         public T Value;
@@ -86,7 +84,6 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        controller = GetComponent<CharacterController>();
         _lerpPosition = new LerpingParameters<Vector3>(transform.position);
         _lerpRotation = new LerpingParameters<float>(transform.rotation.eulerAngles.y);
     }
@@ -159,8 +156,16 @@ public class PlayerController : MonoBehaviour
                 if (package.TypeCase != Client_Message.TypeOneofCase.Move)
                     continue;
                 var rotated = Rotate(new Vector2(package.Move.XAxis, package.Move.YAxis), package.Move.Rotation);
-                position.x += rotated.x;
-                position.z += rotated.y;
+                float length = (float)Math.Sqrt(Math.Pow(rotated.x, 2) + Math.Pow(rotated.y, 2));
+                if(length > 1)
+                {
+                    position.x += (rotated.x / length);
+                    position.z += (rotated.y / length);
+                } else
+                {
+                    position.x += rotated.x;
+                    position.z += rotated.y;
+                }
                 rotation = package.Move.Rotation;
             }
         }
