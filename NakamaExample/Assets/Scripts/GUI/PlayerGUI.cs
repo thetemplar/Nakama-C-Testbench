@@ -8,7 +8,9 @@ public class PlayerGUI : MonoBehaviour
 {
     public GameObject GUIFrame;
     public Text Me;
+    public Text MeAuras;
     public Text Enemy;
+    public Text EnemyAuras;
     public Slider MeHPSlider;
     public Slider MePowerSlider;
     public Slider EnemyHPSlider;
@@ -54,6 +56,13 @@ public class PlayerGUI : MonoBehaviour
         MeHPSlider.maxValue = MyPlayerController.MaxHealth;
         MePowerSlider.value = MyPlayerController.CurrentPower;
         MePowerSlider.maxValue = MyPlayerController.MaxPower;
+
+        string auras = "";
+        foreach (var aura in MyPlayerController.Auras)
+        {
+            auras += aura + "\n";
+        }
+        MeAuras.text = auras;
 
         if (Input.GetMouseButton(0))
         {
@@ -112,6 +121,13 @@ public class PlayerGUI : MonoBehaviour
             EnemyHPSlider.value = _selectedUnitPlayerController.CurrentHealth;
             EnemyPowerSlider.value = _selectedUnitPlayerController.CurrentPower;
             Enemy.text = _selectedUnitPlayerController.CurrentHealth + " HP\n" + _selectedUnitPlayerController.CurrentPower + " Mana";
+
+            string enemyAuras = "";
+            foreach (var aura in _selectedUnitPlayerController.Auras)
+            {
+                enemyAuras += GameManager.Instance.GameDB.Effects[aura.EffectId].Name + "\n";
+            }
+            EnemyAuras.text = enemyAuras;
         }
         else
         {
@@ -187,13 +203,30 @@ public class PlayerGUI : MonoBehaviour
             }
         }
     }
+    public void ButtonBarClick_Autoattack()
+    {
+        var attack = new Client_Message
+        {
+            AutoAttack = new Client_Message.Types.Client_Autoattack
+            {
+                Attacktype = Client_Message.Types.Client_Autoattack.Types.Type.Meele
+            }
+        };
+        PlayerManager.Instance.AddMessageToSend(attack);
+    }
 
     public void InitiateButtonBar()
     {
-        int i = 0;
+        Button button = Instantiate(ButtonPrefab);
+        button.transform.SetParent(GUIFrame.transform);
+        button.transform.position = new Vector3(0 + 50, 50, 0);
+        button.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick_Autoattack());
+        button.transform.GetChild(0).GetComponent<Text>().text = "Autoattack";
+
+        int i = 1;
         foreach (var spell in GameManager.Instance.GameDB.Classes[PlayerManager.Instance.ClassName].Spells)
         {
-            Button button = Instantiate(ButtonPrefab);
+            button = Instantiate(ButtonPrefab);
             button.transform.SetParent(GUIFrame.transform);
             button.transform.position = new Vector3(60 * i + 50, 50, 0);
             button.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick(spell, button));

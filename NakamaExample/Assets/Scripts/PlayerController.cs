@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public float GCDUntil;
 
+    [HideInInspector] public List<PublicMatchState.Types.Aura> Auras = new List<PublicMatchState.Types.Aura>();
+
+    private Animator animator;
+
     class LerpingParameters<T> {
         public bool IsLerping;
         public T Value;
@@ -88,6 +92,16 @@ public class PlayerController : MonoBehaviour
         _lerpRotation = new LerpingParameters<float>(transform.rotation.eulerAngles.y);
     }
 
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+    private void AttackAnimation()
+    {
+        animator.SetTrigger("AutoAttack");
+    }
+
     // Update is called once per frame  
     void Update()
     {
@@ -137,7 +151,7 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Message> notAcknowledgedPackages, float timeToLerp, NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable player = null)
+    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Message> notAcknowledgedPackages, float timeToLerp, PublicMatchState.Types.Interactable player = null)
     {
         if (player != null)
         {
@@ -146,6 +160,11 @@ public class PlayerController : MonoBehaviour
             this.CurrentPower = player.Character.CurrentPower;
             this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Character.Level) * 10;
             this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Character.Level) * 10;
+            this.Auras.Clear();
+            foreach (var aura in player.Auras)
+            {
+                this.Auras.Add(aura);
+            }
         }
 
         position.y = 0;

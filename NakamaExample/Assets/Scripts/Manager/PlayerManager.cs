@@ -28,6 +28,7 @@ namespace Assets.Scripts.Manager
         private long _lastConfirmedServerTick;
         private long _clientTick;
 
+        private float lastRotation;
 
 #if UNITY_EDITOR
         private bool _startJoin = false;
@@ -68,8 +69,9 @@ namespace Assets.Scripts.Manager
                 _notAcknowledgedPackages.Add(send);
                 GameManager.Instance.SendMatchStateMessage(send);
 
-                if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) // TODO: AND ROTATION DID NOT CHANGE!
+                if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || lastRotation != Player.Rotation) // TODO: AND ROTATION DID NOT CHANGE!
                 {
+                    lastRotation = Player.Rotation;
                     var move = new Client_Message
                     {
                         ClientTick = _clientTick,
