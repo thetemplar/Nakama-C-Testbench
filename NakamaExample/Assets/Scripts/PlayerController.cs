@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public List<PublicMatchState.Types.Aura> Auras = new List<PublicMatchState.Types.Aura>();
 
+    [HideInInspector] public GameDB_Lib.GameDB_Class playerClass;
+
     private Animator animator;
 
     class LerpingParameters<T> {
@@ -135,9 +137,14 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPredictedInput(float XAxis, float YAxis, float rotation, float timeToLerp)
     {
+        if (playerClass.Name == "")
+        {
+            return;
+        }
+
         if (Level >= LevelOfNetworking.B_Prediction && isLocalPlayer)
         {
-            var rotated = Rotate(new Vector2(XAxis, YAxis), _lerpRotation.Value);
+            var rotated = Rotate(new Vector2(XAxis * playerClass.MovementSpeed / 100f, YAxis * playerClass.MovementSpeed / 100f), _lerpRotation.Value);
             var newPos = _lerpPosition.Value + new Vector3(rotated.x, 0, rotated.y);
 
             _lerpPosition.SetNext(newPos, timeToLerp);     
@@ -155,11 +162,14 @@ public class PlayerController : MonoBehaviour
     {
         if (player != null)
         {
-            var playerClass = GameManager.Instance.GameDB.Classes[player.Character.Classname];
-            this.CurrentHealth = player.Character.CurrentHealth;
-            this.CurrentPower = player.Character.CurrentPower;
-            this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Character.Level) * 10;
-            this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Character.Level) * 10;
+            if (playerClass.Name == null || playerClass.Name == "")
+            {
+                playerClass = GameManager.Instance.GameDB.Classes[player.Classname];
+            }
+            this.CurrentHealth = player.CurrentHealth;
+            this.CurrentPower = player.CurrentPower;
+            this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Level) * 10;
+            this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Level) * 10;
             this.Auras.Clear();
             foreach (var aura in player.Auras)
             {
@@ -196,10 +206,10 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if(Vector3.Distance(position, _lerpPosition.Value) > 0.2f)
+        if(Vector3.Distance(position, _lerpPosition.Value) > 0.5f)
         {
             Debug.Log("dist too big:" + Vector3.Distance(position, _lerpPosition.Value));
-            _lerpPosition.IsLerping = false;
+            //_lerpPosition.IsLerping = false;
             _lerpPosition.Value = position;
 
         }

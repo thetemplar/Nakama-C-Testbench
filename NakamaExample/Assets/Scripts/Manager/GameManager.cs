@@ -62,19 +62,24 @@ namespace Assets.Scripts.Manager
                 Debug.Log("StartOrJoin: " + id);
                 JoinMatchAsync(id);
             });
-#if !UNITY_EDITOR
+
+            Spawn("Mage");
             SceneManager.LoadScene("Main");
-#endif
         }
 
         public void Spawn(Dropdown classSelected)
+        {
+            Spawn(classSelected.options[classSelected.value].text);
+        }
+
+        public void Spawn(string classSelected)
         {
             var c = new Client_Message
             {
                 ClientTick = 1,
                 SelectChar = new Client_Message.Types.Client_SelectCharacter
                 {
-                    Classname = classSelected.options[classSelected.value].text
+                    Classname = classSelected
                 }
             };
             Thread.Sleep(50);

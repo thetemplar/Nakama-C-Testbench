@@ -1009,6 +1009,7 @@ MonoBehaviour:
     type: 3}
   PrefabNPC: {fileID: 4021254320924456548, guid: 9c1d97b42ae2e214bb07d597eeef407f,
     type: 3}
+  CameraScript: {fileID: 963194229}
   Spawned: 0
   ClassName: 
 --- !u!1 &422882982
@@ -2632,6 +2633,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ONLY_IN_EDITOR
       objectReference: {fileID: 0}
+    - target: {fileID: 5436090616135980755, guid: 7019930a902acae43b2098a41d5636f3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5436090616135980752, guid: 7019930a902acae43b2098a41d5636f3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3302,6 +3308,35 @@ MonoBehaviour:
   CastTimeUntil: 0
   FullCastTime: 0
   GCDUntil: 0
+  playerClass:
+    Name: 
+    Description: 
+    Spells: []
+    Items: []
+    Procs: []
+    BaseStamina: 0
+    GainStamina: 0
+    FactorHPRegen: 0
+    FactorArmor: 0
+    FactorSpellResist: 0
+    FactorBlock: 0
+    BaseStrength: 0
+    GainStrength: 0
+    FactorStrengthAP: 0
+    FactorParry: 0
+    BaseAgility: 0
+    GainAgility: 0
+    FactorAgilityAP: 0
+    FactorMeeleAttackSpeed: 0
+    FactorMeeleCriticalHits: 0
+    FactorDodge: 0
+    BaseIntellect: 0
+    GainIntellect: 0
+    FactorManaRegen: 0
+    FactorSpellAP: 0
+    FactorSpellAttackSpeed: 0
+    FactorSpellCriticalHits: 0
+    MovementSpeed: 0
 --- !u!4 &1016143233
 Transform:
   m_ObjectHideFlags: 0
@@ -3409,7 +3444,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1021626637
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5311,6 +5346,35 @@ MonoBehaviour:
   CastTimeUntil: 0
   FullCastTime: 0
   GCDUntil: 0
+  playerClass:
+    Name: 
+    Description: 
+    Spells: []
+    Items: []
+    Procs: []
+    BaseStamina: 0
+    GainStamina: 0
+    FactorHPRegen: 0
+    FactorArmor: 0
+    FactorSpellResist: 0
+    FactorBlock: 0
+    BaseStrength: 0
+    GainStrength: 0
+    FactorStrengthAP: 0
+    FactorParry: 0
+    BaseAgility: 0
+    GainAgility: 0
+    FactorAgilityAP: 0
+    FactorMeeleAttackSpeed: 0
+    FactorMeeleCriticalHits: 0
+    FactorDodge: 0
+    BaseIntellect: 0
+    GainIntellect: 0
+    FactorManaRegen: 0
+    FactorSpellAP: 0
+    FactorSpellAttackSpeed: 0
+    FactorSpellCriticalHits: 0
+    MovementSpeed: 0
 --- !u!143 &1775982178
 CharacterController:
   m_ObjectHideFlags: 0

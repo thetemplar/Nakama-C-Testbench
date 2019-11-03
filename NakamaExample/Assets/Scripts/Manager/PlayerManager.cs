@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Google.Protobuf;
+using System;
 
 namespace Assets.Scripts.Manager
 {
@@ -17,8 +18,11 @@ namespace Assets.Scripts.Manager
         public GameObject PrefabBullet;
         public GameObject PrefabNPC;
 
+        public OrbitCamera CameraScript;
+
         [HideInInspector]
         public bool Spawned = false;
+        [HideInInspector]
         public string ClassName = "";
 
         private Dictionary<string, PlayerController> _gameObjects = new Dictionary<string, PlayerController>();
@@ -30,9 +34,9 @@ namespace Assets.Scripts.Manager
 
         private float lastRotation;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         private bool _startJoin = false;
-#endif
+//#endif
 
         private void Start()
         {
@@ -41,17 +45,18 @@ namespace Assets.Scripts.Manager
 
         private void FixedUpdate()
         {
+            CameraScript.enabled = true;
             if (string.IsNullOrEmpty(GameManager.Instance.MatchId) || !NakamaManager.Instance.IsConnected)
             {
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
                 if (!_startJoin)
                 {
                     _startJoin = true;
                     GameManager.Instance.Join();
                 }
-#else
-                SceneManager.LoadScene("MainMenu");
-#endif
+//#else
+//                SceneManager.LoadScene("MainMenu");
+//#endif
                 return;
             }
             if (Player.gameObject.activeSelf)
@@ -71,6 +76,16 @@ namespace Assets.Scripts.Manager
 
                 if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || lastRotation != Player.Rotation) // TODO: AND ROTATION DID NOT CHANGE!
                 {
+                    var XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0);
+                    var YAxis = Input.GetAxis("Vertical");
+
+                    var length = (float)Math.Sqrt(Math.Pow(XAxis, 2) + Math.Pow(YAxis, 2));
+                    if (length > 1)
+                    {
+                        XAxis /= length;
+                        YAxis /= length;
+                    }
+
                     lastRotation = Player.Rotation;
                     var move = new Client_Message
                     {
@@ -78,8 +93,8 @@ namespace Assets.Scripts.Manager
                         Move = new Client_Message.Types.Client_Movement
                         {
                             AbsoluteCoordinates = false,
-                            XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0),
-                            YAxis = Input.GetAxis("Vertical"),
+                            XAxis = XAxis,
+                            YAxis = YAxis,
                             Rotation = Player.Rotation
                         }
                     };
@@ -132,7 +147,7 @@ namespace Assets.Scripts.Manager
                     if (!Spawned)
                     {
                         Spawned = true;
-                        ClassName = player.Value.Character.Classname;
+                        ClassName = player.Value.Classname;
                     }
                     _notAcknowledgedPackages.RemoveAll(x => x.ClientTick <= player.Value.LastProcessedClientTick);
 
