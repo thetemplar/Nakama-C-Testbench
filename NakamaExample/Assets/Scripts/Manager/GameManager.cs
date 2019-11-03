@@ -36,13 +36,9 @@ namespace Assets.Scripts.Manager
                 return _gameDB;
             } 
         }
+
+
         private ISocket _socket { get { return NakamaManager.Instance.Socket; } }
-        
-        public string MatchId
-        {
-            get;
-            private set;
-        }
 
         //private bool _matchJoined;
         private bool _isLeaving;
@@ -56,23 +52,15 @@ namespace Assets.Scripts.Manager
 
         public void Join()
         {
-            Task.Run(async () => {
-                Thread.Sleep(1000);
-                string id = await NakamaManager.Instance.StartOrJoinGameAsync();
-                Debug.Log("StartOrJoin: " + id);
-                JoinMatchAsync(id);
-            });
-
-            Spawn("Mage");
-            SceneManager.LoadScene("Main");
+            SpawnPlayer("Mage");
         }
 
-        public void Spawn(Dropdown classSelected)
+        public void SpawnPlayer(Dropdown classSelected)
         {
-            Spawn(classSelected.options[classSelected.value].text);
+            SpawnPlayer(classSelected.options[classSelected.value].text);
         }
 
-        public void Spawn(string classSelected)
+        public void SpawnPlayer(string classSelected)
         {
             var c = new Client_Message
             {
@@ -85,28 +73,21 @@ namespace Assets.Scripts.Manager
             Thread.Sleep(50);
             SendMatchStateMessage(c);
         }
+        private void Start()
+        {
+            JoinMatchAsync(NakamaManager.Instance.MatchId);
+        }
 
         public async void JoinMatchAsync(string matchId)
         {
             try
             {
-                // Listen to incomming match messages and user connection changes
-                //_socket.OnMatchPresence += OnMatchPresence;
                 _socket.OnMatchState += ReceiveMatchStateMessage;
 
                 // Join the match
                 IMatch match = await _socket.JoinMatchAsync(matchId);
-                Debug.Log("Created & joined match with ID: " + matchId);
-                // Set current match id
-                // It will be used to leave the match later
-                MatchId = match.Id;
+                Debug.Log("Joined match ID: " + matchId);
                 CombatLogGUI.CombatLog.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
-
-                // Add all players already connected to the match
-                // If both players uses the same account, exit the game
-                //AddConnectedPlayers(match);
-                //_matchJoined = true;
-                //StartGame();
             }
             catch (Exception e)
             {
@@ -127,6 +108,7 @@ namespace Assets.Scripts.Manager
 
             //Starts coroutine which is loading main menu and also disconnects player from match
             //StartCoroutine(LoadMenuCoroutine());
+            SceneManager.LoadScene("MainMenu");
         }
 
         private void ReceiveMatchStateMessage(object sender, IMatchState e)
@@ -167,7 +149,7 @@ namespace Assets.Scripts.Manager
             }
             try
             {
-                _socket.SendMatchState(MatchId, opCode, toSend);
+                _socket.SendMatchState(NakamaManager.Instance.MatchId, opCode, toSend);
             }
             catch (Exception e)
             {

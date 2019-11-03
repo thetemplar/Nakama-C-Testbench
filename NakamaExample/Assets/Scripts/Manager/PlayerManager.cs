@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Google.Protobuf;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Manager
 {
@@ -46,17 +47,10 @@ namespace Assets.Scripts.Manager
         private void FixedUpdate()
         {
             CameraScript.enabled = true;
-            if (string.IsNullOrEmpty(GameManager.Instance.MatchId) || !NakamaManager.Instance.IsConnected)
+            if (string.IsNullOrEmpty(NakamaManager.Instance.MatchId) || !NakamaManager.Instance.IsConnected)
             {
-//#if UNITY_EDITOR
-                if (!_startJoin)
-                {
-                    _startJoin = true;
-                    GameManager.Instance.Join();
-                }
-//#else
-//                SceneManager.LoadScene("MainMenu");
-//#endif
+                NakamaManager.Instance.Disconnect();
+                SceneManager.LoadScene("MainMenu");
                 return;
             }
             if (Player.gameObject.activeSelf)

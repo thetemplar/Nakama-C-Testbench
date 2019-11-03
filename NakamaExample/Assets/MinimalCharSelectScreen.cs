@@ -27,10 +27,13 @@ public class MinimalCharSelectScreen : MonoBehaviour
 
     public void Spawn()
     {
-        GameManager.Instance.Spawn(DropDown);
+        GameManager.Instance.SpawnPlayer(DropDown);
         CameraScript.enabled = true;
         this.gameObject.SetActive(false);
+    }
 
-
+    public void Disconnect()
+    {
+        GameManager.Instance.LeaveGame();
     }
 }
