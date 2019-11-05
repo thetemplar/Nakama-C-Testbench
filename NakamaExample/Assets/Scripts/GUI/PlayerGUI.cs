@@ -27,6 +27,8 @@ public class PlayerGUI : MonoBehaviour
     private float _autoattackCD;
     private PlayerController _player;
 
+    private bool placeSpellCursor = false;
+
     private bool _initiatedButtonBar;
 
     // Start is called before the first frame update
@@ -60,24 +62,37 @@ public class PlayerGUI : MonoBehaviour
         string auras = "";
         foreach (var aura in MyPlayerController.Auras)
         {
-            auras += aura + "\n";
+            auras += GameManager.Instance.GameDB.Effects[aura.EffectId].Name + "\n";
         }
         MeAuras.text = auras;
 
         if (Input.GetMouseButton(0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (placeSpellCursor)
             {
-                GameObject go = hit.transform.root.gameObject;
-                if (go.layer == 8)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
                 {
-                    SelectedUnit = go;
-                    _selectedUnitPlayerController = go.GetComponent<PlayerController>();
-                    EnemyHPSlider.maxValue = _selectedUnitPlayerController.MaxHealth;
-                    EnemyPowerSlider.maxValue = _selectedUnitPlayerController.MaxPower;
+                    CastSpell(placeSpellCursor_Spell, placeSpellCursor_Button, new Vector2(hit.point.x, hit.point.z));
+                }
+                placeSpellCursor = false;
+            }
+            else
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    GameObject go = hit.transform.root.gameObject;
+                    if (go.layer == 8)
+                    {
+                        SelectedUnit = go;
+                        _selectedUnitPlayerController = go.GetComponent<PlayerController>();
+                        EnemyHPSlider.maxValue = _selectedUnitPlayerController.MaxHealth;
+                        EnemyPowerSlider.maxValue = _selectedUnitPlayerController.MaxPower;
+                    }
                 }
             }
         }
@@ -167,39 +182,57 @@ public class PlayerGUI : MonoBehaviour
         }
     }
 
+    public void CastSpell(GameDB_Lib.GameDB_Spell spell, Button button, Vector2 pos)
+    {
+        var cast = new Client_Message
+        {
+            Cast = new Client_Message.Types.Client_Cast
+            {
+                SpellId = spell.Id,
+                Position = new Vector2Df { X = pos.x, Y = pos.y }
+            }
+        };
+        PlayerManager.Instance.AddMessageToSend(cast);
+        if (!spell.IgnoresGCD)
+        {
+            GCDSlider.maxValue = spell.GlobalCooldown;
+            _player.GCDUntil = Time.time + spell.GlobalCooldown;
+        }
+        if (spell.CastTime > 0)
+        {
+            CastBarSlider.maxValue = spell.CastTime;
+            _player.CastTimeUntil = Time.time + spell.CastTime;
+        }
+
+        if (spell.Cooldown > 0)
+        {
+            button.GetComponent<Image>().color = Color.gray;
+
+            System.Threading.Timer timer = null;
+            timer = new System.Threading.Timer((obj) =>
+            {
+                UnityThread.executeInUpdate(() => button.GetComponent<Image>().color = Color.white);
+                timer.Dispose();
+            }, null, (int)(spell.Cooldown * 1000), System.Threading.Timeout.Infinite);
+        }
+    }
+
+    private GameDB_Lib.GameDB_Spell placeSpellCursor_Spell;
+    private Button placeSpellCursor_Button;
+
     public void ButtonBarClick(GameDB_Lib.GameDB_Spell spell, Button button)
     {
         if (_player.GCDUntil < Time.time && _player.CastTimeUntil < Time.time)
         {
-            var cast = new Client_Message
+            if(spell.Target_Type == GameDB_Lib.GameDB_Spell_Target_Type.AoE)
             {
-                Cast = new Client_Message.Types.Client_Cast
-                {
-                    SpellId = spell.Id
-                }
-            };
-            PlayerManager.Instance.AddMessageToSend(cast);
-            if (!spell.IgnoresGCD)
-            {
-                GCDSlider.maxValue = spell.GlobalCooldown;
-                _player.GCDUntil = Time.time + spell.GlobalCooldown;
+                placeSpellCursor = true;
+                placeSpellCursor_Spell = spell;
+                placeSpellCursor_Button = button;
             }
-            if (spell.CastTime > 0)
+            else
             {
-                CastBarSlider.maxValue = spell.CastTime;
-                _player.CastTimeUntil = Time.time + spell.CastTime;
-            }
-
-            if (spell.Cooldown > 0)
-            {
-                button.GetComponent<Image>().color = Color.gray;
-
-                System.Threading.Timer timer = null;
-                timer = new System.Threading.Timer((obj) =>
-                {
-                    UnityThread.executeInUpdate(() => button.GetComponent<Image>().color = Color.white);
-                    timer.Dispose();
-                }, null, (int)(spell.Cooldown * 1000), System.Threading.Timeout.Infinite);
+                CastSpell(spell, button, new Vector2());
             }
         }
     }
@@ -217,16 +250,16 @@ public class PlayerGUI : MonoBehaviour
 
     public void InitiateButtonBar()
     {
-        Button button = Instantiate(ButtonPrefab);
-        button.transform.SetParent(GUIFrame.transform);
-        button.transform.position = new Vector3(0 + 50, 50, 0);
-        button.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick_Autoattack());
-        button.transform.GetChild(0).GetComponent<Text>().text = "Autoattack";
+        Button buttonaa = Instantiate(ButtonPrefab);
+        buttonaa.transform.SetParent(GUIFrame.transform);
+        buttonaa.transform.position = new Vector3(0 + 50, 50, 0);
+        buttonaa.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick_Autoattack());
+        buttonaa.transform.GetChild(0).GetComponent<Text>().text = "Autoattack";
 
         int i = 1;
         foreach (var spell in GameManager.Instance.GameDB.Classes[PlayerManager.Instance.ClassName].Spells)
         {
-            button = Instantiate(ButtonPrefab);
+            Button button = Instantiate(ButtonPrefab);
             button.transform.SetParent(GUIFrame.transform);
             button.transform.position = new Vector3(60 * i + 50, 50, 0);
             button.GetComponent<Button>().onClick.AddListener(() => ButtonBarClick(spell, button));

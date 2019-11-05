@@ -47,14 +47,14 @@ public class CombatLogGUI : MonoBehaviour
                     GUILayout.Space(-10);
                     break;
                 case CombatLogEntry.TypeOneofCase.Cast:
-                    GUILayout.Label("<color=blue><size=10>" + entry.Timestamp + ": " + entry.SourceId + " casts " + entry.SourceSpellId + "/" + entry.SourceEffectId + " against " + entry.DestinationId + ": " + entry.Cast.Event + " " + entry.Cast.FailedMessage + "</size></color>", GUILayout.Width(500));
+                    GUILayout.Label("<color=lightblue><size=10>" + entry.Timestamp + ": " + entry.SourceId + " casts " + entry.SourceSpellId + "/" + entry.SourceEffectId + " against " + entry.DestinationId + ": " + entry.Cast.Event + " " + entry.Cast.FailedMessage + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;
                 case CombatLogEntry.TypeOneofCase.Aura:
                     GUILayout.Label("<color=yellow><size=10>" + entry.Timestamp + ": " + entry.SourceId + " " + entry.Aura.Event + " " + entry.SourceSpellId + "/" + entry.SourceEffectId + " on " + entry.DestinationId + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;
-                case CombatLogEntry.TypeOneofCase.SystemMessage:
+                default:
                     GUILayout.Label("<color=red><size=10>" + entry.SystemMessage + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;

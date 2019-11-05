@@ -3376,7 +3376,7 @@ GameObject:
   - component: {fileID: 1016143232}
   - component: {fileID: 1016143231}
   - component: {fileID: 1016143229}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3966,7 +3966,7 @@ GameObject:
   - component: {fileID: 1241525473}
   - component: {fileID: 1241525472}
   - component: {fileID: 1241525471}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4210,7 +4210,7 @@ GameObject:
   - component: {fileID: 1366565115}
   - component: {fileID: 1366565114}
   - component: {fileID: 1366565113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4414,7 +4414,7 @@ GameObject:
   - component: {fileID: 1458993607}
   - component: {fileID: 1458993606}
   - component: {fileID: 1458993605}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4515,6 +4515,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7998624501952606210, guid: 5c54e87cd52bffd4b90c5138db8ab13c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7998624501952606217, guid: 5c54e87cd52bffd4b90c5138db8ab13c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4569,6 +4574,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7998624502946041187, guid: 5c54e87cd52bffd4b90c5138db8ab13c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7998624501489885115, guid: 5c54e87cd52bffd4b90c5138db8ab13c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
