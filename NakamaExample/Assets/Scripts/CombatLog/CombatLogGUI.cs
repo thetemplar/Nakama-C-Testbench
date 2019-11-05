@@ -20,6 +20,7 @@ public class CombatLogGUI : MonoBehaviour
         var o = Assets.Scripts.Manager.PlayerManager.Instance.GetGameObjectPosition(e.Target);
         Debug.Log("calling CreatePopupText" + o);
         PopupTextController.CreatePopupText((Math.Round(e.Value * 100)/100).ToString(), Assets.Scripts.Manager.PlayerManager.Instance.GetGameObjectPosition(e.Target), e.Critical);
+
     }
 
     void OnGUI()
@@ -43,19 +44,19 @@ public class CombatLogGUI : MonoBehaviour
             switch (entry.TypeCase)
             {
                 case CombatLogEntry.TypeOneofCase.Damage:
-                    GUILayout.Label("<color=white><size=10>" + entry.Timestamp + ": " + entry.SourceId + " damages " + entry.DestinationId + " with " + entry.SourceSpellId + "/" + entry.SourceEffectId + " for " + entry.Damage.Amount + "</size></color>", GUILayout.Width(500));
+                    GUILayout.Label("<color=white><size=8>" + entry.Timestamp + ": " + entry.SourceId + " damages " + entry.DestinationId + " with " + entry.SourceSpellId + "/" + entry.SourceEffectId + " for " + entry.Damage.Amount + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;
                 case CombatLogEntry.TypeOneofCase.Cast:
-                    GUILayout.Label("<color=lightblue><size=10>" + entry.Timestamp + ": " + entry.SourceId + " casts " + entry.SourceSpellId + "/" + entry.SourceEffectId + " against " + entry.DestinationId + ": " + entry.Cast.Event + " " + entry.Cast.FailedMessage + "</size></color>", GUILayout.Width(500));
+                    GUILayout.Label("<color=lightblue><size=8>" + entry.Timestamp + ": " + entry.SourceId + " casts " + entry.SourceSpellId + "/" + entry.SourceEffectId + " against " + entry.DestinationId + ": " + entry.Cast.Event + " " + entry.Cast.FailedMessage + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;
                 case CombatLogEntry.TypeOneofCase.Aura:
-                    GUILayout.Label("<color=yellow><size=10>" + entry.Timestamp + ": " + entry.SourceId + " " + entry.Aura.Event + " " + entry.SourceSpellId + "/" + entry.SourceEffectId + " on " + entry.DestinationId + "</size></color>", GUILayout.Width(500));
+                    GUILayout.Label("<color=yellow><size=8>" + entry.Timestamp + ": " + entry.SourceId + " " + entry.Aura.Event + " " + entry.SourceSpellId + "/" + entry.SourceEffectId + " on " + entry.DestinationId + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;
                 default:
-                    GUILayout.Label("<color=red><size=10>" + entry.SystemMessage + "</size></color>", GUILayout.Width(500));
+                    GUILayout.Label("<color=red><size=8>" + entry.SystemMessage + "</size></color>", GUILayout.Width(500));
                     GUILayout.Space(-10);
                     break;
             }

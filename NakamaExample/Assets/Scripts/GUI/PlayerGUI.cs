@@ -229,6 +229,7 @@ public class PlayerGUI : MonoBehaviour
                 placeSpellCursor = true;
                 placeSpellCursor_Spell = spell;
                 placeSpellCursor_Button = button;
+                UnityThread.executeInUpdate(() => button.GetComponent<Image>().color = Color.green);
             }
             else
             {

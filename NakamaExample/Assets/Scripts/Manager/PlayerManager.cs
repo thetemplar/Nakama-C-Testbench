@@ -15,8 +15,9 @@ namespace Assets.Scripts.Manager
         public PlayerController ServerShadow;
 
         public PlayerGUI UnitSelector;
-        
+
         public GameObject PrefabBullet;
+        public GameObject PrefabArea;
         public GameObject PrefabNPC;
 
         public OrbitCamera CameraScript;
@@ -115,7 +116,7 @@ namespace Assets.Scripts.Manager
 
         void OnGUI()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITORx
             if (Application.isEditor)  // or check the app debug flag
             {
                 GUI.Label(new Rect(Screen.width - 100, 0, 100, 100), _notAcknowledgedPackages.Count.ToString());
@@ -131,6 +132,12 @@ namespace Assets.Scripts.Manager
 
         private void OnNewWorldUpdate(PublicMatchState state, float diffTime)
         {
+            //remove destroyed
+            foreach (var player in _gameObjects.Where(x => !(x.Key.StartsWith("p_") || x.Key.StartsWith("a_")) && !state.Interactable.ContainsKey(x.Key)))
+            {
+                UnityThread.executeInUpdate(() => DestroyWorldObject(player.Key));
+            }
+
             //player & NPCs
             foreach (var player in state.Interactable)
             {
@@ -142,7 +149,15 @@ namespace Assets.Scripts.Manager
                     {
                         Spawned = true;
                         ClassName = player.Value.Classname;
+                        UnityThread.executeInUpdate(() =>
+                        {
+                            var p = Player.gameObject;
+                            p.transform.Find("Mesh").gameObject.SetActive(true);
+                            p.GetComponent<PlayerGUI>().enabled = true;
+                        });
                     }
+
+
                     _notAcknowledgedPackages.RemoveAll(x => x.ClientTick <= player.Value.LastProcessedClientTick);
 
                     if (Player.ShowGhost)
@@ -200,6 +215,39 @@ namespace Assets.Scripts.Manager
                 }
             }
 
+            //remove destroyed
+            foreach (var area in _gameObjects.Where(x => x.Key.StartsWith("a_") && !state.Area.ContainsKey(x.Key)))
+            {
+                UnityThread.executeInUpdate(() => DestroyWorldObject(area.Key));
+            }
+
+            //update area
+            foreach (var area in state.Area)
+            {
+                if (_gameObjects.ContainsKey(area.Key))
+                {
+                    if (area.Value != null && area.Value?.Position != null)
+                    {
+                        //_gameObjects[area.Key].SetLastServerAck(new Vector3(area.Value.Position.X, 1.5f, area.Value.Position.Y), 0, null, diffTime, null);
+                    }
+                    else
+                    {
+                        UnityThread.executeInUpdate(() => DestroyWorldObject(area.Key));
+                    }
+                }
+                //redundant
+                else if (area.Value?.Position != null)
+                {
+                    UnityThread.executeInUpdate(() =>
+                    {
+                        var prefab = PrefabArea;
+                        var radius = ((GameDB_Lib.GameDB_Effect_Persistent_Area_Aura)(GameManager.Instance.GameDB.Effects[area.Value.EffectId].Type)).Radius;
+                        prefab.transform.localScale = new Vector3(radius * 2, 0.1f, radius * 2);
+                        InstantiateWorldObject(prefab, area.Key, new Vector3(area.Value.Position.X, 0.52f, area.Value.Position.Y), 0);
+                    });
+                }
+            }
+
             _lastConfirmedServerTick = state.Tick;
         }
 
@@ -228,7 +276,7 @@ namespace Assets.Scripts.Manager
 
         public Vector3 GetGameObjectPosition(string name)
         {
-            if(!_gameObjects.ContainsKey(name))
+            if (!_gameObjects.ContainsKey(name))
                 Debug.LogError("key not found!");
             return _gameObjects[name].Position;
         }

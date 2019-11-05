@@ -34,7 +34,7 @@ public class OrbitCamera : MonoBehaviour
     private float desiredDistance;
     private float correctedDistance;
 
-    private PlayerController playerController;
+    public PlayerController PlayerController;
     void Start()
     {
         Vector3 angles = transform.eulerAngles;
@@ -44,9 +44,6 @@ public class OrbitCamera : MonoBehaviour
         currentDistance = distance;
         desiredDistance = distance;
         correctedDistance = distance;
-
-
-        playerController = target.GetComponent<PlayerController>();
     }
 
     /**
@@ -54,6 +51,9 @@ public class OrbitCamera : MonoBehaviour
      */
     void LateUpdate()
     {
+        if (PlayerController == null)
+            return;
+
         Vector3 vTargetOffset;
 
         // Don't do anything if target is not defined
@@ -128,7 +128,7 @@ public class OrbitCamera : MonoBehaviour
         transform.position = position;
 
         if (oldxDeg != xDeg)
-            playerController.SetRotation(xDeg);
+            PlayerController.SetRotation(xDeg);
         oldxDeg = xDeg;
     }
 
