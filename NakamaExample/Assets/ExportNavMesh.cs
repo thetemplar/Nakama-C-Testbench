@@ -105,20 +105,20 @@ public class ExportNavMeshToObj : MonoBehaviour
             if (c3 == 1)
                 _e_single.Add(t.e3);
         }
-        string _s = "m.Borders = make([]Edge, " + _e_single.Count + ")" + Environment.NewLine;
+        string _s = "m.Borders = make([]graphmap.Edge, " + _e_single.Count + ")" + Environment.NewLine;
         string _ss = "";
         for (int j = 0; j < _e_single.Count; j++)
         {
             var e = _e_single[j];
-            _s += "m.Borders[" + j + "] = Edge { A: PublicMatchState_Vector2Df { X: " + e.p1.X + ", Y: " + e.p1.Y + " }, B: PublicMatchState_Vector2Df { X: " + e.p2.X + ", Y: " + e.p2.Y + " } }" + Environment.NewLine;
+            _s += "m.Borders[" + j + "] = graphmap.Edge { A: graphmap.Vector { X: " + e.p1.X + ", Y: " + e.p1.Y + " }, B: graphmap.Vector { X: " + e.p2.X + ", Y: " + e.p2.Y + " } }" + Environment.NewLine;
         }
 
         _s += Environment.NewLine + Environment.NewLine;
-        _s += "m.Triangles = make([]Triangle, " + _t.Count + ")" + Environment.NewLine;
+        _s += "m.Triangles = make([]graphmap.Triangle, " + _t.Count + ")" + Environment.NewLine;
         for (int j = 0; j < _t.Count; j++)
         {
             var t = _t[j];
-            _s += "m.Triangles[" + j + "] = Triangle { A: PublicMatchState_Vector2Df { X: " + t.e1.p1.X + ", Y: " + t.e1.p1.Y + " }, B: PublicMatchState_Vector2Df { X: " + t.e2.p2.X + ", Y: " + t.e2.p2.Y + " }, C: PublicMatchState_Vector2Df { X: " + t.e3.p1.X + ", Y: " + t.e3.p1.Y + " }, W: PublicMatchState_Vector2Df { X: " + t.BarycentricMidpoint().X + ", Y: " + t.BarycentricMidpoint().Y + " } }" + Environment.NewLine;
+            _s += "m.Triangles[" + j + "] = graphmap.Triangle { A: graphmap.Vector { X: " + t.e1.p1.X + ", Y: " + t.e1.p1.Y + " }, B: graphmap.Vector { X: " + t.e2.p2.X + ", Y: " + t.e2.p2.Y + " }, C: graphmap.Vector { X: " + t.e3.p1.X + ", Y: " + t.e3.p1.Y + " }, W: graphmap.Vector { X: " + t.BarycentricMidpoint().X + ", Y: " + t.BarycentricMidpoint().Y + " } }" + Environment.NewLine;
             _ss += "Handles.Label(new Vector3(" + t.BarycentricMidpoint().X + "f, 0.1f, " + t.BarycentricMidpoint().Y + "f), \"" + j + "\");" + Environment.NewLine;
             _ss += "Debug.DrawLine(new Vector3(" + t.e1.p1.X + "f, 0.1f, " + t.e1.p1.Y + "f), new Vector3(" + t.e1.p2.X + "f, 0.1f, " + t.e1.p2.Y + "f), " + ((t.e1.Count > 1) ? "Color.blue" : "Color.red") + "); " + Environment.NewLine;
             _ss += "Debug.DrawLine(new Vector3(" + t.e2.p1.X + "f, 0.1f, " + t.e2.p1.Y + "f), new Vector3(" + t.e2.p2.X + "f, 0.1f, " + t.e2.p2.Y + "f), " + ((t.e2.Count > 1) ? "Color.blue" : "Color.red") + "); " + Environment.NewLine;
