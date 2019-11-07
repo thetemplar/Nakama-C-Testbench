@@ -11,6 +11,8 @@ public class MinimalCharSelectScreen : MonoBehaviour
     public Dropdown DropDown;
     public Button SpawnButton;
     public OrbitCamera CameraScript;
+
+    bool init = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,9 +22,13 @@ public class MinimalCharSelectScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        List<string> classes = GameManager.Instance.GameDB.Classes.Select(x => x.Value.Name).ToList();
-        DropDown.ClearOptions();
-        DropDown.AddOptions(classes);
+        if (!init)
+        {
+            List<string> classes = GameManager.Instance.GameDB.Classes.Select(x => x.Value.Name).ToList();
+            DropDown.ClearOptions();
+            DropDown.AddOptions(classes);
+            init = true;
+        }
     }
 
     public void Spawn()

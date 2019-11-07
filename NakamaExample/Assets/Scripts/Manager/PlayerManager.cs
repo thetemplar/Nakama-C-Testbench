@@ -13,9 +13,7 @@ namespace Assets.Scripts.Manager
     {
         public PlayerController Player;
         public PlayerController ServerShadow;
-
-        public PlayerGUI UnitSelector;
-
+        
         public GameObject PrefabBullet;
         public GameObject PrefabArea;
         public GameObject PrefabNPC;
@@ -63,7 +61,7 @@ namespace Assets.Scripts.Manager
                     Character = new Client_Message.Types.Client_Character
                     {
                         LastConfirmedServerTick = _lastConfirmedServerTick,
-                        Target = (UnitSelector.SelectedUnit != null) ? UnitSelector.SelectedUnit.name : ""
+                        //Target = (UnitSelector.SelectedUnit != null) ? UnitSelector.SelectedUnit.name : ""
                     }
                 };
                 _notAcknowledgedPackages.Add(send);
@@ -153,7 +151,9 @@ namespace Assets.Scripts.Manager
                         {
                             var p = Player.gameObject;
                             p.transform.Find("Mesh").gameObject.SetActive(true);
-                            p.GetComponent<PlayerGUI>().enabled = true;
+                            //p.GetComponent<PlayerGUI>().enabled = true;
+                            _gameObjects.Add(player.Key, p.GetComponent<PlayerController>());
+                            p.name = player.Key;
                         });
                     }
 

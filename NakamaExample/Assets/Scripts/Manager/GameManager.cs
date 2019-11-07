@@ -26,7 +26,7 @@ namespace Assets.Scripts.Manager
                     BinaryFormatter formatter = new BinaryFormatter();
 
                     //Reading the file from the server
-                    FileStream fs = File.Open(@"C:\Users\Kristian\source\repos\Nakama-C-Testbench\NakamaExample\Assets\save.bin", FileMode.Open);
+                    FileStream fs = File.Open(@"C:\Users\Kristian\Documents\nakama-project\Nakama-GameDB-CodeGen\GameDB_CodeGen\save.bin", FileMode.Open);
 
                     _gameDB = (GameDB) formatter.Deserialize(fs);
                     fs.Flush();
@@ -87,7 +87,6 @@ namespace Assets.Scripts.Manager
                 // Join the match
                 IMatch match = await _socket.JoinMatchAsync(matchId);
                 Debug.Log("Joined match ID: " + matchId);
-                CombatLogGUI.CombatLog.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
             }
             catch (Exception e)
             {
@@ -111,12 +110,13 @@ namespace Assets.Scripts.Manager
             SceneManager.LoadScene("MainMenu");
         }
 
-        private void ReceiveMatchStateMessage(object sender, IMatchState e)
+        private /*unsafe*/ void ReceiveMatchStateMessage(object sender, IMatchState e)
         {
             var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
             PublicMatchState state = PublicMatchState.Parser.ParseFrom(e.State);
-            CombatLogGUI.CombatLog.AddRange(state.Combatlog.ToArray());
+            //TypedReference tr = __makeref(state);
+            //IntPtr ptr = **(IntPtr**)(&tr);
             OnNewWorldUpdate?.Invoke(state, diffTime);
 
             _timeOfLastState = DateTime.Now;

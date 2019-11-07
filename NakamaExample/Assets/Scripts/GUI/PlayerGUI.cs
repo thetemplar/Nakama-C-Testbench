@@ -53,6 +53,7 @@ public class PlayerGUI : MonoBehaviour
     // Update is called once per frame
     void OnGUI()
     {
+        return;
         Me.text = MyPlayerController.CurrentHealth + " HP\n" + MyPlayerController.CurrentPower + " Mana";
         MeHPSlider.value = MyPlayerController.CurrentHealth;
         MeHPSlider.maxValue = MyPlayerController.MaxHealth;
@@ -99,6 +100,11 @@ public class PlayerGUI : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
+            if (placeSpellCursor)
+            {
+                UnityThread.executeInUpdate(() => placeSpellCursor_Button.GetComponent<Image>().color = Color.white);
+                placeSpellCursor = false;
+            }
             /*
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

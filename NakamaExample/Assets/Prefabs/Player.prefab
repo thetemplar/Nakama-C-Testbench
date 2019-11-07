@@ -44,7 +44,6 @@ GameObject:
   - component: {fileID: 8082951402639852456}
   - component: {fileID: 8082951402639852457}
   - component: {fileID: 8082951402639852374}
-  - component: {fileID: 8082951402639852372}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -159,33 +158,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.5, z: 0}
---- !u!114 &8082951402639852372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8082951402639852373}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a48b8e53019bc149b4d27eed28c47e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GUIFrame: {fileID: 0}
-  Me: {fileID: 0}
-  MeAuras: {fileID: 0}
-  Enemy: {fileID: 0}
-  EnemyAuras: {fileID: 0}
-  MeHPSlider: {fileID: 0}
-  MePowerSlider: {fileID: 0}
-  EnemyHPSlider: {fileID: 0}
-  EnemyPowerSlider: {fileID: 0}
-  GCDSlider: {fileID: 0}
-  CastBarSlider: {fileID: 0}
-  ButtonPrefab: {fileID: 7121633403155161697, guid: dd4c378be6b1700449543781b54570e9,
-    type: 3}
-  SelectedUnit: {fileID: 0}
-  MyPlayerController: {fileID: 8082951402639852457}
 --- !u!1 &8082951402949260020
 GameObject:
   m_ObjectHideFlags: 0
