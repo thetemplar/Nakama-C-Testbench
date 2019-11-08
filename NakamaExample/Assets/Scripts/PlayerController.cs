@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public GameDB_Lib.GameDB_Class playerClass;
 
+    [HideInInspector] public PlayerController Target;
+
     private Animator animator;
 
     class LerpingParameters<T> {

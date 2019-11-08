@@ -61,7 +61,7 @@ namespace Assets.Scripts.Manager
                     Character = new Client_Message.Types.Client_Character
                     {
                         LastConfirmedServerTick = _lastConfirmedServerTick,
-                        //Target = (UnitSelector.SelectedUnit != null) ? UnitSelector.SelectedUnit.name : ""
+                        Target = (Player.Target != null) ? Player.Target.name : ""
                     }
                 };
                 _notAcknowledgedPackages.Add(send);
