@@ -125,7 +125,7 @@ namespace Assets.Scripts.Manager
                 UnityThread.executeInUpdate(() => DestroyWorldObject(player.Key));
             }
 
-            //player & NPCs
+            //player & NPCs            
             foreach (var entry in state.Combatlog)
             {
                 if(entry.TypeCase == PublicMatchState.Types.CombatLogEntry.TypeOneofCase.Cast)
@@ -241,7 +241,6 @@ namespace Assets.Scripts.Manager
                 {
                     if (area.Value != null && area.Value?.Position != null)
                     {
-                        //_gameObjects[area.Key].SetLastServerAck(new Vector3(area.Value.Position.X, 1.5f, area.Value.Position.Y), 0, null, diffTime, null);
                     }
                     else
                     {

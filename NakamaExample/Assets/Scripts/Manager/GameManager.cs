@@ -47,8 +47,9 @@ namespace Assets.Scripts.Manager
 
         //public event Action OnGameStarted;
         //public event Action OnGameEnded;
-        
+
         public event Action<PublicMatchState, float> OnNewWorldUpdate;
+        public event Action<PublicMatchState.Types.CombatLogEntry[], float> OnCombatLogUpdate;
 
         public void Join()
         {
@@ -117,13 +118,14 @@ namespace Assets.Scripts.Manager
             SceneManager.LoadScene("MainMenu");
         }
 
-        private /*unsafe*/ void ReceiveMatchStateMessage(object sender, IMatchState e)
+        private void ReceiveMatchStateMessage(object sender, IMatchState e)
         {
             var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
             PublicMatchState state = PublicMatchState.Parser.ParseFrom(e.State);
-            //TypedReference tr = __makeref(state);
-            //IntPtr ptr = **(IntPtr**)(&tr);
+            var cl = state.Combatlog.ToArray();
+
+            OnCombatLogUpdate?.Invoke(cl, diffTime);
             OnNewWorldUpdate?.Invoke(state, diffTime);
 
             _timeOfLastState = DateTime.Now;

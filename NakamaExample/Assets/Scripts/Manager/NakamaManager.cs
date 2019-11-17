@@ -113,7 +113,6 @@ namespace Assets.Scripts.Manager
             try
             {
                 await Socket.ConnectAsync(Session);
-                Debug.Log("Nakama: ConnectSocketAsync: success");
                 return true;
             }
             catch (Exception e)

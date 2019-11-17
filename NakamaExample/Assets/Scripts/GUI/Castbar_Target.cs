@@ -18,7 +18,6 @@ namespace DuloGames.UI
             //no target or other target
             if ((player.Target == null && target != null ) || player.Target != target)
             {
-                Debug.Log("Lost Target");
                 try
                 {
                     target.StartCastEvent -= Target_StartCastEvent;
@@ -32,7 +31,6 @@ namespace DuloGames.UI
             //got new target in focus
             if (player.Target != null && target == null)
             {
-                Debug.Log("new target");
                 player.Target.StartCastEvent += Target_StartCastEvent;
                 player.Target.InterruptCastEvent += Target_InterruptCastEvent;
 

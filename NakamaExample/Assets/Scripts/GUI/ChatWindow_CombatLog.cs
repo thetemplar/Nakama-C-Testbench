@@ -17,26 +17,33 @@ namespace DuloGames.UI
 
         private void Start()
         {
-            GameManager.Instance.OnNewWorldUpdate += OnNewWorldUpdate;
-            //PopupTextController.CreatePopupText((Math.Round(e.Value * 100)/100).ToString(), Assets.Scripts.Manager.PlayerManager.Instance.GetGameObjectPosition(e.Target), e.Critical);
-            
+            GameManager.Instance.OnCombatLogUpdate += Instance_OnCombatLogUpdate;
         }
 
-        private void OnNewWorldUpdate(PublicMatchState state, float diffTime)
+        private void Instance_OnCombatLogUpdate(PublicMatchState.Types.CombatLogEntry[] cl, float diffTime)
         {
-            foreach (var e in state.Combatlog)
+            foreach (var e in cl)
             {
                 if (this.m_Chat != null)
                 {
-                    switch (e.TypeCase) {
+                    switch (e.TypeCase)
+                    {
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.Area:
                             UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#bb6ad9>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " damages " + PlayerManager.Instance.UserNames[e.DestinationId] + " for " + ((e.Damage.Critical > 0) ? e.Damage.Critical : e.Damage.Amount) + " in the Area of " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
                             break;
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.Aura:
-                            UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#6ad2d9>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " damages " + PlayerManager.Instance.UserNames[e.DestinationId] + " for " + ((e.Damage.Critical > 0) ? e.Damage.Critical : e.Damage.Amount) + " from the Aura of " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
+                            UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#6ad2d9>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " <" + e.Aura.Event + "> " + PlayerManager.Instance.UserNames[e.DestinationId] + " the Aura of " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
                             break;
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.Damage:
-                            UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#d96a6a>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " damages " + PlayerManager.Instance.UserNames[e.DestinationId] + " for " + ((e.Damage.Critical > 0) ? e.Damage.Critical : e.Damage.Amount) + " with " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
+                            switch (e.Source)
+                            {
+                                case PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source.Autoattack:
+                                    UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#e6bcbc>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " damages " + PlayerManager.Instance.UserNames[e.DestinationId] + " for " + ((e.Damage.Critical > 0) ? e.Damage.Critical : e.Damage.Amount) + " with an autoattack.</color>"));
+                                    break;
+                                default:
+                                    UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#d96a6a>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " damages " + PlayerManager.Instance.UserNames[e.DestinationId] + " for " + ((e.Damage.Critical > 0) ? e.Damage.Critical : e.Damage.Amount) + " with " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
+                                    break;
+                            }
                             break;
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.Heal:
                             UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#6ad975>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " heals " + PlayerManager.Instance.UserNames[e.DestinationId] + " for " + ((e.Heal.Critical > 0) ? e.Heal.Critical : e.Heal.Amount) + " with " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
@@ -62,7 +69,15 @@ namespace DuloGames.UI
                             UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#d9d56a>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " was interrupted </color>"));
                             break;
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.MissedType:
-                            UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#d9d56a>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " missed " + PlayerManager.Instance.UserNames[e.DestinationId] + " with " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
+                            switch (e.Source)
+                            {
+                                case PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source.Autoattack:
+                                    UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#e8e6ae>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " misses " + PlayerManager.Instance.UserNames[e.DestinationId] + " with an autoattack.</color>"));
+                                    break;
+                                default:
+                                    UnityThread.executeInUpdate(() => this.m_Chat.ReceiveChatMessage(3, "<color=#d9d56a>[" + e.Timestamp + "]: " + PlayerManager.Instance.UserNames[e.SourceId] + " misses " + PlayerManager.Instance.UserNames[e.DestinationId] + " with " + (e.SourceSpellEffectIdCase == PublicMatchState.Types.CombatLogEntry.SourceSpellEffectIdOneofCase.SourceSpellId ? GameManager.Instance.GameDB.Spells[e.SourceSpellId].Name : GameManager.Instance.GameDB.Effects[e.SourceEffectId].Name) + "</color>"));
+                                    break;
+                            }
                             break;
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.SystemMessage:
                         case PublicMatchState.Types.CombatLogEntry.TypeOneofCase.None:

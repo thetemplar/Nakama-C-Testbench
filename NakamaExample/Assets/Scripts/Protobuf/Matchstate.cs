@@ -28,7 +28,7 @@ namespace NakamaMinimalGame.PublicMatchState
         {
             byte[] descriptorData = global::System.Convert.FromBase64String(
                 string.Concat(
-                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIt4bChBQdWJsaWNNYXRjaFN0YXRl",
+                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIsccChBQdWJsaWNNYXRjaFN0YXRl",
                   "EgwKBHRpY2sYASABKAMSOAoJY29tYmF0bG9nGAIgAygLMiUubWFpbi5QdWJs",
                   "aWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5Ej4KDGludGVyYWN0YWJsZRgD",
                   "IAMoCzIoLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5JbnRlcmFjdGFibGVFbnRy",
@@ -40,100 +40,103 @@ namespace NakamaMinimalGame.PublicMatchState
                   "GAEgASgJEjAKBXZhbHVlGAIgASgLMiEubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
                   "LlByb2plY3RpbGU6AjgBGkgKCUFyZWFFbnRyeRILCgNrZXkYASABKAkSKgoF",
                   "dmFsdWUYAiABKAsyGy5tYWluLlB1YmxpY01hdGNoU3RhdGUuQXJlYToCOAEa",
-                  "8xAKDkNvbWJhdExvZ0VudHJ5EhEKCXRpbWVzdGFtcBgBIAEoAxIRCglzb3Vy",
+                  "3BEKDkNvbWJhdExvZ0VudHJ5EhEKCXRpbWVzdGFtcBgBIAEoAxIRCglzb3Vy",
                   "Y2VfaWQYAiABKAkSFgoOZGVzdGluYXRpb25faWQYAyABKAkSSwoGc291cmNl",
                   "GAQgASgOMjsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5",
-                  "LkNvbWJhdExvZ0VudHJ5X1NvdXJjZRIZCg9zb3VyY2Vfc3BlbGxfaWQYBiAB",
-                  "KANIABIaChBzb3VyY2VfZWZmZWN0X2lkGAcgASgDSAASTQoGZGFtYWdlGAgg",
-                  "ASgLMjsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNv",
-                  "bWJhdExvZ0VudHJ5X0RhbWFnZUgBElIKC21pc3NlZF90eXBlGAkgASgOMjsu",
-                  "bWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExv",
-                  "Z0VudHJ5X01pc3NlZEgBEkkKBGhlYWwYCiABKAsyOS5tYWluLlB1YmxpY01h",
-                  "dGNoU3RhdGUuQ29tYmF0TG9nRW50cnkuQ29tYmF0TG9nRW50cnlfSGVhbEgB",
-                  "ElcKC2ludGVycnVwdGVkGAsgASgLMkAubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
-                  "LkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X0ludGVycnVwdGVkSAES",
-                  "SQoEYXVyYRgMIAEoCzI5Lm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRM",
-                  "b2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BdXJhSAESSQoEYXJlYRgNIAEoCzI5",
-                  "Lm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRM",
-                  "b2dFbnRyeV9BcmVhSAESSQoEY2FzdBgOIAEoCzI5Lm1haW4uUHVibGljTWF0",
-                  "Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9DYXN0SAES",
-                  "GAoOc3lzdGVtX21lc3NhZ2UYDyABKAlIARqAAQoVQ29tYmF0TG9nRW50cnlf",
-                  "RGFtYWdlEg4KBmFtb3VudBgBIAEoAhIQCghyZXNpc3RlZBgCIAEoAhIPCgdi",
-                  "bG9ja2VkGAMgASgCEhAKCGFic29yYmVkGAQgASgCEhAKCGNyaXRpY2FsGAUg",
-                  "ASgCEhAKCG92ZXJraWxsGAYgASgCGlsKE0NvbWJhdExvZ0VudHJ5X0hlYWwS",
-                  "DgoGYW1vdW50GAEgASgCEhAKCGFic29yYmVkGAIgASgCEhAKCGNyaXRpY2Fs",
-                  "GAMgASgCEhAKCG92ZXJoZWFsGAQgASgCGjoKGkNvbWJhdExvZ0VudHJ5X0lu",
-                  "dGVycnVwdGVkEhwKFGludGVycnVwdGVkX3NwZWxsX2lkGAEgASgDGs0BChND",
-                  "b21iYXRMb2dFbnRyeV9BdXJhEmIKBWV2ZW50GAEgASgOMlMubWFpbi5QdWJs",
-                  "aWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X0F1",
-                  "cmEuQ29tYmF0TG9nRW50cnlfQXVyYV9FdmVudCJSChlDb21iYXRMb2dFbnRy",
-                  "eV9BdXJhX0V2ZW50EgsKB0FwcGxpZWQQABILCgdSZW1vdmVkEAESDQoJUmVm",
-                  "cmVzaGVkEAISDAoIRGVwbGV0ZWQQAxqxAQoTQ29tYmF0TG9nRW50cnlfQXJl",
-                  "YRJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21i",
-                  "YXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BcmVhLkNvbWJhdExvZ0VudHJ5",
-                  "X0FyZWFfRXZlbnQiNgoZQ29tYmF0TG9nRW50cnlfQXJlYV9FdmVudBILCgdD",
-                  "cmVhdGVkEAASDAoIRGVwbGV0ZWQQARreAQoZQ29tYmF0TG9nRW50cnlfQXV0",
-                  "b2F0dGFjaxJoCgVldmVudBgBIAEoDjJZLm1haW4uUHVibGljTWF0Y2hTdGF0",
-                  "ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BdXRvYXR0YWNrLkNv",
-                  "bWJhdExvZ0VudHJ5X0F1dG9hdHRhY2sSFgoOZmFpbGVkX21lc3NhZ2UYAiAB",
-                  "KAkiPwoZQ29tYmF0TG9nRW50cnlfQXV0b2F0dGFjaxIJCgVTdGFydBAAEgsK",
-                  "B1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhrjAQoTQ29tYmF0TG9nRW50cnlfQ2Fz",
-                  "dBJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21i",
-                  "YXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9DYXN0LkNvbWJhdExvZ0VudHJ5",
-                  "X0Nhc3RfRXZlbnQSFgoOZmFpbGVkX21lc3NhZ2UYAiABKAkiUAoZQ29tYmF0",
-                  "TG9nRW50cnlfQ2FzdF9FdmVudBIJCgVTdGFydBAAEgsKB1N1Y2Nlc3MQARIK",
-                  "CgZGYWlsZWQQAhIPCgtJbnRlcnJ1cHRlZBADGi8KHENvbWJhdExvZ0VudHJ5",
-                  "X1N5c3RlbU1lc3NhZ2USDwoHbWVzc2FnZRgBIAEoCSJlChVDb21iYXRMb2dF",
-                  "bnRyeV9Tb3VyY2USDgoKQXV0b2F0dGFjaxAAEgkKBVJhbmdlEAESCQoFU3Bl",
-                  "bGwQAhIMCghQZXJpb2RpYxADEgcKA0FvRRAEEg8KC0Vudmlyb25tZW50EAUi",
-                  "PAoVQ29tYmF0TG9nRW50cnlfTWlzc2VkEgoKBk1pc3NlZBAAEgoKBkRvZGdl",
-                  "ZBABEgsKB1BhcnJpZWQQAkIYChZzb3VyY2Vfc3BlbGxfZWZmZWN0X2lkQgYK",
-                  "BHR5cGUazgMKDEludGVyYWN0YWJsZRIKCgJpZBgBIAEoCRI2CgR0eXBlGAIg",
-                  "ASgOMigubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkludGVyYWN0YWJsZS5UeXBl",
-                  "EhQKDGNoYXJhY3Rlcl9pZBgDIAEoAxIiChpsYXN0X3Byb2Nlc3NlZF9jbGll",
-                  "bnRfdGljaxgEIAEoAxIRCgljbGFzc25hbWUYBSABKAkSDQoFbGV2ZWwYBiAB",
-                  "KAUSFgoOY3VycmVudF9oZWFsdGgYByABKAISFQoNY3VycmVudF9wb3dlchgI",
-                  "IAEoAhIUCgxpbnZ1bG5lcmFibGUYCSABKAgSIQoIcG9zaXRpb24YCiABKAsy",
-                  "Dy5tYWluLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgLIAEoAhIXCg9nbG9iYWxf",
-                  "Y29vbGRvd24YDCABKAISDgoGdGFyZ2V0GA0gASgJEioKBWF1cmFzGA4gAygL",
-                  "MhsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkF1cmESEgoKaXNfZW5nYWdlZBgP",
-                  "IAEoCBIMCgR0ZWFtGBAgASgFEhAKCHVzZXJuYW1lGBEgASgJIhsKBFR5cGUS",
-                  "CgoGUGxheWVyEAASBwoDTlBDEAEaXAoEQXVyYRIXCg9jcmVhdGVkX2F0X3Rp",
-                  "Y2sYASABKAMSDwoHY3JlYXRvchgCIAEoCRIRCgllZmZlY3RfaWQYAyABKAMS",
-                  "FwoPYXVyYV90aWNrX2NvdW50GAQgASgFGqgBCgpQcm9qZWN0aWxlEgoKAmlk",
-                  "GAEgASgJEhAKCHNwZWxsX2lkGAIgASgDEhcKD2NyZWF0ZWRfYXRfdGljaxgD",
-                  "IAEoAxIPCgdjcmVhdG9yGAQgASgJEiEKCHBvc2l0aW9uGAUgASgLMg8ubWFp",
-                  "bi5WZWN0b3IyRGYSEAoIcm90YXRpb24YBiABKAISDgoGdGFyZ2V0GAcgASgJ",
-                  "Eg0KBXNwZWVkGAggASgCGosBCgRBcmVhEgoKAmlkGAEgASgJEhEKCWVmZmVj",
-                  "dF9pZBgCIAEoAxIXCg9jcmVhdGVkX2F0X3RpY2sYAyABKAMSDwoHY3JlYXRv",
-                  "chgEIAEoCRIhCghwb3NpdGlvbhgFIAEoCzIPLm1haW4uVmVjdG9yMkRmEhcK",
-                  "D2FyZWFfdGlja19jb3VudBgGIAEoBSKIBwoOQ2xpZW50X01lc3NhZ2USEwoL",
-                  "Y2xpZW50X3RpY2sYASABKAMSOgoJY2hhcmFjdGVyGAIgASgLMiUubWFpbi5D",
-                  "bGllbnRfTWVzc2FnZS5DbGllbnRfQ2hhcmFjdGVySAASMAoEY2FzdBgDIAEo",
-                  "CzIgLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0Nhc3RIABI9CgthdXRv",
-                  "X2F0dGFjaxgEIAEoCzImLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0F1",
-                  "dG9hdHRhY2tIABJBCg1jYW5jZWxfYXR0YWNrGAUgASgLMigubWFpbi5DbGll",
-                  "bnRfTWVzc2FnZS5DbGllbnRfQ2FuY2VsQXR0YWNrSAASNAoEbW92ZRgGIAEo",
-                  "CzIkLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X01vdmVtZW50SAASQgoL",
-                  "c2VsZWN0X2NoYXIYByABKAsyKy5tYWluLkNsaWVudF9NZXNzYWdlLkNsaWVu",
-                  "dF9TZWxlY3RDaGFyYWN0ZXJIABpGChBDbGllbnRfQ2hhcmFjdGVyEiIKGmxh",
-                  "c3RfY29uZmlybWVkX3NlcnZlcl90aWNrGAIgASgDEg4KBnRhcmdldBgDIAEo",
-                  "CRpXCgtDbGllbnRfQ2FzdBITCgtjbGllbnRfdGljaxgBIAEoAxIQCghzcGVs",
-                  "bF9pZBgCIAEoAxIhCghwb3NpdGlvbhgDIAEoCzIPLm1haW4uVmVjdG9yMkRm",
-                  "GpEBChFDbGllbnRfQXV0b2F0dGFjaxITCgtjbGllbnRfdGljaxgCIAEoAxI/",
-                  "CgphdHRhY2t0eXBlGAMgASgOMisubWFpbi5DbGllbnRfTWVzc2FnZS5DbGll",
-                  "bnRfQXV0b2F0dGFjay5UeXBlIiYKBFR5cGUSCQoFTWVlbGUQABIJCgVSYW5n",
-                  "ZRABEggKBFdhbmQQAhoVChNDbGllbnRfQ2FuY2VsQXR0YWNrGnYKD0NsaWVu",
-                  "dF9Nb3ZlbWVudBITCgtjbGllbnRfdGljaxgBIAEoAxIcChRhYnNvbHV0ZV9j",
-                  "b29yZGluYXRlcxgCIAEoCBIOCgZ4X2F4aXMYAyABKAISDgoGeV9heGlzGAQg",
-                  "ASgCEhAKCHJvdGF0aW9uGAUgASgCGisKFkNsaWVudF9TZWxlY3RDaGFyYWN0",
-                  "ZXISEQoJY2xhc3NuYW1lGAEgASgJQgYKBHR5cGUiIQoJVmVjdG9yMkRmEgkK",
-                  "AXgYASABKAISCQoBeRgCIAEoAkIlqgIiTmFrYW1hTWluaW1hbEdhbWUuUHVi",
-                  "bGljTWF0Y2hTdGF0ZWIGcHJvdG8z"));
+                  "LkNvbWJhdExvZ0VudHJ5X1NvdXJjZRIZCg9zb3VyY2Vfc3BlbGxfaWQYBSAB",
+                  "KANIABIaChBzb3VyY2VfZWZmZWN0X2lkGAYgASgDSAASVgoOc3lzdGVtX21l",
+                  "c3NhZ2UYByABKAsyPC5tYWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9n",
+                  "RW50cnkuQ29tYmF0TG9nRW50cnlfTWVzc2FnZUgBEk0KBmRhbWFnZRgIIAEo",
+                  "CzI7Lm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21i",
+                  "YXRMb2dFbnRyeV9EYW1hZ2VIARJSCgttaXNzZWRfdHlwZRgJIAEoDjI7Lm1h",
+                  "aW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dF",
+                  "bnRyeV9NaXNzZWRIARJJCgRoZWFsGAogASgLMjkubWFpbi5QdWJsaWNNYXRj",
+                  "aFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X0hlYWxIARJX",
+                  "CgtpbnRlcnJ1cHRlZBgLIAEoCzJALm1haW4uUHVibGljTWF0Y2hTdGF0ZS5D",
+                  "b21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9JbnRlcnJ1cHRlZEgBEkkK",
+                  "BGF1cmEYDCABKAsyOS5tYWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9n",
+                  "RW50cnkuQ29tYmF0TG9nRW50cnlfQXVyYUgBEkkKBGFyZWEYDSABKAsyOS5t",
+                  "YWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9nRW50cnkuQ29tYmF0TG9n",
+                  "RW50cnlfQXJlYUgBEkkKBGNhc3QYDiABKAsyOS5tYWluLlB1YmxpY01hdGNo",
+                  "U3RhdGUuQ29tYmF0TG9nRW50cnkuQ29tYmF0TG9nRW50cnlfQ2FzdEgBGikK",
+                  "FkNvbWJhdExvZ0VudHJ5X01lc3NhZ2USDwoHbWVzc2FnZRgBIAEoCRqAAQoV",
+                  "Q29tYmF0TG9nRW50cnlfRGFtYWdlEg4KBmFtb3VudBgBIAEoAhIQCghyZXNp",
+                  "c3RlZBgCIAEoAhIPCgdibG9ja2VkGAMgASgCEhAKCGFic29yYmVkGAQgASgC",
+                  "EhAKCGNyaXRpY2FsGAUgASgCEhAKCG92ZXJraWxsGAYgASgCGlsKE0NvbWJh",
+                  "dExvZ0VudHJ5X0hlYWwSDgoGYW1vdW50GAEgASgCEhAKCGFic29yYmVkGAIg",
+                  "ASgCEhAKCGNyaXRpY2FsGAMgASgCEhAKCG92ZXJoZWFsGAQgASgCGjoKGkNv",
+                  "bWJhdExvZ0VudHJ5X0ludGVycnVwdGVkEhwKFGludGVycnVwdGVkX3NwZWxs",
+                  "X2lkGAEgASgDGs0BChNDb21iYXRMb2dFbnRyeV9BdXJhEmIKBWV2ZW50GAEg",
+                  "ASgOMlMubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNv",
+                  "bWJhdExvZ0VudHJ5X0F1cmEuQ29tYmF0TG9nRW50cnlfQXVyYV9FdmVudCJS",
+                  "ChlDb21iYXRMb2dFbnRyeV9BdXJhX0V2ZW50EgsKB0FwcGxpZWQQABILCgdS",
+                  "ZW1vdmVkEAESDQoJUmVmcmVzaGVkEAISDAoIRGVwbGV0ZWQQAxqxAQoTQ29t",
+                  "YmF0TG9nRW50cnlfQXJlYRJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGlj",
+                  "TWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BcmVh",
+                  "LkNvbWJhdExvZ0VudHJ5X0FyZWFfRXZlbnQiNgoZQ29tYmF0TG9nRW50cnlf",
+                  "QXJlYV9FdmVudBILCgdDcmVhdGVkEAASDAoIRGVwbGV0ZWQQARreAQoZQ29t",
+                  "YmF0TG9nRW50cnlfQXV0b2F0dGFjaxJoCgVldmVudBgBIAEoDjJZLm1haW4u",
+                  "UHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRy",
+                  "eV9BdXRvYXR0YWNrLkNvbWJhdExvZ0VudHJ5X0F1dG9hdHRhY2sSFgoOZmFp",
+                  "bGVkX21lc3NhZ2UYAiABKAkiPwoZQ29tYmF0TG9nRW50cnlfQXV0b2F0dGFj",
+                  "axIJCgVTdGFydBAAEgsKB1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhrjAQoTQ29t",
+                  "YmF0TG9nRW50cnlfQ2FzdBJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGlj",
+                  "TWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9DYXN0",
+                  "LkNvbWJhdExvZ0VudHJ5X0Nhc3RfRXZlbnQSFgoOZmFpbGVkX21lc3NhZ2UY",
+                  "AiABKAkiUAoZQ29tYmF0TG9nRW50cnlfQ2FzdF9FdmVudBIJCgVTdGFydBAA",
+                  "EgsKB1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhIPCgtJbnRlcnJ1cHRlZBADGi8K",
+                  "HENvbWJhdExvZ0VudHJ5X1N5c3RlbU1lc3NhZ2USDwoHbWVzc2FnZRgBIAEo",
+                  "CSJlChVDb21iYXRMb2dFbnRyeV9Tb3VyY2USDgoKQXV0b2F0dGFjaxAAEgkK",
+                  "BVJhbmdlEAESCQoFU3BlbGwQAhIMCghQZXJpb2RpYxADEgcKA0FvRRAEEg8K",
+                  "C0Vudmlyb25tZW50EAUiPAoVQ29tYmF0TG9nRW50cnlfTWlzc2VkEgoKBk1p",
+                  "c3NlZBAAEgoKBkRvZGdlZBABEgsKB1BhcnJpZWQQAkIYChZzb3VyY2Vfc3Bl",
+                  "bGxfZWZmZWN0X2lkQgYKBHR5cGUazgMKDEludGVyYWN0YWJsZRIKCgJpZBgB",
+                  "IAEoCRI2CgR0eXBlGAIgASgOMigubWFpbi5QdWJsaWNNYXRjaFN0YXRlLklu",
+                  "dGVyYWN0YWJsZS5UeXBlEhQKDGNoYXJhY3Rlcl9pZBgDIAEoAxIiChpsYXN0",
+                  "X3Byb2Nlc3NlZF9jbGllbnRfdGljaxgEIAEoAxIRCgljbGFzc25hbWUYBSAB",
+                  "KAkSDQoFbGV2ZWwYBiABKAUSFgoOY3VycmVudF9oZWFsdGgYByABKAISFQoN",
+                  "Y3VycmVudF9wb3dlchgIIAEoAhIUCgxpbnZ1bG5lcmFibGUYCSABKAgSIQoI",
+                  "cG9zaXRpb24YCiABKAsyDy5tYWluLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgL",
+                  "IAEoAhIXCg9nbG9iYWxfY29vbGRvd24YDCABKAISDgoGdGFyZ2V0GA0gASgJ",
+                  "EioKBWF1cmFzGA4gAygLMhsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkF1cmES",
+                  "EgoKaXNfZW5nYWdlZBgPIAEoCBIMCgR0ZWFtGBAgASgFEhAKCHVzZXJuYW1l",
+                  "GBEgASgJIhsKBFR5cGUSCgoGUGxheWVyEAASBwoDTlBDEAEaXAoEQXVyYRIX",
+                  "Cg9jcmVhdGVkX2F0X3RpY2sYASABKAMSDwoHY3JlYXRvchgCIAEoCRIRCgll",
+                  "ZmZlY3RfaWQYAyABKAMSFwoPYXVyYV90aWNrX2NvdW50GAQgASgFGqgBCgpQ",
+                  "cm9qZWN0aWxlEgoKAmlkGAEgASgJEhAKCHNwZWxsX2lkGAIgASgDEhcKD2Ny",
+                  "ZWF0ZWRfYXRfdGljaxgDIAEoAxIPCgdjcmVhdG9yGAQgASgJEiEKCHBvc2l0",
+                  "aW9uGAUgASgLMg8ubWFpbi5WZWN0b3IyRGYSEAoIcm90YXRpb24YBiABKAIS",
+                  "DgoGdGFyZ2V0GAcgASgJEg0KBXNwZWVkGAggASgCGosBCgRBcmVhEgoKAmlk",
+                  "GAEgASgJEhEKCWVmZmVjdF9pZBgCIAEoAxIXCg9jcmVhdGVkX2F0X3RpY2sY",
+                  "AyABKAMSDwoHY3JlYXRvchgEIAEoCRIhCghwb3NpdGlvbhgFIAEoCzIPLm1h",
+                  "aW4uVmVjdG9yMkRmEhcKD2FyZWFfdGlja19jb3VudBgGIAEoBSKIBwoOQ2xp",
+                  "ZW50X01lc3NhZ2USEwoLY2xpZW50X3RpY2sYASABKAMSOgoJY2hhcmFjdGVy",
+                  "GAIgASgLMiUubWFpbi5DbGllbnRfTWVzc2FnZS5DbGllbnRfQ2hhcmFjdGVy",
+                  "SAASMAoEY2FzdBgDIAEoCzIgLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50",
+                  "X0Nhc3RIABI9CgthdXRvX2F0dGFjaxgEIAEoCzImLm1haW4uQ2xpZW50X01l",
+                  "c3NhZ2UuQ2xpZW50X0F1dG9hdHRhY2tIABJBCg1jYW5jZWxfYXR0YWNrGAUg",
+                  "ASgLMigubWFpbi5DbGllbnRfTWVzc2FnZS5DbGllbnRfQ2FuY2VsQXR0YWNr",
+                  "SAASNAoEbW92ZRgGIAEoCzIkLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50",
+                  "X01vdmVtZW50SAASQgoLc2VsZWN0X2NoYXIYByABKAsyKy5tYWluLkNsaWVu",
+                  "dF9NZXNzYWdlLkNsaWVudF9TZWxlY3RDaGFyYWN0ZXJIABpGChBDbGllbnRf",
+                  "Q2hhcmFjdGVyEiIKGmxhc3RfY29uZmlybWVkX3NlcnZlcl90aWNrGAIgASgD",
+                  "Eg4KBnRhcmdldBgDIAEoCRpXCgtDbGllbnRfQ2FzdBITCgtjbGllbnRfdGlj",
+                  "axgBIAEoAxIQCghzcGVsbF9pZBgCIAEoAxIhCghwb3NpdGlvbhgDIAEoCzIP",
+                  "Lm1haW4uVmVjdG9yMkRmGpEBChFDbGllbnRfQXV0b2F0dGFjaxITCgtjbGll",
+                  "bnRfdGljaxgCIAEoAxI/CgphdHRhY2t0eXBlGAMgASgOMisubWFpbi5DbGll",
+                  "bnRfTWVzc2FnZS5DbGllbnRfQXV0b2F0dGFjay5UeXBlIiYKBFR5cGUSCQoF",
+                  "TWVlbGUQABIJCgVSYW5nZRABEggKBFdhbmQQAhoVChNDbGllbnRfQ2FuY2Vs",
+                  "QXR0YWNrGnYKD0NsaWVudF9Nb3ZlbWVudBITCgtjbGllbnRfdGljaxgBIAEo",
+                  "AxIcChRhYnNvbHV0ZV9jb29yZGluYXRlcxgCIAEoCBIOCgZ4X2F4aXMYAyAB",
+                  "KAISDgoGeV9heGlzGAQgASgCEhAKCHJvdGF0aW9uGAUgASgCGisKFkNsaWVu",
+                  "dF9TZWxlY3RDaGFyYWN0ZXISEQoJY2xhc3NuYW1lGAEgASgJQgYKBHR5cGUi",
+                  "IQoJVmVjdG9yMkRmEgkKAXgYASABKAISCQoBeRgCIAEoAkIlqgIiTmFrYW1h",
+                  "TWluaW1hbEdhbWUuUHVibGljTWF0Y2hTdGF0ZWIGcHJvdG8z"));
             descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
                 new pbr::FileDescriptor[] { },
                 new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Combatlog", "Interactable", "Projectile", "Area" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Parser, new[]{ "Timestamp", "SourceId", "DestinationId", "Source", "SourceSpellId", "SourceEffectId", "Damage", "MissedType", "Heal", "Interrupted", "Aura", "Area", "Cast", "SystemMessage" }, new[]{ "SourceSpellEffectId", "Type" }, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source), typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Missed) }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage.Parser, new[]{ "Amount", "Resisted", "Blocked", "Absorbed", "Critical", "Overkill" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Combatlog", "Interactable", "Projectile", "Area" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Parser, new[]{ "Timestamp", "SourceId", "DestinationId", "Source", "SourceSpellId", "SourceEffectId", "SystemMessage", "Damage", "MissedType", "Heal", "Interrupted", "Aura", "Area", "Cast" }, new[]{ "SourceSpellEffectId", "Type" }, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source), typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Missed) }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message.Parser, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage.Parser, new[]{ "Amount", "Resisted", "Blocked", "Absorbed", "Critical", "Overkill" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal.Parser, new[]{ "Amount", "Absorbed", "Critical", "Overheal" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted.Parser, new[]{ "InterruptedSpellId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Parser, new[]{ "Event" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Types.CombatLogEntry_Aura_Event) }, null),
@@ -458,6 +461,9 @@ namespace NakamaMinimalGame.PublicMatchState
 
                     switch (other.TypeCase)
                     {
+                        case TypeOneofCase.SystemMessage:
+                            SystemMessage = other.SystemMessage.Clone();
+                            break;
                         case TypeOneofCase.Damage:
                             Damage = other.Damage.Clone();
                             break;
@@ -478,9 +484,6 @@ namespace NakamaMinimalGame.PublicMatchState
                             break;
                         case TypeOneofCase.Cast:
                             Cast = other.Cast.Clone();
-                            break;
-                        case TypeOneofCase.SystemMessage:
-                            SystemMessage = other.SystemMessage;
                             break;
                     }
 
@@ -546,7 +549,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "source_spell_id" field.</summary>
-                public const int SourceSpellIdFieldNumber = 6;
+                public const int SourceSpellIdFieldNumber = 5;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public long SourceSpellId
                 {
@@ -559,7 +562,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "source_effect_id" field.</summary>
-                public const int SourceEffectIdFieldNumber = 7;
+                public const int SourceEffectIdFieldNumber = 6;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public long SourceEffectId
                 {
@@ -568,6 +571,19 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         sourceSpellEffectId_ = value;
                         sourceSpellEffectIdCase_ = SourceSpellEffectIdOneofCase.SourceEffectId;
+                    }
+                }
+
+                /// <summary>Field number for the "system_message" field.</summary>
+                public const int SystemMessageFieldNumber = 7;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message SystemMessage
+                {
+                    get { return typeCase_ == TypeOneofCase.SystemMessage ? (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message)type_ : null; }
+                    set
+                    {
+                        type_ = value;
+                        typeCase_ = value == null ? TypeOneofCase.None : TypeOneofCase.SystemMessage;
                     }
                 }
 
@@ -662,26 +678,13 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
-                /// <summary>Field number for the "system_message" field.</summary>
-                public const int SystemMessageFieldNumber = 15;
-                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public string SystemMessage
-                {
-                    get { return typeCase_ == TypeOneofCase.SystemMessage ? (string)type_ : ""; }
-                    set
-                    {
-                        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-                        typeCase_ = TypeOneofCase.SystemMessage;
-                    }
-                }
-
                 private object sourceSpellEffectId_;
                 /// <summary>Enum of possible cases for the "source_spell_effect_id" oneof.</summary>
                 public enum SourceSpellEffectIdOneofCase
                 {
                     None = 0,
-                    SourceSpellId = 6,
-                    SourceEffectId = 7,
+                    SourceSpellId = 5,
+                    SourceEffectId = 6,
                 }
                 private SourceSpellEffectIdOneofCase sourceSpellEffectIdCase_ = SourceSpellEffectIdOneofCase.None;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -702,6 +705,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 public enum TypeOneofCase
                 {
                     None = 0,
+                    SystemMessage = 7,
                     Damage = 8,
                     MissedType = 9,
                     Heal = 10,
@@ -709,7 +713,6 @@ namespace NakamaMinimalGame.PublicMatchState
                     Aura = 12,
                     Area = 13,
                     Cast = 14,
-                    SystemMessage = 15,
                 }
                 private TypeOneofCase typeCase_ = TypeOneofCase.None;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -748,6 +751,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Source != other.Source) return false;
                     if (SourceSpellId != other.SourceSpellId) return false;
                     if (SourceEffectId != other.SourceEffectId) return false;
+                    if (!object.Equals(SystemMessage, other.SystemMessage)) return false;
                     if (!object.Equals(Damage, other.Damage)) return false;
                     if (MissedType != other.MissedType) return false;
                     if (!object.Equals(Heal, other.Heal)) return false;
@@ -755,7 +759,6 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (!object.Equals(Aura, other.Aura)) return false;
                     if (!object.Equals(Area, other.Area)) return false;
                     if (!object.Equals(Cast, other.Cast)) return false;
-                    if (SystemMessage != other.SystemMessage) return false;
                     if (SourceSpellEffectIdCase != other.SourceSpellEffectIdCase) return false;
                     if (TypeCase != other.TypeCase) return false;
                     return Equals(_unknownFields, other._unknownFields);
@@ -771,6 +774,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Source != 0) hash ^= Source.GetHashCode();
                     if (sourceSpellEffectIdCase_ == SourceSpellEffectIdOneofCase.SourceSpellId) hash ^= SourceSpellId.GetHashCode();
                     if (sourceSpellEffectIdCase_ == SourceSpellEffectIdOneofCase.SourceEffectId) hash ^= SourceEffectId.GetHashCode();
+                    if (typeCase_ == TypeOneofCase.SystemMessage) hash ^= SystemMessage.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Damage) hash ^= Damage.GetHashCode();
                     if (typeCase_ == TypeOneofCase.MissedType) hash ^= MissedType.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Heal) hash ^= Heal.GetHashCode();
@@ -778,7 +782,6 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (typeCase_ == TypeOneofCase.Aura) hash ^= Aura.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Area) hash ^= Area.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Cast) hash ^= Cast.GetHashCode();
-                    if (typeCase_ == TypeOneofCase.SystemMessage) hash ^= SystemMessage.GetHashCode();
                     hash ^= (int)sourceSpellEffectIdCase_;
                     hash ^= (int)typeCase_;
                     if (_unknownFields != null)
@@ -819,13 +822,18 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                     if (sourceSpellEffectIdCase_ == SourceSpellEffectIdOneofCase.SourceSpellId)
                     {
-                        output.WriteRawTag(48);
+                        output.WriteRawTag(40);
                         output.WriteInt64(SourceSpellId);
                     }
                     if (sourceSpellEffectIdCase_ == SourceSpellEffectIdOneofCase.SourceEffectId)
                     {
-                        output.WriteRawTag(56);
+                        output.WriteRawTag(48);
                         output.WriteInt64(SourceEffectId);
+                    }
+                    if (typeCase_ == TypeOneofCase.SystemMessage)
+                    {
+                        output.WriteRawTag(58);
+                        output.WriteMessage(SystemMessage);
                     }
                     if (typeCase_ == TypeOneofCase.Damage)
                     {
@@ -862,11 +870,6 @@ namespace NakamaMinimalGame.PublicMatchState
                         output.WriteRawTag(114);
                         output.WriteMessage(Cast);
                     }
-                    if (typeCase_ == TypeOneofCase.SystemMessage)
-                    {
-                        output.WriteRawTag(122);
-                        output.WriteString(SystemMessage);
-                    }
                     if (_unknownFields != null)
                     {
                         _unknownFields.WriteTo(output);
@@ -901,6 +904,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         size += 1 + pb::CodedOutputStream.ComputeInt64Size(SourceEffectId);
                     }
+                    if (typeCase_ == TypeOneofCase.SystemMessage)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SystemMessage);
+                    }
                     if (typeCase_ == TypeOneofCase.Damage)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Damage);
@@ -928,10 +935,6 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (typeCase_ == TypeOneofCase.Cast)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Cast);
-                    }
-                    if (typeCase_ == TypeOneofCase.SystemMessage)
-                    {
-                        size += 1 + pb::CodedOutputStream.ComputeStringSize(SystemMessage);
                     }
                     if (_unknownFields != null)
                     {
@@ -975,6 +978,13 @@ namespace NakamaMinimalGame.PublicMatchState
 
                     switch (other.TypeCase)
                     {
+                        case TypeOneofCase.SystemMessage:
+                            if (SystemMessage == null)
+                            {
+                                SystemMessage = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message();
+                            }
+                            SystemMessage.MergeFrom(other.SystemMessage);
+                            break;
                         case TypeOneofCase.Damage:
                             if (Damage == null)
                             {
@@ -1020,9 +1030,6 @@ namespace NakamaMinimalGame.PublicMatchState
                             }
                             Cast.MergeFrom(other.Cast);
                             break;
-                        case TypeOneofCase.SystemMessage:
-                            SystemMessage = other.SystemMessage;
-                            break;
                     }
 
                     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1059,14 +1066,25 @@ namespace NakamaMinimalGame.PublicMatchState
                                     Source = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source)input.ReadEnum();
                                     break;
                                 }
-                            case 48:
+                            case 40:
                                 {
                                     SourceSpellId = input.ReadInt64();
                                     break;
                                 }
-                            case 56:
+                            case 48:
                                 {
                                     SourceEffectId = input.ReadInt64();
+                                    break;
+                                }
+                            case 58:
+                                {
+                                    global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message();
+                                    if (typeCase_ == TypeOneofCase.SystemMessage)
+                                    {
+                                        subBuilder.MergeFrom(SystemMessage);
+                                    }
+                                    input.ReadMessage(subBuilder);
+                                    SystemMessage = subBuilder;
                                     break;
                                 }
                             case 66:
@@ -1141,11 +1159,6 @@ namespace NakamaMinimalGame.PublicMatchState
                                     Cast = subBuilder;
                                     break;
                                 }
-                            case 122:
-                                {
-                                    SystemMessage = input.ReadString();
-                                    break;
-                                }
                         }
                     }
                 }
@@ -1172,6 +1185,163 @@ namespace NakamaMinimalGame.PublicMatchState
                         [pbr::OriginalName("Parried")] Parried = 2,
                     }
 
+                    public sealed partial class CombatLogEntry_Message : pb::IMessage<CombatLogEntry_Message>
+                    {
+                        private static readonly pb::MessageParser<CombatLogEntry_Message> _parser = new pb::MessageParser<CombatLogEntry_Message>(() => new CombatLogEntry_Message());
+                        private pb::UnknownFieldSet _unknownFields;
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static pb::MessageParser<CombatLogEntry_Message> Parser { get { return _parser; } }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static pbr::MessageDescriptor Descriptor
+                        {
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[0]; }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        pbr::MessageDescriptor pb::IMessage.Descriptor
+                        {
+                            get { return Descriptor; }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Message()
+                        {
+                            OnConstruction();
+                        }
+
+                        partial void OnConstruction();
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Message(CombatLogEntry_Message other) : this()
+                        {
+                            message_ = other.message_;
+                            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Message Clone()
+                        {
+                            return new CombatLogEntry_Message(this);
+                        }
+
+                        /// <summary>Field number for the "message" field.</summary>
+                        public const int MessageFieldNumber = 1;
+                        private string message_ = "";
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public string Message
+                        {
+                            get { return message_; }
+                            set
+                            {
+                                message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+                            }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override bool Equals(object other)
+                        {
+                            return Equals(other as CombatLogEntry_Message);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public bool Equals(CombatLogEntry_Message other)
+                        {
+                            if (ReferenceEquals(other, null))
+                            {
+                                return false;
+                            }
+                            if (ReferenceEquals(other, this))
+                            {
+                                return true;
+                            }
+                            if (Message != other.Message) return false;
+                            return Equals(_unknownFields, other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override int GetHashCode()
+                        {
+                            int hash = 1;
+                            if (Message.Length != 0) hash ^= Message.GetHashCode();
+                            if (_unknownFields != null)
+                            {
+                                hash ^= _unknownFields.GetHashCode();
+                            }
+                            return hash;
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override string ToString()
+                        {
+                            return pb::JsonFormatter.ToDiagnosticString(this);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void WriteTo(pb::CodedOutputStream output)
+                        {
+                            if (Message.Length != 0)
+                            {
+                                output.WriteRawTag(10);
+                                output.WriteString(Message);
+                            }
+                            if (_unknownFields != null)
+                            {
+                                _unknownFields.WriteTo(output);
+                            }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public int CalculateSize()
+                        {
+                            int size = 0;
+                            if (Message.Length != 0)
+                            {
+                                size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+                            }
+                            if (_unknownFields != null)
+                            {
+                                size += _unknownFields.CalculateSize();
+                            }
+                            return size;
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void MergeFrom(CombatLogEntry_Message other)
+                        {
+                            if (other == null)
+                            {
+                                return;
+                            }
+                            if (other.Message.Length != 0)
+                            {
+                                Message = other.Message;
+                            }
+                            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void MergeFrom(pb::CodedInputStream input)
+                        {
+                            uint tag;
+                            while ((tag = input.ReadTag()) != 0)
+                            {
+                                switch (tag)
+                                {
+                                    default:
+                                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                                        break;
+                                    case 10:
+                                        {
+                                            Message = input.ReadString();
+                                            break;
+                                        }
+                                }
+                            }
+                        }
+
+                    }
+
                     public sealed partial class CombatLogEntry_Damage : pb::IMessage<CombatLogEntry_Damage>
                     {
                         private static readonly pb::MessageParser<CombatLogEntry_Damage> _parser = new pb::MessageParser<CombatLogEntry_Damage>(() => new CombatLogEntry_Damage());
@@ -1182,7 +1352,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[0]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[1]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1509,7 +1679,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[1]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[2]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1768,7 +1938,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[2]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[3]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1925,7 +2095,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[3]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[4]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2098,7 +2268,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[4]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[5]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2269,7 +2439,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[5]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[6]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2475,7 +2645,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[6]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[7]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2682,7 +2852,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[7]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[8]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
