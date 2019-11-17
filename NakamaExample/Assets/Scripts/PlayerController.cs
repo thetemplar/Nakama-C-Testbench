@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Manager;
 using NakamaMinimalGame.PublicMatchState;
 using UnityEngine;
@@ -40,6 +41,9 @@ public class PlayerController : MonoBehaviour
 
     public event EventHandler StartCastEvent;
     public event EventHandler InterruptCastEvent;
+
+    public event EventHandler LostAura;
+    public event EventHandler GotAura;
 
     private Animator animator;
 
@@ -163,23 +167,30 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(List<Client_Message> notAcknowledgedPackages, float timeToLerp, PublicMatchState.Types.Interactable player = null)
+    public void SetLastServerAck(List<Client_Message> notAcknowledgedPackages, float timeToLerp, PublicMatchState.Types.Interactable player)
     {
-        if (player != null)
+        if (player == null)
+            throw new Exception();
+
+        if (playerClass.Name == null || playerClass.Name == "")
         {
-            if (playerClass.Name == null || playerClass.Name == "")
-            {
-                playerClass = GameManager.Instance.GameDB.Classes[player.Classname];
-            }
-            this.CurrentHealth = player.CurrentHealth;
-            this.CurrentPower = player.CurrentPower;
-            this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Level) * 10;
-            this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Level) * 10;
-            this.Auras.Clear();
-            foreach (var aura in player.Auras)
-            {
-                this.Auras.Add(aura);
-            }
+            playerClass = GameManager.Instance.GameDB.Classes[player.Classname];
+        }
+        this.CurrentHealth = player.CurrentHealth;
+        this.CurrentPower = player.CurrentPower;
+        this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Level) * 10;
+        this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Level) * 10;
+
+        foreach (var aura in player.Auras.Except(this.Auras))
+        {
+            this.Auras.Add(aura);
+            GotAura?.Invoke(aura.EffectId, EventArgs.Empty);
+        }
+
+        foreach (var aura in this.Auras.Except(player.Auras))
+        {
+            LostAura?.Invoke(aura.EffectId, EventArgs.Empty);
+            this.Auras.Remove(aura);
         }
 
         var position = new Vector3(player.Position.X, 1.5f, player.Position.Y);

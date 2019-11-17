@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DuloGames.UI.Tweens;
+using NakamaMinimalGame.PublicMatchState;
+using Assets.Scripts.Manager;
 
 namespace DuloGames.UI
 {
@@ -25,13 +27,40 @@ namespace DuloGames.UI
 
         public PlayerController Player;
 
+        public GridLayoutGroup Buffs;
+        public GameObject Buff;
+
         // Tween controls
         [NonSerialized] private readonly TweenRunner<FloatTween> m_FloatTweenRunner;
 
         // Start is called before the first frame update
         void Start()
         {
+            Player.GotAura += Player_GotAura;
+            Player.LostAura += Player_LostAura;
+        }
 
+        private void Player_LostAura(object sender, EventArgs e)
+        {
+            UnityThread.executeInUpdate(() =>
+            {
+                long id = (long)sender;
+                var go = Buffs.transform.Find("effect_" + id.ToString()+"(Clone)");
+                Destroy(go.gameObject);
+            });
+        }
+
+        private void Player_GotAura(object sender, EventArgs e)
+        {
+            UnityThread.executeInUpdate(() =>
+            {
+                GameObject go = Buff;
+                long id = (long)sender;
+                var sprite = IconStore.Instance.Spellicon[(int)GameManager.Instance.GameDB.Effects[id].IconID];
+                go.GetComponent<Image>().sprite = sprite;
+                go.name = "effect_" + id.ToString();
+                var InfoObject = Instantiate(go, Buffs.transform, false);
+            });
         }
 
         // Update is called once per frame
