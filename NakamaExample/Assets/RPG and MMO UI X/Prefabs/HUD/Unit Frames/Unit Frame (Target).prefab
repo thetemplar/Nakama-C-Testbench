@@ -1800,9 +1800,8 @@ MonoBehaviour:
   power_bar: {fileID: 8873951425572945886}
   Easing: 13
   m_Text: {fileID: 6900177671852097236}
-  m_TextVariant: 0
-  m_TextValue: 100
-  m_TextValueFormat: 0
+  m_HpText: {fileID: 0}
+  m_PowerText: {fileID: 0}
   Player: {fileID: 0}
 --- !u!1 &8873951425112452769
 GameObject:
