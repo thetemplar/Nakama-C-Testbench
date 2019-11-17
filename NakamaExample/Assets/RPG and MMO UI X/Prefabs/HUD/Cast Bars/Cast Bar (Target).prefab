@@ -529,7 +529,6 @@ GameObject:
   - component: {fileID: 1015062996268031217}
   - component: {fileID: 1015062996268031218}
   - component: {fileID: 1015062996268031219}
-  - component: {fileID: 1015062996268031220}
   - component: {fileID: 8000498381433211155}
   m_Layer: 5
   m_Name: Cast Bar (Target)
@@ -650,19 +649,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1015062996268031220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1015062996268031222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d830f54b52c64f4b8ca3ae738d5a2be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_CastBar: {fileID: 1015062996268031216}
 --- !u!114 &8000498381433211155
 MonoBehaviour:
   m_ObjectHideFlags: 0

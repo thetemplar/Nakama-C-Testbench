@@ -75,7 +75,14 @@ namespace Assets.Scripts.Manager
         }
         private void Start()
         {
-            JoinMatchAsync(NakamaManager.Instance.MatchId);
+            if(NakamaManager.Instance == null)
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+            else
+            {
+                JoinMatchAsync(NakamaManager.Instance.MatchId);
+            }
         }
 
         public async void JoinMatchAsync(string matchId)

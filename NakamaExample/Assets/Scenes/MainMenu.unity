@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 64818952}
   - component: {fileID: 64818953}
   - component: {fileID: 64818955}
+  - component: {fileID: 64818954}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -164,6 +165,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b995d382faf1e3b438bbbafeef69b04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &64818954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64818951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50524887c662db4f81bb556bb86ae02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Spellicon:
+  - {fileID: 21300000, guid: 83457026fd2531d4789e649fd30e2b24, type: 3}
+  - {fileID: 21300000, guid: 043afbda6b9eeac4baa9e59eb5f6ce4a, type: 3}
+  - {fileID: 21300000, guid: 66f6885cccb14184980da84ffdc1d7cb, type: 3}
+  - {fileID: 21300000, guid: cc7e1f4ec86801a478d9914bfed3563a, type: 3}
+  - {fileID: 21300000, guid: 1aa49783b43ee314abc747dacece1b9e, type: 3}
+  - {fileID: 21300000, guid: a0e3c0f669655394bbeb68ee296eeaf7, type: 3}
+  - {fileID: 21300000, guid: bbf42506c69ce27439a953a0527be628, type: 3}
+  - {fileID: 21300000, guid: 561387c593b51c941a60a8bca6d260b2, type: 3}
+  - {fileID: 21300000, guid: 49b9030a45bdfd64297f74c82173c02a, type: 3}
+  - {fileID: 21300000, guid: 5f927180c7f349a49af9c8f870af5ff2, type: 3}
+  - {fileID: 21300000, guid: 5bbc69d07f67d844bb5a16313f7d079a, type: 3}
+  MeeleAutoattack: {fileID: 21300000, guid: b140a943e0a1db84dadb4ae7bc782cc6, type: 3}
 --- !u!114 &64818955
 MonoBehaviour:
   m_ObjectHideFlags: 0

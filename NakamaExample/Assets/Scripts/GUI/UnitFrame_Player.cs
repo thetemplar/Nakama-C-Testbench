@@ -20,9 +20,8 @@ namespace DuloGames.UI
         public float Duration = 5f;
         public TweenEasing Easing = TweenEasing.InOutQuint;
         public Text m_Text;
-        public TextVariant m_TextVariant = TextVariant.Percent;
-        public int m_TextValue = 100;
-        public string m_TextValueFormat = "0";
+        public Text m_HpText;
+        public Text m_PowerText;
 
         public PlayerController Player;
 
@@ -51,18 +50,8 @@ namespace DuloGames.UI
 
             if (this.m_Text != null)
             {
-                if (this.m_TextVariant == TextVariant.Percent)
-                {
-                    this.m_Text.text = Mathf.RoundToInt(amount * 100f).ToString() + "%";
-                }
-                else if (this.m_TextVariant == TextVariant.Value)
-                {
-                    this.m_Text.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat);
-                }
-                else if (this.m_TextVariant == TextVariant.ValueMax)
-                {
-                    this.m_Text.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat) + "/" + this.m_TextValue;
-                }
+                this.m_HpText.text = Player.Target.CurrentHealth + "/" + Player.Target.MaxHealth;
+                this.m_PowerText.text = Player.Target.CurrentPower + "/" + Player.Target.MaxPower;
             }
         }
     }

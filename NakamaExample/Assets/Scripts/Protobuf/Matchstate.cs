@@ -28,7 +28,7 @@ namespace NakamaMinimalGame.PublicMatchState
         {
             byte[] descriptorData = global::System.Convert.FromBase64String(
                 string.Concat(
-                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIrsbChBQdWJsaWNNYXRjaFN0YXRl",
+                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIt4bChBQdWJsaWNNYXRjaFN0YXRl",
                   "EgwKBHRpY2sYASABKAMSOAoJY29tYmF0bG9nGAIgAygLMiUubWFpbi5QdWJs",
                   "aWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5Ej4KDGludGVyYWN0YWJsZRgD",
                   "IAMoCzIoLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5JbnRlcmFjdGFibGVFbnRy",
@@ -40,7 +40,7 @@ namespace NakamaMinimalGame.PublicMatchState
                   "GAEgASgJEjAKBXZhbHVlGAIgASgLMiEubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
                   "LlByb2plY3RpbGU6AjgBGkgKCUFyZWFFbnRyeRILCgNrZXkYASABKAkSKgoF",
                   "dmFsdWUYAiABKAsyGy5tYWluLlB1YmxpY01hdGNoU3RhdGUuQXJlYToCOAEa",
-                  "4hAKDkNvbWJhdExvZ0VudHJ5EhEKCXRpbWVzdGFtcBgBIAEoAxIRCglzb3Vy",
+                  "8xAKDkNvbWJhdExvZ0VudHJ5EhEKCXRpbWVzdGFtcBgBIAEoAxIRCglzb3Vy",
                   "Y2VfaWQYAiABKAkSFgoOZGVzdGluYXRpb25faWQYAyABKAkSSwoGc291cmNl",
                   "GAQgASgOMjsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5",
                   "LkNvbWJhdExvZ0VudHJ5X1NvdXJjZRIZCg9zb3VyY2Vfc3BlbGxfaWQYBiAB",
@@ -77,58 +77,59 @@ namespace NakamaMinimalGame.PublicMatchState
                   "ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BdXRvYXR0YWNrLkNv",
                   "bWJhdExvZ0VudHJ5X0F1dG9hdHRhY2sSFgoOZmFpbGVkX21lc3NhZ2UYAiAB",
                   "KAkiPwoZQ29tYmF0TG9nRW50cnlfQXV0b2F0dGFjaxIJCgVTdGFydBAAEgsK",
-                  "B1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhrSAQoTQ29tYmF0TG9nRW50cnlfQ2Fz",
+                  "B1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhrjAQoTQ29tYmF0TG9nRW50cnlfQ2Fz",
                   "dBJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21i",
                   "YXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9DYXN0LkNvbWJhdExvZ0VudHJ5",
-                  "X0F1cmFfRXZlbnQSFgoOZmFpbGVkX21lc3NhZ2UYAiABKAkiPwoZQ29tYmF0",
-                  "TG9nRW50cnlfQXVyYV9FdmVudBIJCgVTdGFydBAAEgsKB1N1Y2Nlc3MQARIK",
-                  "CgZGYWlsZWQQAhovChxDb21iYXRMb2dFbnRyeV9TeXN0ZW1NZXNzYWdlEg8K",
-                  "B21lc3NhZ2UYASABKAkiZQoVQ29tYmF0TG9nRW50cnlfU291cmNlEg4KCkF1",
-                  "dG9hdHRhY2sQABIJCgVSYW5nZRABEgkKBVNwZWxsEAISDAoIUGVyaW9kaWMQ",
-                  "AxIHCgNBb0UQBBIPCgtFbnZpcm9ubWVudBAFIjwKFUNvbWJhdExvZ0VudHJ5",
-                  "X01pc3NlZBIKCgZNaXNzZWQQABIKCgZEb2RnZWQQARILCgdQYXJyaWVkEAJC",
-                  "GAoWc291cmNlX3NwZWxsX2VmZmVjdF9pZEIGCgR0eXBlGrwDCgxJbnRlcmFj",
-                  "dGFibGUSCgoCaWQYASABKAkSNgoEdHlwZRgCIAEoDjIoLm1haW4uUHVibGlj",
-                  "TWF0Y2hTdGF0ZS5JbnRlcmFjdGFibGUuVHlwZRIUCgxjaGFyYWN0ZXJfaWQY",
-                  "AyABKAMSIgoabGFzdF9wcm9jZXNzZWRfY2xpZW50X3RpY2sYBCABKAMSEQoJ",
-                  "Y2xhc3NuYW1lGAUgASgJEg0KBWxldmVsGAYgASgFEhYKDmN1cnJlbnRfaGVh",
-                  "bHRoGAcgASgCEhUKDWN1cnJlbnRfcG93ZXIYCCABKAISFAoMaW52dWxuZXJh",
-                  "YmxlGAkgASgIEiEKCHBvc2l0aW9uGAogASgLMg8ubWFpbi5WZWN0b3IyRGYS",
-                  "EAoIcm90YXRpb24YCyABKAISFwoPZ2xvYmFsX2Nvb2xkb3duGAwgASgCEg4K",
-                  "BnRhcmdldBgNIAEoCRIqCgVhdXJhcxgOIAMoCzIbLm1haW4uUHVibGljTWF0",
-                  "Y2hTdGF0ZS5BdXJhEhIKCmlzX2VuZ2FnZWQYDyABKAgSDAoEdGVhbRgQIAEo",
-                  "BSIbCgRUeXBlEgoKBlBsYXllchAAEgcKA05QQxABGlwKBEF1cmESFwoPY3Jl",
-                  "YXRlZF9hdF90aWNrGAEgASgDEg8KB2NyZWF0b3IYAiABKAkSEQoJZWZmZWN0",
-                  "X2lkGAMgASgDEhcKD2F1cmFfdGlja19jb3VudBgEIAEoBRqoAQoKUHJvamVj",
-                  "dGlsZRIKCgJpZBgBIAEoCRIQCghzcGVsbF9pZBgCIAEoAxIXCg9jcmVhdGVk",
-                  "X2F0X3RpY2sYAyABKAMSDwoHY3JlYXRvchgEIAEoCRIhCghwb3NpdGlvbhgF",
-                  "IAEoCzIPLm1haW4uVmVjdG9yMkRmEhAKCHJvdGF0aW9uGAYgASgCEg4KBnRh",
-                  "cmdldBgHIAEoCRINCgVzcGVlZBgIIAEoAhqLAQoEQXJlYRIKCgJpZBgBIAEo",
-                  "CRIRCgllZmZlY3RfaWQYAiABKAMSFwoPY3JlYXRlZF9hdF90aWNrGAMgASgD",
-                  "Eg8KB2NyZWF0b3IYBCABKAkSIQoIcG9zaXRpb24YBSABKAsyDy5tYWluLlZl",
-                  "Y3RvcjJEZhIXCg9hcmVhX3RpY2tfY291bnQYBiABKAUiiAcKDkNsaWVudF9N",
-                  "ZXNzYWdlEhMKC2NsaWVudF90aWNrGAEgASgDEjoKCWNoYXJhY3RlchgCIAEo",
-                  "CzIlLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0NoYXJhY3RlckgAEjAK",
-                  "BGNhc3QYAyABKAsyIC5tYWluLkNsaWVudF9NZXNzYWdlLkNsaWVudF9DYXN0",
-                  "SAASPQoLYXV0b19hdHRhY2sYBCABKAsyJi5tYWluLkNsaWVudF9NZXNzYWdl",
-                  "LkNsaWVudF9BdXRvYXR0YWNrSAASQQoNY2FuY2VsX2F0dGFjaxgFIAEoCzIo",
-                  "Lm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0NhbmNlbEF0dGFja0gAEjQK",
-                  "BG1vdmUYBiABKAsyJC5tYWluLkNsaWVudF9NZXNzYWdlLkNsaWVudF9Nb3Zl",
-                  "bWVudEgAEkIKC3NlbGVjdF9jaGFyGAcgASgLMisubWFpbi5DbGllbnRfTWVz",
-                  "c2FnZS5DbGllbnRfU2VsZWN0Q2hhcmFjdGVySAAaRgoQQ2xpZW50X0NoYXJh",
-                  "Y3RlchIiChpsYXN0X2NvbmZpcm1lZF9zZXJ2ZXJfdGljaxgCIAEoAxIOCgZ0",
-                  "YXJnZXQYAyABKAkaVwoLQ2xpZW50X0Nhc3QSEwoLY2xpZW50X3RpY2sYASAB",
-                  "KAMSEAoIc3BlbGxfaWQYAiABKAMSIQoIcG9zaXRpb24YAyABKAsyDy5tYWlu",
-                  "LlZlY3RvcjJEZhqRAQoRQ2xpZW50X0F1dG9hdHRhY2sSEwoLY2xpZW50X3Rp",
-                  "Y2sYAiABKAMSPwoKYXR0YWNrdHlwZRgDIAEoDjIrLm1haW4uQ2xpZW50X01l",
-                  "c3NhZ2UuQ2xpZW50X0F1dG9hdHRhY2suVHlwZSImCgRUeXBlEgkKBU1lZWxl",
-                  "EAASCQoFUmFuZ2UQARIICgRXYW5kEAIaFQoTQ2xpZW50X0NhbmNlbEF0dGFj",
-                  "axp2Cg9DbGllbnRfTW92ZW1lbnQSEwoLY2xpZW50X3RpY2sYASABKAMSHAoU",
-                  "YWJzb2x1dGVfY29vcmRpbmF0ZXMYAiABKAgSDgoGeF9heGlzGAMgASgCEg4K",
-                  "BnlfYXhpcxgEIAEoAhIQCghyb3RhdGlvbhgFIAEoAhorChZDbGllbnRfU2Vs",
-                  "ZWN0Q2hhcmFjdGVyEhEKCWNsYXNzbmFtZRgBIAEoCUIGCgR0eXBlIiEKCVZl",
-                  "Y3RvcjJEZhIJCgF4GAEgASgCEgkKAXkYAiABKAJCJaoCIk5ha2FtYU1pbmlt",
-                  "YWxHYW1lLlB1YmxpY01hdGNoU3RhdGViBnByb3RvMw=="));
+                  "X0Nhc3RfRXZlbnQSFgoOZmFpbGVkX21lc3NhZ2UYAiABKAkiUAoZQ29tYmF0",
+                  "TG9nRW50cnlfQ2FzdF9FdmVudBIJCgVTdGFydBAAEgsKB1N1Y2Nlc3MQARIK",
+                  "CgZGYWlsZWQQAhIPCgtJbnRlcnJ1cHRlZBADGi8KHENvbWJhdExvZ0VudHJ5",
+                  "X1N5c3RlbU1lc3NhZ2USDwoHbWVzc2FnZRgBIAEoCSJlChVDb21iYXRMb2dF",
+                  "bnRyeV9Tb3VyY2USDgoKQXV0b2F0dGFjaxAAEgkKBVJhbmdlEAESCQoFU3Bl",
+                  "bGwQAhIMCghQZXJpb2RpYxADEgcKA0FvRRAEEg8KC0Vudmlyb25tZW50EAUi",
+                  "PAoVQ29tYmF0TG9nRW50cnlfTWlzc2VkEgoKBk1pc3NlZBAAEgoKBkRvZGdl",
+                  "ZBABEgsKB1BhcnJpZWQQAkIYChZzb3VyY2Vfc3BlbGxfZWZmZWN0X2lkQgYK",
+                  "BHR5cGUazgMKDEludGVyYWN0YWJsZRIKCgJpZBgBIAEoCRI2CgR0eXBlGAIg",
+                  "ASgOMigubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkludGVyYWN0YWJsZS5UeXBl",
+                  "EhQKDGNoYXJhY3Rlcl9pZBgDIAEoAxIiChpsYXN0X3Byb2Nlc3NlZF9jbGll",
+                  "bnRfdGljaxgEIAEoAxIRCgljbGFzc25hbWUYBSABKAkSDQoFbGV2ZWwYBiAB",
+                  "KAUSFgoOY3VycmVudF9oZWFsdGgYByABKAISFQoNY3VycmVudF9wb3dlchgI",
+                  "IAEoAhIUCgxpbnZ1bG5lcmFibGUYCSABKAgSIQoIcG9zaXRpb24YCiABKAsy",
+                  "Dy5tYWluLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgLIAEoAhIXCg9nbG9iYWxf",
+                  "Y29vbGRvd24YDCABKAISDgoGdGFyZ2V0GA0gASgJEioKBWF1cmFzGA4gAygL",
+                  "MhsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkF1cmESEgoKaXNfZW5nYWdlZBgP",
+                  "IAEoCBIMCgR0ZWFtGBAgASgFEhAKCHVzZXJuYW1lGBEgASgJIhsKBFR5cGUS",
+                  "CgoGUGxheWVyEAASBwoDTlBDEAEaXAoEQXVyYRIXCg9jcmVhdGVkX2F0X3Rp",
+                  "Y2sYASABKAMSDwoHY3JlYXRvchgCIAEoCRIRCgllZmZlY3RfaWQYAyABKAMS",
+                  "FwoPYXVyYV90aWNrX2NvdW50GAQgASgFGqgBCgpQcm9qZWN0aWxlEgoKAmlk",
+                  "GAEgASgJEhAKCHNwZWxsX2lkGAIgASgDEhcKD2NyZWF0ZWRfYXRfdGljaxgD",
+                  "IAEoAxIPCgdjcmVhdG9yGAQgASgJEiEKCHBvc2l0aW9uGAUgASgLMg8ubWFp",
+                  "bi5WZWN0b3IyRGYSEAoIcm90YXRpb24YBiABKAISDgoGdGFyZ2V0GAcgASgJ",
+                  "Eg0KBXNwZWVkGAggASgCGosBCgRBcmVhEgoKAmlkGAEgASgJEhEKCWVmZmVj",
+                  "dF9pZBgCIAEoAxIXCg9jcmVhdGVkX2F0X3RpY2sYAyABKAMSDwoHY3JlYXRv",
+                  "chgEIAEoCRIhCghwb3NpdGlvbhgFIAEoCzIPLm1haW4uVmVjdG9yMkRmEhcK",
+                  "D2FyZWFfdGlja19jb3VudBgGIAEoBSKIBwoOQ2xpZW50X01lc3NhZ2USEwoL",
+                  "Y2xpZW50X3RpY2sYASABKAMSOgoJY2hhcmFjdGVyGAIgASgLMiUubWFpbi5D",
+                  "bGllbnRfTWVzc2FnZS5DbGllbnRfQ2hhcmFjdGVySAASMAoEY2FzdBgDIAEo",
+                  "CzIgLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0Nhc3RIABI9CgthdXRv",
+                  "X2F0dGFjaxgEIAEoCzImLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0F1",
+                  "dG9hdHRhY2tIABJBCg1jYW5jZWxfYXR0YWNrGAUgASgLMigubWFpbi5DbGll",
+                  "bnRfTWVzc2FnZS5DbGllbnRfQ2FuY2VsQXR0YWNrSAASNAoEbW92ZRgGIAEo",
+                  "CzIkLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X01vdmVtZW50SAASQgoL",
+                  "c2VsZWN0X2NoYXIYByABKAsyKy5tYWluLkNsaWVudF9NZXNzYWdlLkNsaWVu",
+                  "dF9TZWxlY3RDaGFyYWN0ZXJIABpGChBDbGllbnRfQ2hhcmFjdGVyEiIKGmxh",
+                  "c3RfY29uZmlybWVkX3NlcnZlcl90aWNrGAIgASgDEg4KBnRhcmdldBgDIAEo",
+                  "CRpXCgtDbGllbnRfQ2FzdBITCgtjbGllbnRfdGljaxgBIAEoAxIQCghzcGVs",
+                  "bF9pZBgCIAEoAxIhCghwb3NpdGlvbhgDIAEoCzIPLm1haW4uVmVjdG9yMkRm",
+                  "GpEBChFDbGllbnRfQXV0b2F0dGFjaxITCgtjbGllbnRfdGljaxgCIAEoAxI/",
+                  "CgphdHRhY2t0eXBlGAMgASgOMisubWFpbi5DbGllbnRfTWVzc2FnZS5DbGll",
+                  "bnRfQXV0b2F0dGFjay5UeXBlIiYKBFR5cGUSCQoFTWVlbGUQABIJCgVSYW5n",
+                  "ZRABEggKBFdhbmQQAhoVChNDbGllbnRfQ2FuY2VsQXR0YWNrGnYKD0NsaWVu",
+                  "dF9Nb3ZlbWVudBITCgtjbGllbnRfdGljaxgBIAEoAxIcChRhYnNvbHV0ZV9j",
+                  "b29yZGluYXRlcxgCIAEoCBIOCgZ4X2F4aXMYAyABKAISDgoGeV9heGlzGAQg",
+                  "ASgCEhAKCHJvdGF0aW9uGAUgASgCGisKFkNsaWVudF9TZWxlY3RDaGFyYWN0",
+                  "ZXISEQoJY2xhc3NuYW1lGAEgASgJQgYKBHR5cGUiIQoJVmVjdG9yMkRmEgkK",
+                  "AXgYASABKAISCQoBeRgCIAEoAkIlqgIiTmFrYW1hTWluaW1hbEdhbWUuUHVi",
+                  "bGljTWF0Y2hTdGF0ZWIGcHJvdG8z"));
             descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
                 new pbr::FileDescriptor[] { },
                 new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -138,9 +139,9 @@ namespace NakamaMinimalGame.PublicMatchState
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Parser, new[]{ "Event" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Types.CombatLogEntry_Aura_Event) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Parser, new[]{ "Event" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Types.CombatLogEntry_Area_Event) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack.Parser, new[]{ "Event", "FailedMessage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack.Types.CombatLogEntry_Autoattack) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Parser, new[]{ "Event", "FailedMessage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Parser, new[]{ "Event", "FailedMessage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_SystemMessage), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_SystemMessage.Parser, new[]{ "Message" }, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Parser, new[]{ "Id", "Type", "CharacterId", "LastProcessedClientTick", "Classname", "Level", "CurrentHealth", "CurrentPower", "Invulnerable", "Position", "Rotation", "GlobalCooldown", "Target", "Auras", "IsEngaged", "Team" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Parser, new[]{ "Id", "Type", "CharacterId", "LastProcessedClientTick", "Classname", "Level", "CurrentHealth", "CurrentPower", "Invulnerable", "Position", "Rotation", "GlobalCooldown", "Target", "Auras", "IsEngaged", "Team", "Username" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura.Parser, new[]{ "CreatedAtTick", "Creator", "EffectId", "AuraTickCount" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Parser, new[]{ "Id", "SpellId", "CreatedAtTick", "Creator", "Position", "Rotation", "Target", "Speed" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area.Parser, new[]{ "Id", "EffectId", "CreatedAtTick", "Creator", "Position", "AreaTickCount" }, null, null, null)}),
@@ -2507,9 +2508,9 @@ namespace NakamaMinimalGame.PublicMatchState
 
                         /// <summary>Field number for the "event" field.</summary>
                         public const int EventFieldNumber = 1;
-                        private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event event_ = 0;
+                        private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event event_ = 0;
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                        public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event Event
+                        public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event Event
                         {
                             get { return event_; }
                             set
@@ -2641,7 +2642,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                         break;
                                     case 8:
                                         {
-                                            Event = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event)input.ReadEnum();
+                                            Event = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event)input.ReadEnum();
                                             break;
                                         }
                                     case 18:
@@ -2658,11 +2659,12 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static partial class Types
                         {
-                            public enum CombatLogEntry_Aura_Event
+                            public enum CombatLogEntry_Cast_Event
                             {
                                 [pbr::OriginalName("Start")] Start = 0,
                                 [pbr::OriginalName("Success")] Success = 1,
                                 [pbr::OriginalName("Failed")] Failed = 2,
+                                [pbr::OriginalName("Interrupted")] Interrupted = 3,
                             }
 
                         }
@@ -2878,6 +2880,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     auras_ = other.auras_.Clone();
                     isEngaged_ = other.isEngaged_;
                     team_ = other.team_;
+                    username_ = other.username_;
                     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
                 }
 
@@ -3117,6 +3120,22 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "username" field.</summary>
+                public const int UsernameFieldNumber = 17;
+                private string username_ = "";
+                /// <summary>
+                ///playername
+                /// </summary>
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public string Username
+                {
+                    get { return username_; }
+                    set
+                    {
+                        username_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+                    }
+                }
+
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public override bool Equals(object other)
                 {
@@ -3150,6 +3169,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (!auras_.Equals(other.auras_)) return false;
                     if (IsEngaged != other.IsEngaged) return false;
                     if (Team != other.Team) return false;
+                    if (Username != other.Username) return false;
                     return Equals(_unknownFields, other._unknownFields);
                 }
 
@@ -3173,6 +3193,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     hash ^= auras_.GetHashCode();
                     if (IsEngaged != false) hash ^= IsEngaged.GetHashCode();
                     if (Team != 0) hash ^= Team.GetHashCode();
+                    if (Username.Length != 0) hash ^= Username.GetHashCode();
                     if (_unknownFields != null)
                     {
                         hash ^= _unknownFields.GetHashCode();
@@ -3265,6 +3286,11 @@ namespace NakamaMinimalGame.PublicMatchState
                         output.WriteRawTag(128, 1);
                         output.WriteInt32(Team);
                     }
+                    if (Username.Length != 0)
+                    {
+                        output.WriteRawTag(138, 1);
+                        output.WriteString(Username);
+                    }
                     if (_unknownFields != null)
                     {
                         _unknownFields.WriteTo(output);
@@ -3335,6 +3361,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Team != 0)
                     {
                         size += 2 + pb::CodedOutputStream.ComputeInt32Size(Team);
+                    }
+                    if (Username.Length != 0)
+                    {
+                        size += 2 + pb::CodedOutputStream.ComputeStringSize(Username);
                     }
                     if (_unknownFields != null)
                     {
@@ -3414,6 +3444,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (other.Team != 0)
                     {
                         Team = other.Team;
+                    }
+                    if (other.Username.Length != 0)
+                    {
+                        Username = other.Username;
                     }
                     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
                 }
@@ -3511,6 +3545,11 @@ namespace NakamaMinimalGame.PublicMatchState
                             case 128:
                                 {
                                     Team = input.ReadInt32();
+                                    break;
+                                }
+                            case 138:
+                                {
+                                    Username = input.ReadString();
                                     break;
                                 }
                         }

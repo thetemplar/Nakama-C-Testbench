@@ -26,6 +26,7 @@ namespace Assets.Scripts.Manager
         public string ClassName = "";
 
         private Dictionary<string, PlayerController> _gameObjects = new Dictionary<string, PlayerController>();
+        public Dictionary<string, string> UserNames = new Dictionary<string, string>();
         private List<Client_Message> _notAcknowledgedPackages = new List<Client_Message>();
         private Queue<Client_Message> _messagesToSend = new Queue<Client_Message>();
 
@@ -34,10 +35,6 @@ namespace Assets.Scripts.Manager
 
         private float lastRotation;
 
-//#if UNITY_EDITOR
-        private bool _startJoin = false;
-//#endif
-
         private void Start()
         {
             GameManager.Instance.OnNewWorldUpdate += OnNewWorldUpdate;
@@ -45,6 +42,9 @@ namespace Assets.Scripts.Manager
 
         private void FixedUpdate()
         {
+            if (NakamaManager.Instance == null)
+                return;
+
             CameraScript.enabled = true;
             if (string.IsNullOrEmpty(NakamaManager.Instance.MatchId) || !NakamaManager.Instance.IsConnected)
             {
@@ -54,7 +54,6 @@ namespace Assets.Scripts.Manager
             }
             if (Player.gameObject.activeSelf)
             {
-
                 Client_Message send = new Client_Message
                 {
                     ClientTick = _clientTick,
@@ -112,16 +111,6 @@ namespace Assets.Scripts.Manager
             _clientTick++;
         }
 
-        void OnGUI()
-        {
-#if UNITY_EDITORx
-            if (Application.isEditor)  // or check the app debug flag
-            {
-                GUI.Label(new Rect(Screen.width - 100, 0, 100, 100), _notAcknowledgedPackages.Count.ToString());
-            }
-#endif
-        }
-
         public void AddMessageToSend(Client_Message msg)
         {
             msg.ClientTick = _clientTick;
@@ -137,8 +126,33 @@ namespace Assets.Scripts.Manager
             }
 
             //player & NPCs
+            foreach (var entry in state.Combatlog)
+            {
+                if(entry.TypeCase == PublicMatchState.Types.CombatLogEntry.TypeOneofCase.Cast)
+                {
+                    switch (entry.Cast.Event)
+                    {
+                        case PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event.Start:
+                            _gameObjects[entry.SourceId].StartCast(entry.SourceSpellId);
+                            break;
+                        case PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event.Interrupted:
+                            _gameObjects[entry.SourceId].InterruptCast();
+                            break;
+
+                    }
+                }
+            }
             foreach (var player in state.Interactable)
             {
+                if (!UserNames.ContainsKey(player.Key))
+                {
+                    UserNames.Add(player.Key, player.Value.Username);
+                }
+                if(UserNames[player.Key] != player.Value.Username)
+                {
+                    UserNames[player.Key] = player.Value.Username;
+                }
+
                 //handle player character
                 if (player.Key == NakamaManager.Instance.Session.UserId)
                 {
@@ -151,7 +165,6 @@ namespace Assets.Scripts.Manager
                         {
                             var p = Player.gameObject;
                             p.transform.Find("Mesh").gameObject.SetActive(true);
-                            //p.GetComponent<PlayerGUI>().enabled = true;
                             _gameObjects.Add(player.Key, p.GetComponent<PlayerController>());
                             p.name = player.Key;
                         });
@@ -161,9 +174,9 @@ namespace Assets.Scripts.Manager
                     _notAcknowledgedPackages.RemoveAll(x => x.ClientTick <= player.Value.LastProcessedClientTick);
 
                     if (Player.ShowGhost)
-                        ServerShadow.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime, null);
+                        ServerShadow.SetLastServerAck(null, diffTime, player.Value);
 
-                    Player.SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, _notAcknowledgedPackages, diffTime, player.Value);
+                    Player.SetLastServerAck(_notAcknowledgedPackages, diffTime, player.Value);
                 }
                 else
                 {
@@ -171,7 +184,7 @@ namespace Assets.Scripts.Manager
                     {
                         if (player.Value?.Position != null)
                         {
-                            _gameObjects[player.Key].SetLastServerAck(new Vector3(player.Value.Position.X, 1.5f, player.Value.Position.Y), player.Value.Rotation, null, diffTime, player.Value);
+                            _gameObjects[player.Key].SetLastServerAck(null, diffTime, player.Value);
                         }
                         else
                         {
@@ -201,7 +214,7 @@ namespace Assets.Scripts.Manager
                 {
                     if (projectile.Value != null && projectile.Value?.Position != null)
                     {
-                        _gameObjects[projectile.Key].SetLastServerAck(new Vector3(projectile.Value.Position.X, 1.5f, projectile.Value.Position.Y), projectile.Value.Rotation, null, diffTime, null);
+                        _gameObjects[projectile.Key].SetLastServerAck(null, diffTime, null);
                     }
                     else
                     {

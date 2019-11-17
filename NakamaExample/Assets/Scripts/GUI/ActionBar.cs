@@ -9,7 +9,6 @@ namespace DuloGames.UI
     {
         // Start is called before the first frame update
         public UISpellSlot[] _spellslot = new UISpellSlot[8];
-        public IconStore IconStore;
 
         void Start()
         {
@@ -23,7 +22,7 @@ namespace DuloGames.UI
             {
                 _spellslot[0].Assign(new UISpellInfo
                 {
-                    Icon = IconStore.MeeleAutoattack,
+                    Icon = IconStore.Instance.MeeleAutoattack,
                     Name = "Autoattack",
                     Description = "Autoattack"
                 });
@@ -32,17 +31,7 @@ namespace DuloGames.UI
                 for (int i = 1; i < GameManager.Instance.GameDB.Classes[PlayerManager.Instance.ClassName].Spells.Length && i < 7; i++)
                 {
                     GameDB_Lib.GameDB_Spell spell = GameManager.Instance.GameDB.Classes[PlayerManager.Instance.ClassName].Spells[i-1];
-                    _spellslot[i].Assign(new UISpellInfo
-                    {
-                        Icon = IconStore.Spellicon[(int)spell.IconID - 1],
-                        Name = spell.Name,
-                        Description = spell.Description,
-                        Cooldown = spell.Cooldown,
-                        Range = spell.Range,
-                        CastTime = spell.CastTime,
-                        PowerCost = spell.BaseCost,
-                        ID = (int)spell.Id
-                    });
+                    _spellslot[i].Assign(new UISpellInfo(spell));
                     _spellslot[i].onClick.AddListener(OnSpellClick);
                 }
 

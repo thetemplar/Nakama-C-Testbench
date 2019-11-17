@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DuloGames.UI.Tweens;
+using Assets.Scripts.Manager;
 
 namespace DuloGames.UI
 {
@@ -19,9 +20,8 @@ namespace DuloGames.UI
         public UIProgressBar power_bar;
         public TweenEasing Easing = TweenEasing.InOutQuint;
         public Text m_Text;
-        public TextVariant m_TextVariant = TextVariant.Percent;
-        public int m_TextValue = 100;
-        public string m_TextValueFormat = "0";
+        public Text m_HpText;
+        public Text m_PowerText;
 
         public PlayerController Player;
 
@@ -44,7 +44,8 @@ namespace DuloGames.UI
 
                 SetFillAmount(hp_bar, Player.Target.CurrentHealth / Player.Target.MaxHealth);
                 SetFillAmount(power_bar, Player.Target.CurrentPower / Player.Target.MaxPower);
-                m_Text.text = Player.Target.name;
+                
+                m_Text.text = PlayerManager.Instance.UserNames[Player.Target.name];
             }
             else
                 this.gameObject.transform.GetChild(0).gameObject.SetActive(false);
@@ -59,18 +60,8 @@ namespace DuloGames.UI
 
             if (this.m_Text != null)
             {
-                if (this.m_TextVariant == TextVariant.Percent)
-                {
-                    this.m_Text.text = Mathf.RoundToInt(amount * 100f).ToString() + "%";
-                }
-                else if (this.m_TextVariant == TextVariant.Value)
-                {
-                    this.m_Text.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat);
-                }
-                else if (this.m_TextVariant == TextVariant.ValueMax)
-                {
-                    this.m_Text.text = ((float)this.m_TextValue * amount).ToString(this.m_TextValueFormat) + "/" + this.m_TextValue;
-                }
+                this.m_HpText.text = Math.Round(Player.Target.CurrentHealth / Player.Target.MaxHealth * 100, 2).ToString() + "%";
+                this.m_PowerText.text = Math.Round(Player.Target.CurrentPower / Player.Target.MaxPower * 100, 2).ToString() + "%";
             }
         }
     }

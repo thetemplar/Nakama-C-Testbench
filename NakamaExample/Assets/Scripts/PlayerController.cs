@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float MaxPower;
     [HideInInspector] public float CurrentPower;
 
+    [HideInInspector] public GameDB_Lib.GameDB_Spell castingSpell;
     [HideInInspector] public float CastTimeUntil;
-    [HideInInspector] public float FullCastTime;
 
     [HideInInspector] public float GCDUntil;
 
@@ -37,6 +37,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public GameDB_Lib.GameDB_Class playerClass;
 
     [HideInInspector] public PlayerController Target;
+
+    public event EventHandler StartCastEvent;
+    public event EventHandler InterruptCastEvent;
 
     private Animator animator;
 
@@ -160,7 +163,7 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Message> notAcknowledgedPackages, float timeToLerp, PublicMatchState.Types.Interactable player = null)
+    public void SetLastServerAck(List<Client_Message> notAcknowledgedPackages, float timeToLerp, PublicMatchState.Types.Interactable player = null)
     {
         if (player != null)
         {
@@ -178,6 +181,9 @@ public class PlayerController : MonoBehaviour
                 this.Auras.Add(aura);
             }
         }
+
+        var position = new Vector3(player.Position.X, 1.5f, player.Position.Y);
+        var rotation = player.Rotation;
 
         position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && isLocalPlayer)
@@ -221,6 +227,18 @@ public class PlayerController : MonoBehaviour
             _lerpRotation.IsLerping = false;
             _lerpRotation.Value = rotation;        
         }
+    }
+
+    internal void InterruptCast()
+    {
+        castingSpell = new GameDB_Lib.GameDB_Spell();
+        InterruptCastEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void StartCast(long spellId)
+    {
+        castingSpell = GameManager.Instance.GameDB.Spells[spellId];
+        StartCastEvent?.Invoke(this, EventArgs.Empty);
     }
 }
 
