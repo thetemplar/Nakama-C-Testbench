@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Manager;
 using NakamaMinimalGame.PublicMatchState;
+using RPGCharacterAnims;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -45,7 +46,12 @@ public class PlayerController : MonoBehaviour
     public event EventHandler LostAura;
     public event EventHandler GotAura;
 
-    private Animator animator;
+
+    public RPGCharacterController RpgCharacterController;
+    public RPGCharacterMovementController RpgCharacterMovementController;
+    public RPGCharacterWeaponController RpgCharacterWeaponController;
+
+    private Vector3 _velocity = new Vector3();
 
     class LerpingParameters<T> {
         public bool IsLerping;
@@ -103,25 +109,21 @@ public class PlayerController : MonoBehaviour
         _lerpRotation = new LerpingParameters<float>(transform.rotation.eulerAngles.y);
     }
 
-    private void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
-
-    private void AttackAnimation()
-    {
-        animator.SetTrigger("AutoAttack");
-    }
-
     // Update is called once per frame  
     void Update()
     {
         transform.position = GetPosition();
         transform.rotation = GetRotation();
-    }
 
-    void FixedUpdate()
-    {
+        //this._velocity = new Vector3(_lerpPosition.LastValue.x - _lerpPosition.Value.x, 0, _lerpPosition.LastValue.z - _lerpPosition.Value.z);
+        if(_lerpPosition.IsLerping)
+            this._velocity = new Vector3(10,10,10);
+        else
+            this._velocity = new Vector3(0, 0, 0);
+
+
+        if (RpgCharacterMovementController != null)
+            RpgCharacterMovementController.currentVelocity = _velocity;
     }
 
     public void SetRotation(float rotation)
@@ -192,6 +194,7 @@ public class PlayerController : MonoBehaviour
             LostAura?.Invoke(aura.EffectId, EventArgs.Empty);
             this.Auras.Remove(aura);
         }
+
 
         var position = new Vector3(player.Position.X, 1.5f, player.Position.Y);
         var rotation = player.Rotation;
