@@ -6,6 +6,7 @@ using UnityEngine;
 using Google.Protobuf;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Manager
 {
@@ -18,7 +19,7 @@ namespace Assets.Scripts.Manager
         public GameObject PrefabArea;
         public GameObject PrefabNPC;
 
-        public OrbitCamera CameraScript;
+       // public OrbitCamera CameraScript;
 
         [HideInInspector]
         public bool Spawned = false;
@@ -35,9 +36,26 @@ namespace Assets.Scripts.Manager
 
         private float lastRotation;
 
+        private InputActions _inputActions;
+        Vector2 _move;
+        float _rotate;
+
+        public Cinemachine.CinemachineFreeLook Camera;
+
         private void Start()
         {
             GameManager.Instance.OnNewWorldUpdate += OnNewWorldUpdate;
+
+            _inputActions = new InputActions();
+            _inputActions.Enable();
+            _inputActions.Standard.Movement.performed += ctx => _move = ctx.ReadValue<Vector2>();
+            _inputActions.Standard.Turn.performed += Turn_performed;
+            //_inputActions.Standard.Movement.canceled += ctx => _move = Vector2.zero;
+        }
+
+        private void Turn_performed(InputAction.CallbackContext obj)
+        { 
+            _rotate = obj.ReadValue<float>();
         }
 
         private void FixedUpdate()
@@ -45,7 +63,7 @@ namespace Assets.Scripts.Manager
             if (NakamaManager.Instance == null)
                 return;
 
-            CameraScript.enabled = true;
+           // CameraScript.enabled = true;
             if (string.IsNullOrEmpty(NakamaManager.Instance.MatchId) || !NakamaManager.Instance.IsConnected)
             {
                 NakamaManager.Instance.Disconnect();
@@ -66,10 +84,11 @@ namespace Assets.Scripts.Manager
                 _notAcknowledgedPackages.Add(send);
                 GameManager.Instance.SendMatchStateMessage(send);
 
-                if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || lastRotation != Player.Rotation) // TODO: AND ROTATION DID NOT CHANGE!
+                //TODO: maybe change network code from "here am i" every frame to "this input differs now to the last"
                 {
-                    var XAxis = Input.GetAxis("Horizontal") * (Input.GetMouseButton(1) ? 1 : 0) + (Input.GetKey("q") ? -1 : 0) + (Input.GetKey("e") ? 1 : 0);
-                    var YAxis = Input.GetAxis("Vertical");
+                    var XAxis = _move.x;
+                    var YAxis = Mouse.current.rightButton.isPressed && Mouse.current.leftButton.isPressed ? 1 : (_move.y > 0 ? _move.y : _move.y / 2);
+                    var rot = _rotate * Time.deltaTime * 130f;
 
                     var length = (float)Math.Sqrt(Math.Pow(XAxis, 2) + Math.Pow(YAxis, 2));
                     if (length > 1)
@@ -87,7 +106,7 @@ namespace Assets.Scripts.Manager
                             AbsoluteCoordinates = false,
                             XAxis = XAxis,
                             YAxis = YAxis,
-                            Rotation = Player.Rotation
+                            Rotation = (Camera.m_XAxis.Value + rot)
                         }
                     };
                     _notAcknowledgedPackages.Add(move);

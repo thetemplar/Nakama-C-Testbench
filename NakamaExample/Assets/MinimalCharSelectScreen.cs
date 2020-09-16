@@ -10,7 +10,7 @@ public class MinimalCharSelectScreen : MonoBehaviour
 {
     public Dropdown DropDown;
     public Button SpawnButton;
-    public OrbitCamera CameraScript;
+   // public OrbitCamera CameraScript;
 
     bool init = false;
     // Start is called before the first frame update
@@ -34,7 +34,7 @@ public class MinimalCharSelectScreen : MonoBehaviour
     public void Spawn()
     {
         GameManager.Instance.SpawnPlayer(DropDown);
-        CameraScript.enabled = true;
+     //   CameraScript.enabled = true;
         this.gameObject.SetActive(false);
     }
 

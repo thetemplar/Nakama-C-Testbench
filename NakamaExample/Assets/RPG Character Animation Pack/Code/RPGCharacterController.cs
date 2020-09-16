@@ -187,17 +187,17 @@ namespace RPGCharacterAnims
                             rpgCharacterWeaponController.isSwitchingFinished = true;
                         }
                         //Shooting / Navmesh.
-                        if(Input.GetMouseButtonDown(0))
+                        /*if(Input.GetMouseButtonDown(0))
                         {
-                            /*if(rpgCharacterMovementController.useMeshNav)
-                            {
-                                RaycastHit hit;
-                                if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
-                                {
-                                    rpgCharacterMovementController.navMeshAgent.destination = hit.point;
-                                }
-                            }
-                            else */if((weapon == Weapon.TWOHANDBOW || weapon == Weapon.TWOHANDCROSSBOW || weapon == Weapon.RIFLE) && isAiming)
+                            //if(rpgCharacterMovementController.useMeshNav)
+                            //{
+                            //    RaycastHit hit;
+                            //    if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                            //    {
+                            //        rpgCharacterMovementController.navMeshAgent.destination = hit.point;
+                            //    }
+                            //}
+                            else if((weapon == Weapon.TWOHANDBOW || weapon == Weapon.TWOHANDCROSSBOW || weapon == Weapon.RIFLE) && isAiming)
                             {
                                 animator.SetInteger("Action", 1);
                                 if(weapon == Weapon.RIFLE && hipShooting == true)
@@ -211,9 +211,9 @@ namespace RPGCharacterAnims
                         if(Input.GetMouseButtonDown(2))
                         {
                             animator.SetTrigger("ReloadTrigger");
-                        }
+                        }*/
                         //Climbing ladder.
-                        if(rpgCharacterMovementController.rpgCharacterState == RPGCharacterState.ClimbLadder && !isClimbing)
+                        if (rpgCharacterMovementController.rpgCharacterState == RPGCharacterState.ClimbLadder && !isClimbing)
                         {
                             if(rpgCharacterInputController.inputVertical > 0.1f)
                             {
@@ -236,6 +236,7 @@ namespace RPGCharacterAnims
                     }
                 }
             }
+            /*
             //Injury toggle.
             if(Input.GetKeyDown(KeyCode.I))
             {
@@ -288,6 +289,7 @@ namespace RPGCharacterAnims
                     Time.timeScale = 0f;
                 }
             }
+            */
             //Swim up/down toggle.
             if(rpgCharacterMovementController.rpgCharacterState == RPGCharacterState.Swim && (rpgCharacterInputController.inputStrafe || rpgCharacterInputController.inputStrafe || rpgCharacterInputController.inputTargetBlock > 0.1f))
             {
@@ -337,6 +339,7 @@ namespace RPGCharacterAnims
         /// </summary>
         private void DirectionalAiming()
         {
+            /*
             if(Input.GetKey(KeyCode.LeftArrow))
             {
                 aimHorizontal -= 0.05f;
@@ -389,6 +392,7 @@ namespace RPGCharacterAnims
             animator.SetFloat("AimHorizontal", aimHorizontal);
             animator.SetFloat("AimVertical", aimVertical);
             animator.SetFloat("BowPull", bowPull);
+            */
         }
 
         //Turning.

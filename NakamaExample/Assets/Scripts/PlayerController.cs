@@ -46,12 +46,14 @@ public class PlayerController : MonoBehaviour
     public event EventHandler LostAura;
     public event EventHandler GotAura;
 
+    static float _lastTime;
+
+    public bool showLine = false;
+
 
     public RPGCharacterController RpgCharacterController;
     public RPGCharacterMovementController RpgCharacterMovementController;
     public RPGCharacterWeaponController RpgCharacterWeaponController;
-
-    private Vector3 _velocity = new Vector3();
 
     class LerpingParameters<T> {
         public bool IsLerping;
@@ -61,10 +63,10 @@ public class PlayerController : MonoBehaviour
         public float TimeToLerp;
         public float Percentage {
             get {
-                if (TimeStarted == 0)
-                    TimeStarted = Time.time;
+                //if (TimeStarted == 0)
+                //    TimeStarted = Time.time;
 
-                float perc = TimeToLerp > 0 ? (Time.time - TimeStarted) / TimeToLerp : 1;
+                float perc = TimeToLerp > 0 ? (_lastTime - TimeStarted) / TimeToLerp : 1;
                 if (perc >= 1)
                 {
                     IsLerping = false;
@@ -92,7 +94,7 @@ public class PlayerController : MonoBehaviour
                 IsLerping = true;
             }
             TimeToLerp = timeToLerp;
-            TimeStarted = 0;
+            TimeStarted = _lastTime;
         }
     }
 
@@ -110,20 +112,26 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame  
+    int ccc = 0;
     void Update()
     {
+        _lastTime = Time.time;
+
         transform.position = GetPosition();
         transform.rotation = GetRotation();
 
-        //this._velocity = new Vector3(_lerpPosition.LastValue.x - _lerpPosition.Value.x, 0, _lerpPosition.LastValue.z - _lerpPosition.Value.z);
-        if(_lerpPosition.IsLerping)
-            this._velocity = new Vector3(10,10,10);
-        else
-            this._velocity = new Vector3(0, 0, 0);
+        Color color = new Color(1.0f, 1.0f, 1.0f);
+        Color color2 = new Color(0.0f, 1.0f, 1.0f);
+        var diff = _lerpPosition.Value - _lerpPosition.LastValue;
+        Vector3 myForward = transform.TransformDirection(Vector3.forward);
+        float angle = Vector3.Angle(diff, transform.forward);
+        //Debug.LogWarning(diff + " --- " + myForward + " === " + angle);
 
+        if(showLine)
+            Debug.DrawLine(new Vector3(_lerpPosition.LastValue.x, 1, _lerpPosition.LastValue.z), new Vector3(_lerpPosition.Value.x, 1, _lerpPosition.Value.z), ccc % 2 == 0 ? color : color2, 10000);
 
         if (RpgCharacterMovementController != null)
-            RpgCharacterMovementController.currentVelocity = _velocity;
+            RpgCharacterMovementController.currentVelocity = _lerpPosition.IsLerping ? diff * 10 : Vector3.zero;
     }
 
     public void SetRotation(float rotation)
@@ -148,17 +156,23 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPredictedInput(float XAxis, float YAxis, float rotation, float timeToLerp)
     {
+        var vector = new Vector2(XAxis, YAxis);
+
         if (playerClass.Name == "")
-        {
             return;
-        }
+
+        if (vector.magnitude > 1)
+            vector = new Vector2(vector.x /= vector.magnitude, vector.y /= vector.magnitude);
 
         if (Level >= LevelOfNetworking.B_Prediction && isLocalPlayer)
         {
-            var rotated = Rotate(new Vector2(XAxis * playerClass.MovementSpeed / 100f, YAxis * playerClass.MovementSpeed / 100f), _lerpRotation.Value);
+            var rotated = Rotate(new Vector2(vector.x * playerClass.MovementSpeed / 100f, vector.y * playerClass.MovementSpeed / 100f), rotation);
+
+            //Debug.Log("Add: (" + vector.x + " | " + vector.y + " | " + rotation + ") " + rotated.x + " | " + rotated.y);
             var newPos = _lerpPosition.Value + new Vector3(rotated.x, 0, rotated.y);
 
-            _lerpPosition.SetNext(newPos, timeToLerp);     
+            _lerpPosition.SetNext(newPos, timeToLerp);
+            SetRotation((rotation + 360) % 360);
         }
     }
     
@@ -173,6 +187,9 @@ public class PlayerController : MonoBehaviour
     {
         if (player == null)
             throw new Exception();
+
+        var position = new Vector3(player.Position.X, 0f, player.Position.Y);
+        var rotation = player.Rotation;
 
         if (playerClass.Name == null || playerClass.Name == "")
         {
@@ -194,10 +211,6 @@ public class PlayerController : MonoBehaviour
             LostAura?.Invoke(aura.EffectId, EventArgs.Empty);
             this.Auras.Remove(aura);
         }
-
-
-        var position = new Vector3(player.Position.X, 1.5f, player.Position.Y);
-        var rotation = player.Rotation;
 
         position.y = 0;
         if (Level >= LevelOfNetworking.C_Reconciliation && isLocalPlayer)
@@ -228,19 +241,25 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if(Vector3.Distance(position, _lerpPosition.Value) > 0.5f)
+
+        _lerpPosition.Value = Vector3.Lerp(_lerpPosition.Value, position, Math.Min(1, Vector3.Distance(position, _lerpPosition.Value)));
+        Quaternion.Lerp(Quaternion.AngleAxis(_lerpRotation.Value, Vector3.up), Quaternion.AngleAxis(rotation, Vector3.up), Math.Min(1, Math.Abs(_lerpRotation.Value - rotation) / 10));
+        
+        /* outdated, two Lerps above *should* do the trick :)
+         
+        if (Vector3.Distance(position, _lerpPosition.Value) >= 0.25f)
         {
             Debug.Log("dist too big:" + Vector3.Distance(position, _lerpPosition.Value));
-            //_lerpPosition.IsLerping = false;
+            _lerpPosition.IsLerping = false;
             _lerpPosition.Value = position;
-
         }
-        if(180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180) > 5f)
+        if (180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180) > 5f)
         {
             Debug.Log("angle too big:" + (180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180)).ToString());
             _lerpRotation.IsLerping = false;
-            _lerpRotation.Value = rotation;        
+            _lerpRotation.Value = rotation;
         }
+        */
     }
 
     internal void InterruptCast()
