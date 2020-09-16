@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Manager;
 using NakamaMinimalGame.PublicMatchState;
+using RPGCharacterAnims;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -27,10 +29,31 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float MaxPower;
     [HideInInspector] public float CurrentPower;
 
+    [HideInInspector] public GameDB_Lib.GameDB_Spell castingSpell;
     [HideInInspector] public float CastTimeUntil;
-    [HideInInspector] public float FullCastTime;
 
     [HideInInspector] public float GCDUntil;
+
+    [HideInInspector] public List<PublicMatchState.Types.Aura> Auras = new List<PublicMatchState.Types.Aura>();
+
+    [HideInInspector] public GameDB_Lib.GameDB_Class playerClass;
+
+    [HideInInspector] public PlayerController Target;
+
+    public event EventHandler StartCastEvent;
+    public event EventHandler InterruptCastEvent;
+
+    public event EventHandler LostAura;
+    public event EventHandler GotAura;
+
+    static float _lastTime;
+
+    public bool showLine = false;
+
+
+    public RPGCharacterController RpgCharacterController;
+    public RPGCharacterMovementController RpgCharacterMovementController;
+    public RPGCharacterWeaponController RpgCharacterWeaponController;
 
     class LerpingParameters<T> {
         public bool IsLerping;
@@ -40,10 +63,10 @@ public class PlayerController : MonoBehaviour
         public float TimeToLerp;
         public float Percentage {
             get {
-                if (TimeStarted == 0)
-                    TimeStarted = Time.time;
+                //if (TimeStarted == 0)
+                //    TimeStarted = Time.time;
 
-                float perc = TimeToLerp > 0 ? (Time.time - TimeStarted) / TimeToLerp : 1;
+                float perc = TimeToLerp > 0 ? (_lastTime - TimeStarted) / TimeToLerp : 1;
                 if (perc >= 1)
                 {
                     IsLerping = false;
@@ -71,7 +94,7 @@ public class PlayerController : MonoBehaviour
                 IsLerping = true;
             }
             TimeToLerp = timeToLerp;
-            TimeStarted = 0;
+            TimeStarted = _lastTime;
         }
     }
 
@@ -89,14 +112,26 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame  
+    int ccc = 0;
     void Update()
     {
+        _lastTime = Time.time;
+
         transform.position = GetPosition();
         transform.rotation = GetRotation();
-    }
 
-    void FixedUpdate()
-    {
+        Color color = new Color(1.0f, 1.0f, 1.0f);
+        Color color2 = new Color(0.0f, 1.0f, 1.0f);
+        var diff = _lerpPosition.Value - _lerpPosition.LastValue;
+        Vector3 myForward = transform.TransformDirection(Vector3.forward);
+        float angle = Vector3.Angle(diff, transform.forward);
+        //Debug.LogWarning(diff + " --- " + myForward + " === " + angle);
+
+        if(showLine)
+            Debug.DrawLine(new Vector3(_lerpPosition.LastValue.x, 1, _lerpPosition.LastValue.z), new Vector3(_lerpPosition.Value.x, 1, _lerpPosition.Value.z), ccc % 2 == 0 ? color : color2, 10000);
+
+        if (RpgCharacterMovementController != null)
+            RpgCharacterMovementController.currentVelocity = _lerpPosition.IsLerping ? diff * 10 : Vector3.zero;
     }
 
     public void SetRotation(float rotation)
@@ -121,12 +156,23 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPredictedInput(float XAxis, float YAxis, float rotation, float timeToLerp)
     {
+        var vector = new Vector2(XAxis, YAxis);
+
+        if (playerClass.Name == "")
+            return;
+
+        if (vector.magnitude > 1)
+            vector = new Vector2(vector.x /= vector.magnitude, vector.y /= vector.magnitude);
+
         if (Level >= LevelOfNetworking.B_Prediction && isLocalPlayer)
         {
-            var rotated = Rotate(new Vector2(XAxis, YAxis), _lerpRotation.Value);
+            var rotated = Rotate(new Vector2(vector.x * playerClass.MovementSpeed / 100f, vector.y * playerClass.MovementSpeed / 100f), rotation);
+
+            //Debug.Log("Add: (" + vector.x + " | " + vector.y + " | " + rotation + ") " + rotated.x + " | " + rotated.y);
             var newPos = _lerpPosition.Value + new Vector3(rotated.x, 0, rotated.y);
 
-            _lerpPosition.SetNext(newPos, timeToLerp);     
+            _lerpPosition.SetNext(newPos, timeToLerp);
+            SetRotation((rotation + 360) % 360);
         }
     }
     
@@ -137,15 +183,33 @@ public class PlayerController : MonoBehaviour
         return new Vector2(ca * v.x - sa * v.y, sa * v.x + ca * v.y);
     }
 
-    public void SetLastServerAck(Vector3 position, float rotation, List<Client_Message> notAcknowledgedPackages, float timeToLerp, NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable player = null)
+    public void SetLastServerAck(List<Client_Message> notAcknowledgedPackages, float timeToLerp, PublicMatchState.Types.Interactable player)
     {
-        if (player != null)
+        if (player == null)
+            throw new Exception();
+
+        var position = new Vector3(player.Position.X, 0f, player.Position.Y);
+        var rotation = player.Rotation;
+
+        if (playerClass.Name == null || playerClass.Name == "")
         {
-            var playerClass = GameManager.Instance.GameDB.Classes[player.Character.Classname];
-            this.CurrentHealth = player.Character.CurrentHealth;
-            this.CurrentPower = player.Character.CurrentPower;
-            this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Character.Level) * 10;
-            this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Character.Level) * 10;
+            playerClass = GameManager.Instance.GameDB.Classes[player.Classname];
+        }
+        this.CurrentHealth = player.CurrentHealth;
+        this.CurrentPower = player.CurrentPower;
+        this.MaxHealth = (playerClass.BaseStamina + playerClass.GainStamina * player.Level) * 10;
+        this.MaxPower = (playerClass.BaseIntellect + playerClass.GainIntellect * player.Level) * 10;
+
+        foreach (var aura in player.Auras.Except(this.Auras))
+        {
+            this.Auras.Add(aura);
+            GotAura?.Invoke(aura.EffectId, EventArgs.Empty);
+        }
+
+        foreach (var aura in this.Auras.Except(player.Auras))
+        {
+            LostAura?.Invoke(aura.EffectId, EventArgs.Empty);
+            this.Auras.Remove(aura);
         }
 
         position.y = 0;
@@ -177,19 +241,37 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if(Vector3.Distance(position, _lerpPosition.Value) > 0.2f)
+
+        _lerpPosition.Value = Vector3.Lerp(_lerpPosition.Value, position, Math.Min(1, Vector3.Distance(position, _lerpPosition.Value)));
+        Quaternion.Lerp(Quaternion.AngleAxis(_lerpRotation.Value, Vector3.up), Quaternion.AngleAxis(rotation, Vector3.up), Math.Min(1, Math.Abs(_lerpRotation.Value - rotation) / 10));
+        
+        /* outdated, two Lerps above *should* do the trick :)
+         
+        if (Vector3.Distance(position, _lerpPosition.Value) >= 0.25f)
         {
             Debug.Log("dist too big:" + Vector3.Distance(position, _lerpPosition.Value));
             _lerpPosition.IsLerping = false;
             _lerpPosition.Value = position;
-
         }
-        if(180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180) > 5f)
+        if (180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180) > 5f)
         {
             Debug.Log("angle too big:" + (180 - Math.Abs(Math.Abs(rotation - _lerpRotation.Value) - 180)).ToString());
             _lerpRotation.IsLerping = false;
-            _lerpRotation.Value = rotation;        
+            _lerpRotation.Value = rotation;
         }
+        */
+    }
+
+    internal void InterruptCast()
+    {
+        castingSpell = new GameDB_Lib.GameDB_Spell();
+        InterruptCastEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void StartCast(long spellId)
+    {
+        castingSpell = GameManager.Instance.GameDB.Spells[spellId];
+        StartCastEvent?.Invoke(this, EventArgs.Empty);
     }
 }
 

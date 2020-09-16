@@ -7,7 +7,7 @@ using static NakamaMinimalGame.PublicMatchState.PublicMatchState.Types;
 public class CombatLog: IEnumerable
 {
     private static List<CombatLogEntry> _combatLogList = new List<CombatLogEntry>();
-    
+
     public class FloatingDamageEvent : EventArgs
     {
         public float Value;
@@ -31,12 +31,12 @@ public class CombatLog: IEnumerable
     public void Add(CombatLogEntry entry)
     {
         _combatLogList.Add(entry);
-        if((entry.SourceId == Assets.Scripts.Manager.NakamaManager.Instance.Session.UserId || entry.DestinationId == Assets.Scripts.Manager.NakamaManager.Instance.Session.UserId) && entry.TypeCase == CombatLogEntry.TypeOneofCase.Damage)
+        if ((entry.SourceId == Assets.Scripts.Manager.NakamaManager.Instance.Session.UserId || entry.DestinationId == Assets.Scripts.Manager.NakamaManager.Instance.Session.UserId) && entry.TypeCase == CombatLogEntry.TypeOneofCase.Damage)
         {
-            if(entry.Damage.Critical > 0)
-                OnNewDamage?.Invoke(entry.SourceId, new FloatingDamageEvent{Target = entry.DestinationId, Value = entry.Damage.Amount + entry.Damage.Critical, Critical = true});
+            if (entry.Damage.Critical > 0)
+                OnNewDamage?.Invoke(entry.SourceId, new FloatingDamageEvent { Target = entry.DestinationId, Value = entry.Damage.Amount + entry.Damage.Critical, Critical = true });
             else
-                OnNewDamage?.Invoke(entry.SourceId, new FloatingDamageEvent{Target = entry.DestinationId, Value = entry.Damage.Amount, Critical = false});
+                OnNewDamage?.Invoke(entry.SourceId, new FloatingDamageEvent { Target = entry.DestinationId, Value = entry.Damage.Amount, Critical = false });
         }
     }
 

@@ -26,7 +26,7 @@ namespace Assets.Scripts.Manager
                     BinaryFormatter formatter = new BinaryFormatter();
 
                     //Reading the file from the server
-                    FileStream fs = File.Open(@"C:\Users\Kristian\source\repos\Nakama-C-Testbench\NakamaExample\Assets\save.bin", FileMode.Open);
+                    FileStream fs = File.Open(@"C:\Users\Kristian\Documents\nakama-project\Nakama-GameDB-CodeGen\GameDB_CodeGen\save.bin", FileMode.Open);
 
                     _gameDB = (GameDB) formatter.Deserialize(fs);
                     fs.Flush();
@@ -36,13 +36,9 @@ namespace Assets.Scripts.Manager
                 return _gameDB;
             } 
         }
+
+
         private ISocket _socket { get { return NakamaManager.Instance.Socket; } }
-        
-        public string MatchId
-        {
-            get;
-            private set;
-        }
 
         //private bool _matchJoined;
         private bool _isLeaving;
@@ -51,57 +47,54 @@ namespace Assets.Scripts.Manager
 
         //public event Action OnGameStarted;
         //public event Action OnGameEnded;
-        
+
         public event Action<PublicMatchState, float> OnNewWorldUpdate;
+        public event Action<PublicMatchState.Types.CombatLogEntry[], float> OnCombatLogUpdate;
 
         public void Join()
         {
-            Task.Run(async () => {
-                Thread.Sleep(1000);
-                string id = await NakamaManager.Instance.StartOrJoinGameAsync();
-                Debug.Log("StartOrJoin: " + id);
-                JoinMatchAsync(id);
-            });
-#if !UNITY_EDITOR
-            SceneManager.LoadScene("Main");
-#endif
+            SpawnPlayer("Mage");
         }
 
-        public void Spawn(Dropdown classSelected)
+        public void SpawnPlayer(Dropdown classSelected)
+        {
+            SpawnPlayer(classSelected.options[classSelected.value].text);
+        }
+
+        public void SpawnPlayer(string classSelected)
         {
             var c = new Client_Message
             {
                 ClientTick = 1,
                 SelectChar = new Client_Message.Types.Client_SelectCharacter
                 {
-                    Classname = classSelected.options[classSelected.value].text
+                    Classname = classSelected
                 }
             };
             Thread.Sleep(50);
             SendMatchStateMessage(c);
+        }
+        private void Start()
+        {
+            if(NakamaManager.Instance == null)
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+            else
+            {
+                JoinMatchAsync(NakamaManager.Instance.MatchId);
+            }
         }
 
         public async void JoinMatchAsync(string matchId)
         {
             try
             {
-                // Listen to incomming match messages and user connection changes
-                //_socket.OnMatchPresence += OnMatchPresence;
                 _socket.OnMatchState += ReceiveMatchStateMessage;
 
                 // Join the match
                 IMatch match = await _socket.JoinMatchAsync(matchId);
-                Debug.Log("Created & joined match with ID: " + matchId);
-                // Set current match id
-                // It will be used to leave the match later
-                MatchId = match.Id;
-                CombatLogGUI.CombatLog.Add(new PublicMatchState.Types.CombatLogEntry { SystemMessage = "Joined match with id: " + match.Id + "; presences count: " + match.Presences.Count() });
-
-                // Add all players already connected to the match
-                // If both players uses the same account, exit the game
-                //AddConnectedPlayers(match);
-                //_matchJoined = true;
-                //StartGame();
+                Debug.Log("Joined match ID: " + matchId);
             }
             catch (Exception e)
             {
@@ -122,6 +115,7 @@ namespace Assets.Scripts.Manager
 
             //Starts coroutine which is loading main menu and also disconnects player from match
             //StartCoroutine(LoadMenuCoroutine());
+            SceneManager.LoadScene("MainMenu");
         }
 
         private void ReceiveMatchStateMessage(object sender, IMatchState e)
@@ -129,7 +123,9 @@ namespace Assets.Scripts.Manager
             var diffTime = (float)(DateTime.Now - _timeOfLastState).TotalSeconds;
 
             PublicMatchState state = PublicMatchState.Parser.ParseFrom(e.State);
-            CombatLogGUI.CombatLog.AddRange(state.Combatlog.ToArray());
+            var cl = state.Combatlog.ToArray();
+
+            OnCombatLogUpdate?.Invoke(cl, diffTime);
             OnNewWorldUpdate?.Invoke(state, diffTime);
 
             _timeOfLastState = DateTime.Now;
@@ -162,7 +158,7 @@ namespace Assets.Scripts.Manager
             }
             try
             {
-                _socket.SendMatchState(MatchId, opCode, toSend);
+                _socket.SendMatchState(NakamaManager.Instance.MatchId, opCode, toSend);
             }
             catch (Exception e)
             {

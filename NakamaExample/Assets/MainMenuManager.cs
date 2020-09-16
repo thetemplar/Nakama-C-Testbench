@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Manager;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class MainMenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        var refresh = GameObject.Find("Start_Join");
+        var bt = refresh.GetComponent<Button>();
+        bt.onClick.AddListener(delegate { NakamaManager.Instance.LoadMatch(); });
     }
 
     int waitCounter = 0;
@@ -26,7 +29,7 @@ public class MainMenuManager : MonoBehaviour
             Waiting.gameObject.SetActive(true);
             waitCounter++;
 
-            if(waitCounter % 100 == 0)
+            if(waitCounter % 50 == 0)
             {
                 Task.Run(() => NakamaManager.Instance.ConnectSocketAsync());
             }

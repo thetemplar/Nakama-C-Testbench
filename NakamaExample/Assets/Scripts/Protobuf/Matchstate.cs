@@ -28,30 +28,38 @@ namespace NakamaMinimalGame.PublicMatchState
         {
             byte[] descriptorData = global::System.Convert.FromBase64String(
                 string.Concat(
-                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluGg9jaGFyYWN0ZXIucHJvdG8i6hYK",
-                  "EFB1YmxpY01hdGNoU3RhdGUSDAoEdGljaxgBIAEoAxI4Cgljb21iYXRsb2cY",
-                  "AiADKAsyJS5tYWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9nRW50cnkS",
-                  "PgoMaW50ZXJhY3RhYmxlGAMgAygLMigubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
-                  "LkludGVyYWN0YWJsZUVudHJ5EjoKCnByb2plY3RpbGUYBCADKAsyJi5tYWlu",
-                  "LlB1YmxpY01hdGNoU3RhdGUuUHJvamVjdGlsZUVudHJ5GlgKEUludGVyYWN0",
-                  "YWJsZUVudHJ5EgsKA2tleRgBIAEoCRIyCgV2YWx1ZRgCIAEoCzIjLm1haW4u",
-                  "UHVibGljTWF0Y2hTdGF0ZS5JbnRlcmFjdGFibGU6AjgBGlQKD1Byb2plY3Rp",
-                  "bGVFbnRyeRILCgNrZXkYASABKAkSMAoFdmFsdWUYAiABKAsyIS5tYWluLlB1",
-                  "YmxpY01hdGNoU3RhdGUuUHJvamVjdGlsZToCOAEajw4KDkNvbWJhdExvZ0Vu",
-                  "dHJ5EhEKCXRpbWVzdGFtcBgBIAEoAxIRCglzb3VyY2VfaWQYAiABKAkSFgoO",
-                  "ZGVzdGluYXRpb25faWQYAyABKAkSSwoGc291cmNlGAQgASgOMjsubWFpbi5Q",
-                  "dWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5",
-                  "X1NvdXJjZRIZCg9zb3VyY2Vfc3BlbGxfaWQYBSABKANIABIaChBzb3VyY2Vf",
-                  "ZWZmZWN0X2lkGAYgASgDSAASTQoGZGFtYWdlGAcgASgLMjsubWFpbi5QdWJs",
-                  "aWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X0Rh",
-                  "bWFnZUgBElIKC21pc3NlZF90eXBlGAggASgOMjsubWFpbi5QdWJsaWNNYXRj",
-                  "aFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X01pc3NlZEgB",
-                  "ElcKC2ludGVycnVwdGVkGAkgASgLMkAubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
-                  "LkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X0ludGVycnVwdGVkSAES",
-                  "SQoEYXVyYRgKIAEoCzI5Lm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRM",
-                  "b2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BdXJhSAESSQoEY2FzdBgLIAEoCzI5",
-                  "Lm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRM",
-                  "b2dFbnRyeV9DYXN0SAESGAoOc3lzdGVtX21lc3NhZ2UYDCABKAlIARqAAQoV",
+                  "ChBtYXRjaHN0YXRlLnByb3RvEgRtYWluIsccChBQdWJsaWNNYXRjaFN0YXRl",
+                  "EgwKBHRpY2sYASABKAMSOAoJY29tYmF0bG9nGAIgAygLMiUubWFpbi5QdWJs",
+                  "aWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5Ej4KDGludGVyYWN0YWJsZRgD",
+                  "IAMoCzIoLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5JbnRlcmFjdGFibGVFbnRy",
+                  "eRI6Cgpwcm9qZWN0aWxlGAQgAygLMiYubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
+                  "LlByb2plY3RpbGVFbnRyeRIuCgRhcmVhGAUgAygLMiAubWFpbi5QdWJsaWNN",
+                  "YXRjaFN0YXRlLkFyZWFFbnRyeRpYChFJbnRlcmFjdGFibGVFbnRyeRILCgNr",
+                  "ZXkYASABKAkSMgoFdmFsdWUYAiABKAsyIy5tYWluLlB1YmxpY01hdGNoU3Rh",
+                  "dGUuSW50ZXJhY3RhYmxlOgI4ARpUCg9Qcm9qZWN0aWxlRW50cnkSCwoDa2V5",
+                  "GAEgASgJEjAKBXZhbHVlGAIgASgLMiEubWFpbi5QdWJsaWNNYXRjaFN0YXRl",
+                  "LlByb2plY3RpbGU6AjgBGkgKCUFyZWFFbnRyeRILCgNrZXkYASABKAkSKgoF",
+                  "dmFsdWUYAiABKAsyGy5tYWluLlB1YmxpY01hdGNoU3RhdGUuQXJlYToCOAEa",
+                  "3BEKDkNvbWJhdExvZ0VudHJ5EhEKCXRpbWVzdGFtcBgBIAEoAxIRCglzb3Vy",
+                  "Y2VfaWQYAiABKAkSFgoOZGVzdGluYXRpb25faWQYAyABKAkSSwoGc291cmNl",
+                  "GAQgASgOMjsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5",
+                  "LkNvbWJhdExvZ0VudHJ5X1NvdXJjZRIZCg9zb3VyY2Vfc3BlbGxfaWQYBSAB",
+                  "KANIABIaChBzb3VyY2VfZWZmZWN0X2lkGAYgASgDSAASVgoOc3lzdGVtX21l",
+                  "c3NhZ2UYByABKAsyPC5tYWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9n",
+                  "RW50cnkuQ29tYmF0TG9nRW50cnlfTWVzc2FnZUgBEk0KBmRhbWFnZRgIIAEo",
+                  "CzI7Lm1haW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21i",
+                  "YXRMb2dFbnRyeV9EYW1hZ2VIARJSCgttaXNzZWRfdHlwZRgJIAEoDjI7Lm1h",
+                  "aW4uUHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dF",
+                  "bnRyeV9NaXNzZWRIARJJCgRoZWFsGAogASgLMjkubWFpbi5QdWJsaWNNYXRj",
+                  "aFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNvbWJhdExvZ0VudHJ5X0hlYWxIARJX",
+                  "CgtpbnRlcnJ1cHRlZBgLIAEoCzJALm1haW4uUHVibGljTWF0Y2hTdGF0ZS5D",
+                  "b21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9JbnRlcnJ1cHRlZEgBEkkK",
+                  "BGF1cmEYDCABKAsyOS5tYWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9n",
+                  "RW50cnkuQ29tYmF0TG9nRW50cnlfQXVyYUgBEkkKBGFyZWEYDSABKAsyOS5t",
+                  "YWluLlB1YmxpY01hdGNoU3RhdGUuQ29tYmF0TG9nRW50cnkuQ29tYmF0TG9n",
+                  "RW50cnlfQXJlYUgBEkkKBGNhc3QYDiABKAsyOS5tYWluLlB1YmxpY01hdGNo",
+                  "U3RhdGUuQ29tYmF0TG9nRW50cnkuQ29tYmF0TG9nRW50cnlfQ2FzdEgBGikK",
+                  "FkNvbWJhdExvZ0VudHJ5X01lc3NhZ2USDwoHbWVzc2FnZRgBIAEoCRqAAQoV",
                   "Q29tYmF0TG9nRW50cnlfRGFtYWdlEg4KBmFtb3VudBgBIAEoAhIQCghyZXNp",
                   "c3RlZBgCIAEoAhIPCgdibG9ja2VkGAMgASgCEhAKCGFic29yYmVkGAQgASgC",
                   "EhAKCGNyaXRpY2FsGAUgASgCEhAKCG92ZXJraWxsGAYgASgCGlsKE0NvbWJh",
@@ -62,79 +70,91 @@ namespace NakamaMinimalGame.PublicMatchState
                   "ASgOMlMubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkNvbWJhdExvZ0VudHJ5LkNv",
                   "bWJhdExvZ0VudHJ5X0F1cmEuQ29tYmF0TG9nRW50cnlfQXVyYV9FdmVudCJS",
                   "ChlDb21iYXRMb2dFbnRyeV9BdXJhX0V2ZW50EgsKB0FwcGxpZWQQABILCgdS",
-                  "ZW1vdmVkEAESDQoJUmVmcmVzaGVkEAISDAoIRGVwbGV0ZWQQAxreAQoZQ29t",
+                  "ZW1vdmVkEAESDQoJUmVmcmVzaGVkEAISDAoIRGVwbGV0ZWQQAxqxAQoTQ29t",
+                  "YmF0TG9nRW50cnlfQXJlYRJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGlj",
+                  "TWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9BcmVh",
+                  "LkNvbWJhdExvZ0VudHJ5X0FyZWFfRXZlbnQiNgoZQ29tYmF0TG9nRW50cnlf",
+                  "QXJlYV9FdmVudBILCgdDcmVhdGVkEAASDAoIRGVwbGV0ZWQQARreAQoZQ29t",
                   "YmF0TG9nRW50cnlfQXV0b2F0dGFjaxJoCgVldmVudBgBIAEoDjJZLm1haW4u",
                   "UHVibGljTWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRy",
                   "eV9BdXRvYXR0YWNrLkNvbWJhdExvZ0VudHJ5X0F1dG9hdHRhY2sSFgoOZmFp",
                   "bGVkX21lc3NhZ2UYAiABKAkiPwoZQ29tYmF0TG9nRW50cnlfQXV0b2F0dGFj",
-                  "axIJCgVTdGFydBAAEgsKB1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhrSAQoTQ29t",
+                  "axIJCgVTdGFydBAAEgsKB1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhrjAQoTQ29t",
                   "YmF0TG9nRW50cnlfQ2FzdBJiCgVldmVudBgBIAEoDjJTLm1haW4uUHVibGlj",
                   "TWF0Y2hTdGF0ZS5Db21iYXRMb2dFbnRyeS5Db21iYXRMb2dFbnRyeV9DYXN0",
-                  "LkNvbWJhdExvZ0VudHJ5X0F1cmFfRXZlbnQSFgoOZmFpbGVkX21lc3NhZ2UY",
-                  "AiABKAkiPwoZQ29tYmF0TG9nRW50cnlfQXVyYV9FdmVudBIJCgVTdGFydBAA",
-                  "EgsKB1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhovChxDb21iYXRMb2dFbnRyeV9T",
-                  "eXN0ZW1NZXNzYWdlEg8KB21lc3NhZ2UYASABKAkiXAoVQ29tYmF0TG9nRW50",
-                  "cnlfU291cmNlEg4KCkF1dG9hdHRhY2sQABIJCgVSYW5nZRABEgkKBVNwZWxs",
-                  "EAISDAoIUGVyaW9kaWMQAxIPCgtFbnZpcm9ubWVudBAEIjwKFUNvbWJhdExv",
-                  "Z0VudHJ5X01pc3NlZBIKCgZNaXNzZWQQABIKCgZEb2RnZWQQARILCgdQYXJy",
-                  "aWVkEAJCGAoWc291cmNlX3NwZWxsX2VmZmVjdF9pZEIGCgR0eXBlGpIDCgxJ",
-                  "bnRlcmFjdGFibGUSCgoCaWQYASABKAkSNgoEdHlwZRgCIAEoDjIoLm1haW4u",
-                  "UHVibGljTWF0Y2hTdGF0ZS5JbnRlcmFjdGFibGUuVHlwZRIUCgxjaGFyYWN0",
-                  "ZXJfaWQYAyABKAMSIgoabGFzdF9wcm9jZXNzZWRfY2xpZW50X3RpY2sYBCAB",
-                  "KAMSFAoMaW52dWxuZXJhYmxlGAUgASgIEiIKCWNoYXJhY3RlchgGIAEoCzIP",
-                  "Lm1haW4uQ2hhcmFjdGVyEjIKCHBvc2l0aW9uGAcgASgLMiAubWFpbi5QdWJs",
-                  "aWNNYXRjaFN0YXRlLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgIIAEoAhIXCg9n",
-                  "bG9iYWxfY29vbGRvd24YCSABKAISDgoGdGFyZ2V0GAogASgJEioKBWF1cmFz",
-                  "GAsgAygLMhsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkF1cmESEgoKaXNfZW5n",
-                  "YWdlZBgMIAEoCCIbCgRUeXBlEgoKBlBsYXllchAAEgcKA05QQxABGlwKBEF1",
-                  "cmESFwoPY3JlYXRlZF9hdF90aWNrGAEgASgDEg8KB2NyZWF0b3IYAiABKAkS",
-                  "EQoJZWZmZWN0X2lkGAMgASgDEhcKD2F1cmFfdGlja19jb3VudBgEIAEoBRq5",
-                  "AQoKUHJvamVjdGlsZRIKCgJpZBgBIAEoCRIQCghzcGVsbF9pZBgCIAEoAxIX",
-                  "Cg9jcmVhdGVkX2F0X3RpY2sYAyABKAMSDwoHY3JlYXRvchgEIAEoCRIyCghw",
-                  "b3NpdGlvbhgFIAEoCzIgLm1haW4uUHVibGljTWF0Y2hTdGF0ZS5WZWN0b3Iy",
-                  "RGYSEAoIcm90YXRpb24YBiABKAISDgoGdGFyZ2V0GAcgASgJEg0KBXNwZWVk",
-                  "GAggASgCGiEKCVZlY3RvcjJEZhIJCgF4GAEgASgCEgkKAXkYAiABKAIi5QYK",
-                  "DkNsaWVudF9NZXNzYWdlEhMKC2NsaWVudF90aWNrGAEgASgDEjoKCWNoYXJh",
-                  "Y3RlchgCIAEoCzIlLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0NoYXJh",
-                  "Y3RlckgAEjAKBGNhc3QYAyABKAsyIC5tYWluLkNsaWVudF9NZXNzYWdlLkNs",
-                  "aWVudF9DYXN0SAASPQoLYXV0b19hdHRhY2sYBCABKAsyJi5tYWluLkNsaWVu",
-                  "dF9NZXNzYWdlLkNsaWVudF9BdXRvYXR0YWNrSAASQQoNY2FuY2VsX2F0dGFj",
-                  "axgFIAEoCzIoLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50X0NhbmNlbEF0",
-                  "dGFja0gAEjQKBG1vdmUYBiABKAsyJC5tYWluLkNsaWVudF9NZXNzYWdlLkNs",
-                  "aWVudF9Nb3ZlbWVudEgAEkIKC3NlbGVjdF9jaGFyGAcgASgLMisubWFpbi5D",
-                  "bGllbnRfTWVzc2FnZS5DbGllbnRfU2VsZWN0Q2hhcmFjdGVySAAaRgoQQ2xp",
-                  "ZW50X0NoYXJhY3RlchIiChpsYXN0X2NvbmZpcm1lZF9zZXJ2ZXJfdGljaxgC",
-                  "IAEoAxIOCgZ0YXJnZXQYAyABKAkaNAoLQ2xpZW50X0Nhc3QSEwoLY2xpZW50",
-                  "X3RpY2sYASABKAMSEAoIc3BlbGxfaWQYAiABKAMakQEKEUNsaWVudF9BdXRv",
-                  "YXR0YWNrEhMKC2NsaWVudF90aWNrGAIgASgDEj8KCmF0dGFja3R5cGUYAyAB",
-                  "KA4yKy5tYWluLkNsaWVudF9NZXNzYWdlLkNsaWVudF9BdXRvYXR0YWNrLlR5",
-                  "cGUiJgoEVHlwZRIJCgVNZWVsZRAAEgkKBVJhbmdlEAESCAoEV2FuZBACGhUK",
-                  "E0NsaWVudF9DYW5jZWxBdHRhY2sadgoPQ2xpZW50X01vdmVtZW50EhMKC2Ns",
-                  "aWVudF90aWNrGAEgASgDEhwKFGFic29sdXRlX2Nvb3JkaW5hdGVzGAIgASgI",
-                  "Eg4KBnhfYXhpcxgDIAEoAhIOCgZ5X2F4aXMYBCABKAISEAoIcm90YXRpb24Y",
-                  "BSABKAIaKwoWQ2xpZW50X1NlbGVjdENoYXJhY3RlchIRCgljbGFzc25hbWUY",
-                  "ASABKAlCBgoEdHlwZUIlqgIiTmFrYW1hTWluaW1hbEdhbWUuUHVibGljTWF0",
-                  "Y2hTdGF0ZWIGcHJvdG8z"));
+                  "LkNvbWJhdExvZ0VudHJ5X0Nhc3RfRXZlbnQSFgoOZmFpbGVkX21lc3NhZ2UY",
+                  "AiABKAkiUAoZQ29tYmF0TG9nRW50cnlfQ2FzdF9FdmVudBIJCgVTdGFydBAA",
+                  "EgsKB1N1Y2Nlc3MQARIKCgZGYWlsZWQQAhIPCgtJbnRlcnJ1cHRlZBADGi8K",
+                  "HENvbWJhdExvZ0VudHJ5X1N5c3RlbU1lc3NhZ2USDwoHbWVzc2FnZRgBIAEo",
+                  "CSJlChVDb21iYXRMb2dFbnRyeV9Tb3VyY2USDgoKQXV0b2F0dGFjaxAAEgkK",
+                  "BVJhbmdlEAESCQoFU3BlbGwQAhIMCghQZXJpb2RpYxADEgcKA0FvRRAEEg8K",
+                  "C0Vudmlyb25tZW50EAUiPAoVQ29tYmF0TG9nRW50cnlfTWlzc2VkEgoKBk1p",
+                  "c3NlZBAAEgoKBkRvZGdlZBABEgsKB1BhcnJpZWQQAkIYChZzb3VyY2Vfc3Bl",
+                  "bGxfZWZmZWN0X2lkQgYKBHR5cGUazgMKDEludGVyYWN0YWJsZRIKCgJpZBgB",
+                  "IAEoCRI2CgR0eXBlGAIgASgOMigubWFpbi5QdWJsaWNNYXRjaFN0YXRlLklu",
+                  "dGVyYWN0YWJsZS5UeXBlEhQKDGNoYXJhY3Rlcl9pZBgDIAEoAxIiChpsYXN0",
+                  "X3Byb2Nlc3NlZF9jbGllbnRfdGljaxgEIAEoAxIRCgljbGFzc25hbWUYBSAB",
+                  "KAkSDQoFbGV2ZWwYBiABKAUSFgoOY3VycmVudF9oZWFsdGgYByABKAISFQoN",
+                  "Y3VycmVudF9wb3dlchgIIAEoAhIUCgxpbnZ1bG5lcmFibGUYCSABKAgSIQoI",
+                  "cG9zaXRpb24YCiABKAsyDy5tYWluLlZlY3RvcjJEZhIQCghyb3RhdGlvbhgL",
+                  "IAEoAhIXCg9nbG9iYWxfY29vbGRvd24YDCABKAISDgoGdGFyZ2V0GA0gASgJ",
+                  "EioKBWF1cmFzGA4gAygLMhsubWFpbi5QdWJsaWNNYXRjaFN0YXRlLkF1cmES",
+                  "EgoKaXNfZW5nYWdlZBgPIAEoCBIMCgR0ZWFtGBAgASgFEhAKCHVzZXJuYW1l",
+                  "GBEgASgJIhsKBFR5cGUSCgoGUGxheWVyEAASBwoDTlBDEAEaXAoEQXVyYRIX",
+                  "Cg9jcmVhdGVkX2F0X3RpY2sYASABKAMSDwoHY3JlYXRvchgCIAEoCRIRCgll",
+                  "ZmZlY3RfaWQYAyABKAMSFwoPYXVyYV90aWNrX2NvdW50GAQgASgFGqgBCgpQ",
+                  "cm9qZWN0aWxlEgoKAmlkGAEgASgJEhAKCHNwZWxsX2lkGAIgASgDEhcKD2Ny",
+                  "ZWF0ZWRfYXRfdGljaxgDIAEoAxIPCgdjcmVhdG9yGAQgASgJEiEKCHBvc2l0",
+                  "aW9uGAUgASgLMg8ubWFpbi5WZWN0b3IyRGYSEAoIcm90YXRpb24YBiABKAIS",
+                  "DgoGdGFyZ2V0GAcgASgJEg0KBXNwZWVkGAggASgCGosBCgRBcmVhEgoKAmlk",
+                  "GAEgASgJEhEKCWVmZmVjdF9pZBgCIAEoAxIXCg9jcmVhdGVkX2F0X3RpY2sY",
+                  "AyABKAMSDwoHY3JlYXRvchgEIAEoCRIhCghwb3NpdGlvbhgFIAEoCzIPLm1h",
+                  "aW4uVmVjdG9yMkRmEhcKD2FyZWFfdGlja19jb3VudBgGIAEoBSKIBwoOQ2xp",
+                  "ZW50X01lc3NhZ2USEwoLY2xpZW50X3RpY2sYASABKAMSOgoJY2hhcmFjdGVy",
+                  "GAIgASgLMiUubWFpbi5DbGllbnRfTWVzc2FnZS5DbGllbnRfQ2hhcmFjdGVy",
+                  "SAASMAoEY2FzdBgDIAEoCzIgLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50",
+                  "X0Nhc3RIABI9CgthdXRvX2F0dGFjaxgEIAEoCzImLm1haW4uQ2xpZW50X01l",
+                  "c3NhZ2UuQ2xpZW50X0F1dG9hdHRhY2tIABJBCg1jYW5jZWxfYXR0YWNrGAUg",
+                  "ASgLMigubWFpbi5DbGllbnRfTWVzc2FnZS5DbGllbnRfQ2FuY2VsQXR0YWNr",
+                  "SAASNAoEbW92ZRgGIAEoCzIkLm1haW4uQ2xpZW50X01lc3NhZ2UuQ2xpZW50",
+                  "X01vdmVtZW50SAASQgoLc2VsZWN0X2NoYXIYByABKAsyKy5tYWluLkNsaWVu",
+                  "dF9NZXNzYWdlLkNsaWVudF9TZWxlY3RDaGFyYWN0ZXJIABpGChBDbGllbnRf",
+                  "Q2hhcmFjdGVyEiIKGmxhc3RfY29uZmlybWVkX3NlcnZlcl90aWNrGAIgASgD",
+                  "Eg4KBnRhcmdldBgDIAEoCRpXCgtDbGllbnRfQ2FzdBITCgtjbGllbnRfdGlj",
+                  "axgBIAEoAxIQCghzcGVsbF9pZBgCIAEoAxIhCghwb3NpdGlvbhgDIAEoCzIP",
+                  "Lm1haW4uVmVjdG9yMkRmGpEBChFDbGllbnRfQXV0b2F0dGFjaxITCgtjbGll",
+                  "bnRfdGljaxgCIAEoAxI/CgphdHRhY2t0eXBlGAMgASgOMisubWFpbi5DbGll",
+                  "bnRfTWVzc2FnZS5DbGllbnRfQXV0b2F0dGFjay5UeXBlIiYKBFR5cGUSCQoF",
+                  "TWVlbGUQABIJCgVSYW5nZRABEggKBFdhbmQQAhoVChNDbGllbnRfQ2FuY2Vs",
+                  "QXR0YWNrGnYKD0NsaWVudF9Nb3ZlbWVudBITCgtjbGllbnRfdGljaxgBIAEo",
+                  "AxIcChRhYnNvbHV0ZV9jb29yZGluYXRlcxgCIAEoCBIOCgZ4X2F4aXMYAyAB",
+                  "KAISDgoGeV9heGlzGAQgASgCEhAKCHJvdGF0aW9uGAUgASgCGisKFkNsaWVu",
+                  "dF9TZWxlY3RDaGFyYWN0ZXISEQoJY2xhc3NuYW1lGAEgASgJQgYKBHR5cGUi",
+                  "IQoJVmVjdG9yMkRmEgkKAXgYASABKAISCQoBeRgCIAEoAkIlqgIiTmFrYW1h",
+                  "TWluaW1hbEdhbWUuUHVibGljTWF0Y2hTdGF0ZWIGcHJvdG8z"));
             descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-                new pbr::FileDescriptor[] { global::NakamaMinimalGame.Character.CharacterReflection.Descriptor, },
+                new pbr::FileDescriptor[] { },
                 new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Combatlog", "Interactable", "Projectile" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Parser, new[]{ "Timestamp", "SourceId", "DestinationId", "Source", "SourceSpellId", "SourceEffectId", "Damage", "MissedType", "Interrupted", "Aura", "Cast", "SystemMessage" }, new[]{ "SourceSpellEffectId", "Type" }, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source), typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Missed) }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage.Parser, new[]{ "Amount", "Resisted", "Blocked", "Absorbed", "Critical", "Overkill" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Parser, new[]{ "Tick", "Combatlog", "Interactable", "Projectile", "Area" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Parser, new[]{ "Timestamp", "SourceId", "DestinationId", "Source", "SourceSpellId", "SourceEffectId", "SystemMessage", "Damage", "MissedType", "Heal", "Interrupted", "Aura", "Area", "Cast" }, new[]{ "SourceSpellEffectId", "Type" }, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source), typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Missed) }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message.Parser, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage.Parser, new[]{ "Amount", "Resisted", "Blocked", "Absorbed", "Critical", "Overkill" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal.Parser, new[]{ "Amount", "Absorbed", "Critical", "Overheal" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted.Parser, new[]{ "InterruptedSpellId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Parser, new[]{ "Event" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Types.CombatLogEntry_Aura_Event) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Parser, new[]{ "Event" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Types.CombatLogEntry_Area_Event) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack.Parser, new[]{ "Event", "FailedMessage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack.Types.CombatLogEntry_Autoattack) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Parser, new[]{ "Event", "FailedMessage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Parser, new[]{ "Event", "FailedMessage" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_SystemMessage), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_SystemMessage.Parser, new[]{ "Message" }, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Parser, new[]{ "Id", "Type", "CharacterId", "LastProcessedClientTick", "Invulnerable", "Character", "Position", "Rotation", "GlobalCooldown", "Target", "Auras", "IsEngaged" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Parser, new[]{ "Id", "Type", "CharacterId", "LastProcessedClientTick", "Classname", "Level", "CurrentHealth", "CurrentPower", "Invulnerable", "Position", "Rotation", "GlobalCooldown", "Target", "Auras", "IsEngaged", "Team", "Username" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura.Parser, new[]{ "CreatedAtTick", "Creator", "EffectId", "AuraTickCount" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Projectile.Parser, new[]{ "Id", "SpellId", "CreatedAtTick", "Creator", "Position", "Rotation", "Target", "Speed" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area), global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area.Parser, new[]{ "Id", "EffectId", "CreatedAtTick", "Creator", "Position", "AreaTickCount" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message), global::NakamaMinimalGame.PublicMatchState.Client_Message.Parser, new[]{ "ClientTick", "Character", "Cast", "AutoAttack", "CancelAttack", "Move", "SelectChar" }, new[]{ "Type" }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Character), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Character.Parser, new[]{ "LastConfirmedServerTick", "Target" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Cast), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Cast.Parser, new[]{ "ClientTick", "SpellId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Cast), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Cast.Parser, new[]{ "ClientTick", "SpellId", "Position" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Autoattack), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Autoattack.Parser, new[]{ "ClientTick", "Attacktype" }, null, new[]{ typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Autoattack.Types.Type) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_CancelAttack), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_CancelAttack.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Movement), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Movement.Parser, new[]{ "ClientTick", "AbsoluteCoordinates", "XAxis", "YAxis", "Rotation" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_SelectCharacter), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_SelectCharacter.Parser, new[]{ "Classname" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_SelectCharacter), global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_SelectCharacter.Parser, new[]{ "Classname" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NakamaMinimalGame.PublicMatchState.Vector2Df), global::NakamaMinimalGame.PublicMatchState.Vector2Df.Parser, new[]{ "X", "Y" }, null, null, null)
                 }));
         }
         #endregion
@@ -175,6 +195,7 @@ namespace NakamaMinimalGame.PublicMatchState
             combatlog_ = other.combatlog_.Clone();
             interactable_ = other.interactable_.Clone();
             projectile_ = other.projectile_.Clone();
+            area_ = other.area_.Clone();
             _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -233,6 +254,17 @@ namespace NakamaMinimalGame.PublicMatchState
             get { return projectile_; }
         }
 
+        /// <summary>Field number for the "area" field.</summary>
+        public const int AreaFieldNumber = 5;
+        private static readonly pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area>.Codec _map_area_codec
+            = new pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area>.Codec(pb::FieldCodec.ForString(10), pb::FieldCodec.ForMessage(18, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area.Parser), 42);
+        private readonly pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area> area_ = new pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area>();
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public pbc::MapField<string, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Area> Area
+        {
+            get { return area_; }
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public override bool Equals(object other)
         {
@@ -254,6 +286,7 @@ namespace NakamaMinimalGame.PublicMatchState
             if (!combatlog_.Equals(other.combatlog_)) return false;
             if (!Interactable.Equals(other.Interactable)) return false;
             if (!Projectile.Equals(other.Projectile)) return false;
+            if (!Area.Equals(other.Area)) return false;
             return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -265,6 +298,7 @@ namespace NakamaMinimalGame.PublicMatchState
             hash ^= combatlog_.GetHashCode();
             hash ^= Interactable.GetHashCode();
             hash ^= Projectile.GetHashCode();
+            hash ^= Area.GetHashCode();
             if (_unknownFields != null)
             {
                 hash ^= _unknownFields.GetHashCode();
@@ -289,6 +323,7 @@ namespace NakamaMinimalGame.PublicMatchState
             combatlog_.WriteTo(output, _repeated_combatlog_codec);
             interactable_.WriteTo(output, _map_interactable_codec);
             projectile_.WriteTo(output, _map_projectile_codec);
+            area_.WriteTo(output, _map_area_codec);
             if (_unknownFields != null)
             {
                 _unknownFields.WriteTo(output);
@@ -306,6 +341,7 @@ namespace NakamaMinimalGame.PublicMatchState
             size += combatlog_.CalculateSize(_repeated_combatlog_codec);
             size += interactable_.CalculateSize(_map_interactable_codec);
             size += projectile_.CalculateSize(_map_projectile_codec);
+            size += area_.CalculateSize(_map_area_codec);
             if (_unknownFields != null)
             {
                 size += _unknownFields.CalculateSize();
@@ -327,6 +363,7 @@ namespace NakamaMinimalGame.PublicMatchState
             combatlog_.Add(other.combatlog_);
             interactable_.Add(other.interactable_);
             projectile_.Add(other.projectile_);
+            area_.Add(other.area_);
             _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
 
@@ -361,6 +398,11 @@ namespace NakamaMinimalGame.PublicMatchState
                             projectile_.AddEntriesFrom(input, _map_projectile_codec);
                             break;
                         }
+                    case 42:
+                        {
+                            area_.AddEntriesFrom(input, _map_area_codec);
+                            break;
+                        }
                 }
             }
         }
@@ -383,7 +425,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[2]; }
+                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[3]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -419,11 +461,17 @@ namespace NakamaMinimalGame.PublicMatchState
 
                     switch (other.TypeCase)
                     {
+                        case TypeOneofCase.SystemMessage:
+                            SystemMessage = other.SystemMessage.Clone();
+                            break;
                         case TypeOneofCase.Damage:
                             Damage = other.Damage.Clone();
                             break;
                         case TypeOneofCase.MissedType:
                             MissedType = other.MissedType;
+                            break;
+                        case TypeOneofCase.Heal:
+                            Heal = other.Heal.Clone();
                             break;
                         case TypeOneofCase.Interrupted:
                             Interrupted = other.Interrupted.Clone();
@@ -431,11 +479,11 @@ namespace NakamaMinimalGame.PublicMatchState
                         case TypeOneofCase.Aura:
                             Aura = other.Aura.Clone();
                             break;
+                        case TypeOneofCase.Area:
+                            Area = other.Area.Clone();
+                            break;
                         case TypeOneofCase.Cast:
                             Cast = other.Cast.Clone();
-                            break;
-                        case TypeOneofCase.SystemMessage:
-                            SystemMessage = other.SystemMessage;
                             break;
                     }
 
@@ -526,8 +574,21 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "system_message" field.</summary>
+                public const int SystemMessageFieldNumber = 7;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message SystemMessage
+                {
+                    get { return typeCase_ == TypeOneofCase.SystemMessage ? (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message)type_ : null; }
+                    set
+                    {
+                        type_ = value;
+                        typeCase_ = value == null ? TypeOneofCase.None : TypeOneofCase.SystemMessage;
+                    }
+                }
+
                 /// <summary>Field number for the "damage" field.</summary>
-                public const int DamageFieldNumber = 7;
+                public const int DamageFieldNumber = 8;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage Damage
                 {
@@ -540,7 +601,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "missed_type" field.</summary>
-                public const int MissedTypeFieldNumber = 8;
+                public const int MissedTypeFieldNumber = 9;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Missed MissedType
                 {
@@ -552,8 +613,21 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "heal" field.</summary>
+                public const int HealFieldNumber = 10;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal Heal
+                {
+                    get { return typeCase_ == TypeOneofCase.Heal ? (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal)type_ : null; }
+                    set
+                    {
+                        type_ = value;
+                        typeCase_ = value == null ? TypeOneofCase.None : TypeOneofCase.Heal;
+                    }
+                }
+
                 /// <summary>Field number for the "interrupted" field.</summary>
-                public const int InterruptedFieldNumber = 9;
+                public const int InterruptedFieldNumber = 11;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted Interrupted
                 {
@@ -566,7 +640,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "aura" field.</summary>
-                public const int AuraFieldNumber = 10;
+                public const int AuraFieldNumber = 12;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura Aura
                 {
@@ -578,8 +652,21 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "area" field.</summary>
+                public const int AreaFieldNumber = 13;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area Area
+                {
+                    get { return typeCase_ == TypeOneofCase.Area ? (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area)type_ : null; }
+                    set
+                    {
+                        type_ = value;
+                        typeCase_ = value == null ? TypeOneofCase.None : TypeOneofCase.Area;
+                    }
+                }
+
                 /// <summary>Field number for the "cast" field.</summary>
-                public const int CastFieldNumber = 11;
+                public const int CastFieldNumber = 14;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast Cast
                 {
@@ -588,19 +675,6 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         type_ = value;
                         typeCase_ = value == null ? TypeOneofCase.None : TypeOneofCase.Cast;
-                    }
-                }
-
-                /// <summary>Field number for the "system_message" field.</summary>
-                public const int SystemMessageFieldNumber = 12;
-                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public string SystemMessage
-                {
-                    get { return typeCase_ == TypeOneofCase.SystemMessage ? (string)type_ : ""; }
-                    set
-                    {
-                        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-                        typeCase_ = TypeOneofCase.SystemMessage;
                     }
                 }
 
@@ -631,12 +705,14 @@ namespace NakamaMinimalGame.PublicMatchState
                 public enum TypeOneofCase
                 {
                     None = 0,
-                    Damage = 7,
-                    MissedType = 8,
-                    Interrupted = 9,
-                    Aura = 10,
-                    Cast = 11,
-                    SystemMessage = 12,
+                    SystemMessage = 7,
+                    Damage = 8,
+                    MissedType = 9,
+                    Heal = 10,
+                    Interrupted = 11,
+                    Aura = 12,
+                    Area = 13,
+                    Cast = 14,
                 }
                 private TypeOneofCase typeCase_ = TypeOneofCase.None;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -675,12 +751,14 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Source != other.Source) return false;
                     if (SourceSpellId != other.SourceSpellId) return false;
                     if (SourceEffectId != other.SourceEffectId) return false;
+                    if (!object.Equals(SystemMessage, other.SystemMessage)) return false;
                     if (!object.Equals(Damage, other.Damage)) return false;
                     if (MissedType != other.MissedType) return false;
+                    if (!object.Equals(Heal, other.Heal)) return false;
                     if (!object.Equals(Interrupted, other.Interrupted)) return false;
                     if (!object.Equals(Aura, other.Aura)) return false;
+                    if (!object.Equals(Area, other.Area)) return false;
                     if (!object.Equals(Cast, other.Cast)) return false;
-                    if (SystemMessage != other.SystemMessage) return false;
                     if (SourceSpellEffectIdCase != other.SourceSpellEffectIdCase) return false;
                     if (TypeCase != other.TypeCase) return false;
                     return Equals(_unknownFields, other._unknownFields);
@@ -696,12 +774,14 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Source != 0) hash ^= Source.GetHashCode();
                     if (sourceSpellEffectIdCase_ == SourceSpellEffectIdOneofCase.SourceSpellId) hash ^= SourceSpellId.GetHashCode();
                     if (sourceSpellEffectIdCase_ == SourceSpellEffectIdOneofCase.SourceEffectId) hash ^= SourceEffectId.GetHashCode();
+                    if (typeCase_ == TypeOneofCase.SystemMessage) hash ^= SystemMessage.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Damage) hash ^= Damage.GetHashCode();
                     if (typeCase_ == TypeOneofCase.MissedType) hash ^= MissedType.GetHashCode();
+                    if (typeCase_ == TypeOneofCase.Heal) hash ^= Heal.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Interrupted) hash ^= Interrupted.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Aura) hash ^= Aura.GetHashCode();
+                    if (typeCase_ == TypeOneofCase.Area) hash ^= Area.GetHashCode();
                     if (typeCase_ == TypeOneofCase.Cast) hash ^= Cast.GetHashCode();
-                    if (typeCase_ == TypeOneofCase.SystemMessage) hash ^= SystemMessage.GetHashCode();
                     hash ^= (int)sourceSpellEffectIdCase_;
                     hash ^= (int)typeCase_;
                     if (_unknownFields != null)
@@ -750,35 +830,45 @@ namespace NakamaMinimalGame.PublicMatchState
                         output.WriteRawTag(48);
                         output.WriteInt64(SourceEffectId);
                     }
-                    if (typeCase_ == TypeOneofCase.Damage)
+                    if (typeCase_ == TypeOneofCase.SystemMessage)
                     {
                         output.WriteRawTag(58);
+                        output.WriteMessage(SystemMessage);
+                    }
+                    if (typeCase_ == TypeOneofCase.Damage)
+                    {
+                        output.WriteRawTag(66);
                         output.WriteMessage(Damage);
                     }
                     if (typeCase_ == TypeOneofCase.MissedType)
                     {
-                        output.WriteRawTag(64);
+                        output.WriteRawTag(72);
                         output.WriteEnum((int)MissedType);
+                    }
+                    if (typeCase_ == TypeOneofCase.Heal)
+                    {
+                        output.WriteRawTag(82);
+                        output.WriteMessage(Heal);
                     }
                     if (typeCase_ == TypeOneofCase.Interrupted)
                     {
-                        output.WriteRawTag(74);
+                        output.WriteRawTag(90);
                         output.WriteMessage(Interrupted);
                     }
                     if (typeCase_ == TypeOneofCase.Aura)
                     {
-                        output.WriteRawTag(82);
+                        output.WriteRawTag(98);
                         output.WriteMessage(Aura);
+                    }
+                    if (typeCase_ == TypeOneofCase.Area)
+                    {
+                        output.WriteRawTag(106);
+                        output.WriteMessage(Area);
                     }
                     if (typeCase_ == TypeOneofCase.Cast)
                     {
-                        output.WriteRawTag(90);
+                        output.WriteRawTag(114);
                         output.WriteMessage(Cast);
-                    }
-                    if (typeCase_ == TypeOneofCase.SystemMessage)
-                    {
-                        output.WriteRawTag(98);
-                        output.WriteString(SystemMessage);
                     }
                     if (_unknownFields != null)
                     {
@@ -814,6 +904,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         size += 1 + pb::CodedOutputStream.ComputeInt64Size(SourceEffectId);
                     }
+                    if (typeCase_ == TypeOneofCase.SystemMessage)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SystemMessage);
+                    }
                     if (typeCase_ == TypeOneofCase.Damage)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Damage);
@@ -821,6 +915,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (typeCase_ == TypeOneofCase.MissedType)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int)MissedType);
+                    }
+                    if (typeCase_ == TypeOneofCase.Heal)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Heal);
                     }
                     if (typeCase_ == TypeOneofCase.Interrupted)
                     {
@@ -830,13 +928,13 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Aura);
                     }
+                    if (typeCase_ == TypeOneofCase.Area)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Area);
+                    }
                     if (typeCase_ == TypeOneofCase.Cast)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Cast);
-                    }
-                    if (typeCase_ == TypeOneofCase.SystemMessage)
-                    {
-                        size += 1 + pb::CodedOutputStream.ComputeStringSize(SystemMessage);
                     }
                     if (_unknownFields != null)
                     {
@@ -880,6 +978,13 @@ namespace NakamaMinimalGame.PublicMatchState
 
                     switch (other.TypeCase)
                     {
+                        case TypeOneofCase.SystemMessage:
+                            if (SystemMessage == null)
+                            {
+                                SystemMessage = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message();
+                            }
+                            SystemMessage.MergeFrom(other.SystemMessage);
+                            break;
                         case TypeOneofCase.Damage:
                             if (Damage == null)
                             {
@@ -889,6 +994,13 @@ namespace NakamaMinimalGame.PublicMatchState
                             break;
                         case TypeOneofCase.MissedType:
                             MissedType = other.MissedType;
+                            break;
+                        case TypeOneofCase.Heal:
+                            if (Heal == null)
+                            {
+                                Heal = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal();
+                            }
+                            Heal.MergeFrom(other.Heal);
                             break;
                         case TypeOneofCase.Interrupted:
                             if (Interrupted == null)
@@ -904,15 +1016,19 @@ namespace NakamaMinimalGame.PublicMatchState
                             }
                             Aura.MergeFrom(other.Aura);
                             break;
+                        case TypeOneofCase.Area:
+                            if (Area == null)
+                            {
+                                Area = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area();
+                            }
+                            Area.MergeFrom(other.Area);
+                            break;
                         case TypeOneofCase.Cast:
                             if (Cast == null)
                             {
                                 Cast = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast();
                             }
                             Cast.MergeFrom(other.Cast);
-                            break;
-                        case TypeOneofCase.SystemMessage:
-                            SystemMessage = other.SystemMessage;
                             break;
                     }
 
@@ -947,7 +1063,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                 }
                             case 32:
                                 {
-                                    source_ = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source)input.ReadEnum();
+                                    Source = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Source)input.ReadEnum();
                                     break;
                                 }
                             case 40:
@@ -962,6 +1078,17 @@ namespace NakamaMinimalGame.PublicMatchState
                                 }
                             case 58:
                                 {
+                                    global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Message();
+                                    if (typeCase_ == TypeOneofCase.SystemMessage)
+                                    {
+                                        subBuilder.MergeFrom(SystemMessage);
+                                    }
+                                    input.ReadMessage(subBuilder);
+                                    SystemMessage = subBuilder;
+                                    break;
+                                }
+                            case 66:
+                                {
                                     global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Damage();
                                     if (typeCase_ == TypeOneofCase.Damage)
                                     {
@@ -971,13 +1098,24 @@ namespace NakamaMinimalGame.PublicMatchState
                                     Damage = subBuilder;
                                     break;
                                 }
-                            case 64:
+                            case 72:
                                 {
                                     type_ = input.ReadEnum();
                                     typeCase_ = TypeOneofCase.MissedType;
                                     break;
                                 }
-                            case 74:
+                            case 82:
+                                {
+                                    global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Heal();
+                                    if (typeCase_ == TypeOneofCase.Heal)
+                                    {
+                                        subBuilder.MergeFrom(Heal);
+                                    }
+                                    input.ReadMessage(subBuilder);
+                                    Heal = subBuilder;
+                                    break;
+                                }
+                            case 90:
                                 {
                                     global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Interrupted();
                                     if (typeCase_ == TypeOneofCase.Interrupted)
@@ -988,7 +1126,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                     Interrupted = subBuilder;
                                     break;
                                 }
-                            case 82:
+                            case 98:
                                 {
                                     global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura();
                                     if (typeCase_ == TypeOneofCase.Aura)
@@ -999,7 +1137,18 @@ namespace NakamaMinimalGame.PublicMatchState
                                     Aura = subBuilder;
                                     break;
                                 }
-                            case 90:
+                            case 106:
+                                {
+                                    global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area();
+                                    if (typeCase_ == TypeOneofCase.Area)
+                                    {
+                                        subBuilder.MergeFrom(Area);
+                                    }
+                                    input.ReadMessage(subBuilder);
+                                    Area = subBuilder;
+                                    break;
+                                }
+                            case 114:
                                 {
                                     global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast subBuilder = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast();
                                     if (typeCase_ == TypeOneofCase.Cast)
@@ -1008,11 +1157,6 @@ namespace NakamaMinimalGame.PublicMatchState
                                     }
                                     input.ReadMessage(subBuilder);
                                     Cast = subBuilder;
-                                    break;
-                                }
-                            case 98:
-                                {
-                                    SystemMessage = input.ReadString();
                                     break;
                                 }
                         }
@@ -1030,7 +1174,8 @@ namespace NakamaMinimalGame.PublicMatchState
                         [pbr::OriginalName("Range")] Range = 1,
                         [pbr::OriginalName("Spell")] Spell = 2,
                         [pbr::OriginalName("Periodic")] Periodic = 3,
-                        [pbr::OriginalName("Environment")] Environment = 4,
+                        [pbr::OriginalName("AoE")] AoE = 4,
+                        [pbr::OriginalName("Environment")] Environment = 5,
                     }
 
                     public enum CombatLogEntry_Missed
@@ -1038,6 +1183,163 @@ namespace NakamaMinimalGame.PublicMatchState
                         [pbr::OriginalName("Missed")] Missed = 0,
                         [pbr::OriginalName("Dodged")] Dodged = 1,
                         [pbr::OriginalName("Parried")] Parried = 2,
+                    }
+
+                    public sealed partial class CombatLogEntry_Message : pb::IMessage<CombatLogEntry_Message>
+                    {
+                        private static readonly pb::MessageParser<CombatLogEntry_Message> _parser = new pb::MessageParser<CombatLogEntry_Message>(() => new CombatLogEntry_Message());
+                        private pb::UnknownFieldSet _unknownFields;
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static pb::MessageParser<CombatLogEntry_Message> Parser { get { return _parser; } }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static pbr::MessageDescriptor Descriptor
+                        {
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[0]; }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        pbr::MessageDescriptor pb::IMessage.Descriptor
+                        {
+                            get { return Descriptor; }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Message()
+                        {
+                            OnConstruction();
+                        }
+
+                        partial void OnConstruction();
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Message(CombatLogEntry_Message other) : this()
+                        {
+                            message_ = other.message_;
+                            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Message Clone()
+                        {
+                            return new CombatLogEntry_Message(this);
+                        }
+
+                        /// <summary>Field number for the "message" field.</summary>
+                        public const int MessageFieldNumber = 1;
+                        private string message_ = "";
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public string Message
+                        {
+                            get { return message_; }
+                            set
+                            {
+                                message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+                            }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override bool Equals(object other)
+                        {
+                            return Equals(other as CombatLogEntry_Message);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public bool Equals(CombatLogEntry_Message other)
+                        {
+                            if (ReferenceEquals(other, null))
+                            {
+                                return false;
+                            }
+                            if (ReferenceEquals(other, this))
+                            {
+                                return true;
+                            }
+                            if (Message != other.Message) return false;
+                            return Equals(_unknownFields, other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override int GetHashCode()
+                        {
+                            int hash = 1;
+                            if (Message.Length != 0) hash ^= Message.GetHashCode();
+                            if (_unknownFields != null)
+                            {
+                                hash ^= _unknownFields.GetHashCode();
+                            }
+                            return hash;
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override string ToString()
+                        {
+                            return pb::JsonFormatter.ToDiagnosticString(this);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void WriteTo(pb::CodedOutputStream output)
+                        {
+                            if (Message.Length != 0)
+                            {
+                                output.WriteRawTag(10);
+                                output.WriteString(Message);
+                            }
+                            if (_unknownFields != null)
+                            {
+                                _unknownFields.WriteTo(output);
+                            }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public int CalculateSize()
+                        {
+                            int size = 0;
+                            if (Message.Length != 0)
+                            {
+                                size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+                            }
+                            if (_unknownFields != null)
+                            {
+                                size += _unknownFields.CalculateSize();
+                            }
+                            return size;
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void MergeFrom(CombatLogEntry_Message other)
+                        {
+                            if (other == null)
+                            {
+                                return;
+                            }
+                            if (other.Message.Length != 0)
+                            {
+                                Message = other.Message;
+                            }
+                            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void MergeFrom(pb::CodedInputStream input)
+                        {
+                            uint tag;
+                            while ((tag = input.ReadTag()) != 0)
+                            {
+                                switch (tag)
+                                {
+                                    default:
+                                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                                        break;
+                                    case 10:
+                                        {
+                                            Message = input.ReadString();
+                                            break;
+                                        }
+                                }
+                            }
+                        }
+
                     }
 
                     public sealed partial class CombatLogEntry_Damage : pb::IMessage<CombatLogEntry_Damage>
@@ -1050,7 +1352,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[0]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[1]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1377,7 +1679,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[1]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[2]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1636,7 +1938,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[2]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[3]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1793,7 +2095,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[3]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[4]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1931,7 +2233,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                         break;
                                     case 8:
                                         {
-                                            event_ = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Types.CombatLogEntry_Aura_Event)input.ReadEnum();
+                                            Event = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Aura.Types.CombatLogEntry_Aura_Event)input.ReadEnum();
                                             break;
                                         }
                                 }
@@ -1956,6 +2258,177 @@ namespace NakamaMinimalGame.PublicMatchState
 
                     }
 
+                    public sealed partial class CombatLogEntry_Area : pb::IMessage<CombatLogEntry_Area>
+                    {
+                        private static readonly pb::MessageParser<CombatLogEntry_Area> _parser = new pb::MessageParser<CombatLogEntry_Area>(() => new CombatLogEntry_Area());
+                        private pb::UnknownFieldSet _unknownFields;
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static pb::MessageParser<CombatLogEntry_Area> Parser { get { return _parser; } }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static pbr::MessageDescriptor Descriptor
+                        {
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[5]; }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        pbr::MessageDescriptor pb::IMessage.Descriptor
+                        {
+                            get { return Descriptor; }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Area()
+                        {
+                            OnConstruction();
+                        }
+
+                        partial void OnConstruction();
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Area(CombatLogEntry_Area other) : this()
+                        {
+                            event_ = other.event_;
+                            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public CombatLogEntry_Area Clone()
+                        {
+                            return new CombatLogEntry_Area(this);
+                        }
+
+                        /// <summary>Field number for the "event" field.</summary>
+                        public const int EventFieldNumber = 1;
+                        private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Types.CombatLogEntry_Area_Event event_ = 0;
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Types.CombatLogEntry_Area_Event Event
+                        {
+                            get { return event_; }
+                            set
+                            {
+                                event_ = value;
+                            }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override bool Equals(object other)
+                        {
+                            return Equals(other as CombatLogEntry_Area);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public bool Equals(CombatLogEntry_Area other)
+                        {
+                            if (ReferenceEquals(other, null))
+                            {
+                                return false;
+                            }
+                            if (ReferenceEquals(other, this))
+                            {
+                                return true;
+                            }
+                            if (Event != other.Event) return false;
+                            return Equals(_unknownFields, other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override int GetHashCode()
+                        {
+                            int hash = 1;
+                            if (Event != 0) hash ^= Event.GetHashCode();
+                            if (_unknownFields != null)
+                            {
+                                hash ^= _unknownFields.GetHashCode();
+                            }
+                            return hash;
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public override string ToString()
+                        {
+                            return pb::JsonFormatter.ToDiagnosticString(this);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void WriteTo(pb::CodedOutputStream output)
+                        {
+                            if (Event != 0)
+                            {
+                                output.WriteRawTag(8);
+                                output.WriteEnum((int)Event);
+                            }
+                            if (_unknownFields != null)
+                            {
+                                _unknownFields.WriteTo(output);
+                            }
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public int CalculateSize()
+                        {
+                            int size = 0;
+                            if (Event != 0)
+                            {
+                                size += 1 + pb::CodedOutputStream.ComputeEnumSize((int)Event);
+                            }
+                            if (_unknownFields != null)
+                            {
+                                size += _unknownFields.CalculateSize();
+                            }
+                            return size;
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void MergeFrom(CombatLogEntry_Area other)
+                        {
+                            if (other == null)
+                            {
+                                return;
+                            }
+                            if (other.Event != 0)
+                            {
+                                Event = other.Event;
+                            }
+                            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+                        }
+
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public void MergeFrom(pb::CodedInputStream input)
+                        {
+                            uint tag;
+                            while ((tag = input.ReadTag()) != 0)
+                            {
+                                switch (tag)
+                                {
+                                    default:
+                                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                                        break;
+                                    case 8:
+                                        {
+                                            Event = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Area.Types.CombatLogEntry_Area_Event)input.ReadEnum();
+                                            break;
+                                        }
+                                }
+                            }
+                        }
+
+                        #region Nested types
+                        /// <summary>Container for nested types declared in the CombatLogEntry_Area message type.</summary>
+                        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                        public static partial class Types
+                        {
+                            public enum CombatLogEntry_Area_Event
+                            {
+                                [pbr::OriginalName("Created")] Created = 0,
+                                [pbr::OriginalName("Depleted")] Depleted = 1,
+                            }
+
+                        }
+                        #endregion
+
+                    }
+
                     public sealed partial class CombatLogEntry_Autoattack : pb::IMessage<CombatLogEntry_Autoattack>
                     {
                         private static readonly pb::MessageParser<CombatLogEntry_Autoattack> _parser = new pb::MessageParser<CombatLogEntry_Autoattack>(() => new CombatLogEntry_Autoattack());
@@ -1966,7 +2439,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[4]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[6]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2133,7 +2606,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                         break;
                                     case 8:
                                         {
-                                            event_ = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack.Types.CombatLogEntry_Autoattack)input.ReadEnum();
+                                            Event = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Autoattack.Types.CombatLogEntry_Autoattack)input.ReadEnum();
                                             break;
                                         }
                                     case 18:
@@ -2172,7 +2645,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[5]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[7]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2205,9 +2678,9 @@ namespace NakamaMinimalGame.PublicMatchState
 
                         /// <summary>Field number for the "event" field.</summary>
                         public const int EventFieldNumber = 1;
-                        private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event event_ = 0;
+                        private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event event_ = 0;
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                        public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event Event
+                        public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event Event
                         {
                             get { return event_; }
                             set
@@ -2339,7 +2812,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                         break;
                                     case 8:
                                         {
-                                            event_ = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Aura_Event)input.ReadEnum();
+                                            Event = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Types.CombatLogEntry_Cast.Types.CombatLogEntry_Cast_Event)input.ReadEnum();
                                             break;
                                         }
                                     case 18:
@@ -2356,11 +2829,12 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static partial class Types
                         {
-                            public enum CombatLogEntry_Aura_Event
+                            public enum CombatLogEntry_Cast_Event
                             {
                                 [pbr::OriginalName("Start")] Start = 0,
                                 [pbr::OriginalName("Success")] Success = 1,
                                 [pbr::OriginalName("Failed")] Failed = 2,
+                                [pbr::OriginalName("Interrupted")] Interrupted = 3,
                             }
 
                         }
@@ -2378,7 +2852,7 @@ namespace NakamaMinimalGame.PublicMatchState
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                         public static pbr::MessageDescriptor Descriptor
                         {
-                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[6]; }
+                            get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.CombatLogEntry.Descriptor.NestedTypes[8]; }
                         }
 
                         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2540,7 +3014,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[3]; }
+                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[4]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2564,14 +3038,19 @@ namespace NakamaMinimalGame.PublicMatchState
                     type_ = other.type_;
                     characterId_ = other.characterId_;
                     lastProcessedClientTick_ = other.lastProcessedClientTick_;
+                    classname_ = other.classname_;
+                    level_ = other.level_;
+                    currentHealth_ = other.currentHealth_;
+                    currentPower_ = other.currentPower_;
                     invulnerable_ = other.invulnerable_;
-                    character_ = other.character_ != null ? other.character_.Clone() : null;
                     position_ = other.position_ != null ? other.position_.Clone() : null;
                     rotation_ = other.rotation_;
                     globalCooldown_ = other.globalCooldown_;
                     target_ = other.target_;
                     auras_ = other.auras_.Clone();
                     isEngaged_ = other.isEngaged_;
+                    team_ = other.team_;
+                    username_ = other.username_;
                     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
                 }
 
@@ -2636,8 +3115,66 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "classname" field.</summary>
+                public const int ClassnameFieldNumber = 5;
+                private string classname_ = "";
+                /// <summary>
+                ///info
+                /// </summary>
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public string Classname
+                {
+                    get { return classname_; }
+                    set
+                    {
+                        classname_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+                    }
+                }
+
+                /// <summary>Field number for the "level" field.</summary>
+                public const int LevelFieldNumber = 6;
+                private int level_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public int Level
+                {
+                    get { return level_; }
+                    set
+                    {
+                        level_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "current_health" field.</summary>
+                public const int CurrentHealthFieldNumber = 7;
+                private float currentHealth_;
+                /// <summary>
+                ///stats
+                /// </summary>
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public float CurrentHealth
+                {
+                    get { return currentHealth_; }
+                    set
+                    {
+                        currentHealth_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "current_power" field.</summary>
+                public const int CurrentPowerFieldNumber = 8;
+                private float currentPower_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public float CurrentPower
+                {
+                    get { return currentPower_; }
+                    set
+                    {
+                        currentPower_ = value;
+                    }
+                }
+
                 /// <summary>Field number for the "invulnerable" field.</summary>
-                public const int InvulnerableFieldNumber = 5;
+                public const int InvulnerableFieldNumber = 9;
                 private bool invulnerable_;
                 /// <summary>
                 ///vitalities
@@ -2652,27 +3189,14 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
-                /// <summary>Field number for the "character" field.</summary>
-                public const int CharacterFieldNumber = 6;
-                private global::NakamaMinimalGame.Character.Character character_;
-                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public global::NakamaMinimalGame.Character.Character Character
-                {
-                    get { return character_; }
-                    set
-                    {
-                        character_ = value;
-                    }
-                }
-
                 /// <summary>Field number for the "position" field.</summary>
-                public const int PositionFieldNumber = 7;
-                private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df position_;
+                public const int PositionFieldNumber = 10;
+                private global::NakamaMinimalGame.PublicMatchState.Vector2Df position_;
                 /// <summary>
                 ///pos
                 /// </summary>
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df Position
+                public global::NakamaMinimalGame.PublicMatchState.Vector2Df Position
                 {
                     get { return position_; }
                     set
@@ -2682,7 +3206,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "rotation" field.</summary>
-                public const int RotationFieldNumber = 8;
+                public const int RotationFieldNumber = 11;
                 private float rotation_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public float Rotation
@@ -2695,7 +3219,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "global_cooldown" field.</summary>
-                public const int GlobalCooldownFieldNumber = 9;
+                public const int GlobalCooldownFieldNumber = 12;
                 private float globalCooldown_;
                 /// <summary>
                 ///combat
@@ -2711,7 +3235,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "target" field.</summary>
-                public const int TargetFieldNumber = 10;
+                public const int TargetFieldNumber = 13;
                 private string target_ = "";
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public string Target
@@ -2724,9 +3248,9 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "auras" field.</summary>
-                public const int AurasFieldNumber = 11;
+                public const int AurasFieldNumber = 14;
                 private static readonly pb::FieldCodec<global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura> _repeated_auras_codec
-                    = pb::FieldCodec.ForMessage(90, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura.Parser);
+                    = pb::FieldCodec.ForMessage(114, global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura.Parser);
                 private readonly pbc::RepeatedField<global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura> auras_ = new pbc::RepeatedField<global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Aura>();
                 /// <summary>
                 ///auras
@@ -2738,7 +3262,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 /// <summary>Field number for the "is_engaged" field.</summary>
-                public const int IsEngagedFieldNumber = 12;
+                public const int IsEngagedFieldNumber = 15;
                 private bool isEngaged_;
                 /// <summary>
                 ///combat
@@ -2750,6 +3274,35 @@ namespace NakamaMinimalGame.PublicMatchState
                     set
                     {
                         isEngaged_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "team" field.</summary>
+                public const int TeamFieldNumber = 16;
+                private int team_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public int Team
+                {
+                    get { return team_; }
+                    set
+                    {
+                        team_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "username" field.</summary>
+                public const int UsernameFieldNumber = 17;
+                private string username_ = "";
+                /// <summary>
+                ///playername
+                /// </summary>
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public string Username
+                {
+                    get { return username_; }
+                    set
+                    {
+                        username_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
                     }
                 }
 
@@ -2774,14 +3327,19 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Type != other.Type) return false;
                     if (CharacterId != other.CharacterId) return false;
                     if (LastProcessedClientTick != other.LastProcessedClientTick) return false;
+                    if (Classname != other.Classname) return false;
+                    if (Level != other.Level) return false;
+                    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CurrentHealth, other.CurrentHealth)) return false;
+                    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CurrentPower, other.CurrentPower)) return false;
                     if (Invulnerable != other.Invulnerable) return false;
-                    if (!object.Equals(Character, other.Character)) return false;
                     if (!object.Equals(Position, other.Position)) return false;
                     if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Rotation, other.Rotation)) return false;
                     if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(GlobalCooldown, other.GlobalCooldown)) return false;
                     if (Target != other.Target) return false;
                     if (!auras_.Equals(other.auras_)) return false;
                     if (IsEngaged != other.IsEngaged) return false;
+                    if (Team != other.Team) return false;
+                    if (Username != other.Username) return false;
                     return Equals(_unknownFields, other._unknownFields);
                 }
 
@@ -2793,14 +3351,19 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (Type != 0) hash ^= Type.GetHashCode();
                     if (CharacterId != 0L) hash ^= CharacterId.GetHashCode();
                     if (LastProcessedClientTick != 0L) hash ^= LastProcessedClientTick.GetHashCode();
+                    if (Classname.Length != 0) hash ^= Classname.GetHashCode();
+                    if (Level != 0) hash ^= Level.GetHashCode();
+                    if (CurrentHealth != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CurrentHealth);
+                    if (CurrentPower != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CurrentPower);
                     if (Invulnerable != false) hash ^= Invulnerable.GetHashCode();
-                    if (character_ != null) hash ^= Character.GetHashCode();
                     if (position_ != null) hash ^= Position.GetHashCode();
                     if (Rotation != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Rotation);
                     if (GlobalCooldown != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(GlobalCooldown);
                     if (Target.Length != 0) hash ^= Target.GetHashCode();
                     hash ^= auras_.GetHashCode();
                     if (IsEngaged != false) hash ^= IsEngaged.GetHashCode();
+                    if (Team != 0) hash ^= Team.GetHashCode();
+                    if (Username.Length != 0) hash ^= Username.GetHashCode();
                     if (_unknownFields != null)
                     {
                         hash ^= _unknownFields.GetHashCode();
@@ -2837,41 +3400,66 @@ namespace NakamaMinimalGame.PublicMatchState
                         output.WriteRawTag(32);
                         output.WriteInt64(LastProcessedClientTick);
                     }
+                    if (Classname.Length != 0)
+                    {
+                        output.WriteRawTag(42);
+                        output.WriteString(Classname);
+                    }
+                    if (Level != 0)
+                    {
+                        output.WriteRawTag(48);
+                        output.WriteInt32(Level);
+                    }
+                    if (CurrentHealth != 0F)
+                    {
+                        output.WriteRawTag(61);
+                        output.WriteFloat(CurrentHealth);
+                    }
+                    if (CurrentPower != 0F)
+                    {
+                        output.WriteRawTag(69);
+                        output.WriteFloat(CurrentPower);
+                    }
                     if (Invulnerable != false)
                     {
-                        output.WriteRawTag(40);
+                        output.WriteRawTag(72);
                         output.WriteBool(Invulnerable);
-                    }
-                    if (character_ != null)
-                    {
-                        output.WriteRawTag(50);
-                        output.WriteMessage(Character);
                     }
                     if (position_ != null)
                     {
-                        output.WriteRawTag(58);
+                        output.WriteRawTag(82);
                         output.WriteMessage(Position);
                     }
                     if (Rotation != 0F)
                     {
-                        output.WriteRawTag(69);
+                        output.WriteRawTag(93);
                         output.WriteFloat(Rotation);
                     }
                     if (GlobalCooldown != 0F)
                     {
-                        output.WriteRawTag(77);
+                        output.WriteRawTag(101);
                         output.WriteFloat(GlobalCooldown);
                     }
                     if (Target.Length != 0)
                     {
-                        output.WriteRawTag(82);
+                        output.WriteRawTag(106);
                         output.WriteString(Target);
                     }
                     auras_.WriteTo(output, _repeated_auras_codec);
                     if (IsEngaged != false)
                     {
-                        output.WriteRawTag(96);
+                        output.WriteRawTag(120);
                         output.WriteBool(IsEngaged);
+                    }
+                    if (Team != 0)
+                    {
+                        output.WriteRawTag(128, 1);
+                        output.WriteInt32(Team);
+                    }
+                    if (Username.Length != 0)
+                    {
+                        output.WriteRawTag(138, 1);
+                        output.WriteString(Username);
                     }
                     if (_unknownFields != null)
                     {
@@ -2899,13 +3487,25 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastProcessedClientTick);
                     }
+                    if (Classname.Length != 0)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeStringSize(Classname);
+                    }
+                    if (Level != 0)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Level);
+                    }
+                    if (CurrentHealth != 0F)
+                    {
+                        size += 1 + 4;
+                    }
+                    if (CurrentPower != 0F)
+                    {
+                        size += 1 + 4;
+                    }
                     if (Invulnerable != false)
                     {
                         size += 1 + 1;
-                    }
-                    if (character_ != null)
-                    {
-                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Character);
                     }
                     if (position_ != null)
                     {
@@ -2927,6 +3527,14 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (IsEngaged != false)
                     {
                         size += 1 + 1;
+                    }
+                    if (Team != 0)
+                    {
+                        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Team);
+                    }
+                    if (Username.Length != 0)
+                    {
+                        size += 2 + pb::CodedOutputStream.ComputeStringSize(Username);
                     }
                     if (_unknownFields != null)
                     {
@@ -2958,23 +3566,31 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         LastProcessedClientTick = other.LastProcessedClientTick;
                     }
+                    if (other.Classname.Length != 0)
+                    {
+                        Classname = other.Classname;
+                    }
+                    if (other.Level != 0)
+                    {
+                        Level = other.Level;
+                    }
+                    if (other.CurrentHealth != 0F)
+                    {
+                        CurrentHealth = other.CurrentHealth;
+                    }
+                    if (other.CurrentPower != 0F)
+                    {
+                        CurrentPower = other.CurrentPower;
+                    }
                     if (other.Invulnerable != false)
                     {
                         Invulnerable = other.Invulnerable;
-                    }
-                    if (other.character_ != null)
-                    {
-                        if (character_ == null)
-                        {
-                            character_ = new global::NakamaMinimalGame.Character.Character();
-                        }
-                        Character.MergeFrom(other.Character);
                     }
                     if (other.position_ != null)
                     {
                         if (position_ == null)
                         {
-                            position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
+                            Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
                         }
                         Position.MergeFrom(other.Position);
                     }
@@ -2994,6 +3610,14 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (other.IsEngaged != false)
                     {
                         IsEngaged = other.IsEngaged;
+                    }
+                    if (other.Team != 0)
+                    {
+                        Team = other.Team;
+                    }
+                    if (other.Username.Length != 0)
+                    {
+                        Username = other.Username;
                     }
                     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
                 }
@@ -3016,7 +3640,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                 }
                             case 16:
                                 {
-                                    type_ = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type)input.ReadEnum();
+                                    Type = (global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Interactable.Types.Type)input.ReadEnum();
                                     break;
                                 }
                             case 24:
@@ -3029,52 +3653,73 @@ namespace NakamaMinimalGame.PublicMatchState
                                     LastProcessedClientTick = input.ReadInt64();
                                     break;
                                 }
-                            case 40:
+                            case 42:
                                 {
-                                    Invulnerable = input.ReadBool();
+                                    Classname = input.ReadString();
                                     break;
                                 }
-                            case 50:
+                            case 48:
                                 {
-                                    if (character_ == null)
-                                    {
-                                        character_ = new global::NakamaMinimalGame.Character.Character();
-                                    }
-                                    input.ReadMessage(character_);
+                                    Level = input.ReadInt32();
                                     break;
                                 }
-                            case 58:
+                            case 61:
                                 {
-                                    if (position_ == null)
-                                    {
-                                        position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
-                                    }
-                                    input.ReadMessage(position_);
+                                    CurrentHealth = input.ReadFloat();
                                     break;
                                 }
                             case 69:
                                 {
-                                    Rotation = input.ReadFloat();
+                                    CurrentPower = input.ReadFloat();
                                     break;
                                 }
-                            case 77:
+                            case 72:
                                 {
-                                    GlobalCooldown = input.ReadFloat();
+                                    Invulnerable = input.ReadBool();
                                     break;
                                 }
                             case 82:
                                 {
+                                    if (position_ == null)
+                                    {
+                                        Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
+                                    }
+                                    input.ReadMessage(Position);
+                                    break;
+                                }
+                            case 93:
+                                {
+                                    Rotation = input.ReadFloat();
+                                    break;
+                                }
+                            case 101:
+                                {
+                                    GlobalCooldown = input.ReadFloat();
+                                    break;
+                                }
+                            case 106:
+                                {
                                     Target = input.ReadString();
                                     break;
                                 }
-                            case 90:
+                            case 114:
                                 {
                                     auras_.AddEntriesFrom(input, _repeated_auras_codec);
                                     break;
                                 }
-                            case 96:
+                            case 120:
                                 {
                                     IsEngaged = input.ReadBool();
+                                    break;
+                                }
+                            case 128:
+                                {
+                                    Team = input.ReadInt32();
+                                    break;
+                                }
+                            case 138:
+                                {
+                                    Username = input.ReadString();
                                     break;
                                 }
                         }
@@ -3107,7 +3752,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[4]; }
+                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[5]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3366,7 +4011,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[5]; }
+                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[6]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3460,9 +4105,9 @@ namespace NakamaMinimalGame.PublicMatchState
 
                 /// <summary>Field number for the "position" field.</summary>
                 public const int PositionFieldNumber = 5;
-                private global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df position_;
+                private global::NakamaMinimalGame.PublicMatchState.Vector2Df position_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df Position
+                public global::NakamaMinimalGame.PublicMatchState.Vector2Df Position
                 {
                     get { return position_; }
                     set
@@ -3682,7 +4327,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         if (position_ == null)
                         {
-                            position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
+                            Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
                         }
                         Position.MergeFrom(other.Position);
                     }
@@ -3736,9 +4381,9 @@ namespace NakamaMinimalGame.PublicMatchState
                                 {
                                     if (position_ == null)
                                     {
-                                        position_ = new global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Types.Vector2Df();
+                                        Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
                                     }
-                                    input.ReadMessage(position_);
+                                    input.ReadMessage(Position);
                                     break;
                                 }
                             case 53:
@@ -3762,17 +4407,17 @@ namespace NakamaMinimalGame.PublicMatchState
 
             }
 
-            public sealed partial class Vector2Df : pb::IMessage<Vector2Df>
+            public sealed partial class Area : pb::IMessage<Area>
             {
-                private static readonly pb::MessageParser<Vector2Df> _parser = new pb::MessageParser<Vector2Df>(() => new Vector2Df());
+                private static readonly pb::MessageParser<Area> _parser = new pb::MessageParser<Area>(() => new Area());
                 private pb::UnknownFieldSet _unknownFields;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public static pb::MessageParser<Vector2Df> Parser { get { return _parser; } }
+                public static pb::MessageParser<Area> Parser { get { return _parser; } }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public static pbr::MessageDescriptor Descriptor
                 {
-                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[6]; }
+                    get { return global::NakamaMinimalGame.PublicMatchState.PublicMatchState.Descriptor.NestedTypes[7]; }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3782,7 +4427,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public Vector2Df()
+                public Area()
                 {
                     OnConstruction();
                 }
@@ -3790,53 +4435,109 @@ namespace NakamaMinimalGame.PublicMatchState
                 partial void OnConstruction();
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public Vector2Df(Vector2Df other) : this()
+                public Area(Area other) : this()
                 {
-                    x_ = other.x_;
-                    y_ = other.y_;
+                    id_ = other.id_;
+                    effectId_ = other.effectId_;
+                    createdAtTick_ = other.createdAtTick_;
+                    creator_ = other.creator_;
+                    position_ = other.position_ != null ? other.position_.Clone() : null;
+                    areaTickCount_ = other.areaTickCount_;
                     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public Vector2Df Clone()
+                public Area Clone()
                 {
-                    return new Vector2Df(this);
+                    return new Area(this);
                 }
 
-                /// <summary>Field number for the "x" field.</summary>
-                public const int XFieldNumber = 1;
-                private float x_;
+                /// <summary>Field number for the "id" field.</summary>
+                public const int IdFieldNumber = 1;
+                private string id_ = "";
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public float X
+                public string Id
                 {
-                    get { return x_; }
+                    get { return id_; }
                     set
                     {
-                        x_ = value;
+                        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
                     }
                 }
 
-                /// <summary>Field number for the "y" field.</summary>
-                public const int YFieldNumber = 2;
-                private float y_;
+                /// <summary>Field number for the "effect_id" field.</summary>
+                public const int EffectIdFieldNumber = 2;
+                private long effectId_;
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public float Y
+                public long EffectId
                 {
-                    get { return y_; }
+                    get { return effectId_; }
                     set
                     {
-                        y_ = value;
+                        effectId_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "created_at_tick" field.</summary>
+                public const int CreatedAtTickFieldNumber = 3;
+                private long createdAtTick_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public long CreatedAtTick
+                {
+                    get { return createdAtTick_; }
+                    set
+                    {
+                        createdAtTick_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "creator" field.</summary>
+                public const int CreatorFieldNumber = 4;
+                private string creator_ = "";
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public string Creator
+                {
+                    get { return creator_; }
+                    set
+                    {
+                        creator_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+                    }
+                }
+
+                /// <summary>Field number for the "position" field.</summary>
+                public const int PositionFieldNumber = 5;
+                private global::NakamaMinimalGame.PublicMatchState.Vector2Df position_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public global::NakamaMinimalGame.PublicMatchState.Vector2Df Position
+                {
+                    get { return position_; }
+                    set
+                    {
+                        position_ = value;
+                    }
+                }
+
+                /// <summary>Field number for the "area_tick_count" field.</summary>
+                public const int AreaTickCountFieldNumber = 6;
+                private int areaTickCount_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public int AreaTickCount
+                {
+                    get { return areaTickCount_; }
+                    set
+                    {
+                        areaTickCount_ = value;
                     }
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public override bool Equals(object other)
                 {
-                    return Equals(other as Vector2Df);
+                    return Equals(other as Area);
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public bool Equals(Vector2Df other)
+                public bool Equals(Area other)
                 {
                     if (ReferenceEquals(other, null))
                     {
@@ -3846,8 +4547,12 @@ namespace NakamaMinimalGame.PublicMatchState
                     {
                         return true;
                     }
-                    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(X, other.X)) return false;
-                    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Y, other.Y)) return false;
+                    if (Id != other.Id) return false;
+                    if (EffectId != other.EffectId) return false;
+                    if (CreatedAtTick != other.CreatedAtTick) return false;
+                    if (Creator != other.Creator) return false;
+                    if (!object.Equals(Position, other.Position)) return false;
+                    if (AreaTickCount != other.AreaTickCount) return false;
                     return Equals(_unknownFields, other._unknownFields);
                 }
 
@@ -3855,8 +4560,12 @@ namespace NakamaMinimalGame.PublicMatchState
                 public override int GetHashCode()
                 {
                     int hash = 1;
-                    if (X != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(X);
-                    if (Y != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Y);
+                    if (Id.Length != 0) hash ^= Id.GetHashCode();
+                    if (EffectId != 0L) hash ^= EffectId.GetHashCode();
+                    if (CreatedAtTick != 0L) hash ^= CreatedAtTick.GetHashCode();
+                    if (Creator.Length != 0) hash ^= Creator.GetHashCode();
+                    if (position_ != null) hash ^= Position.GetHashCode();
+                    if (AreaTickCount != 0) hash ^= AreaTickCount.GetHashCode();
                     if (_unknownFields != null)
                     {
                         hash ^= _unknownFields.GetHashCode();
@@ -3873,15 +4582,35 @@ namespace NakamaMinimalGame.PublicMatchState
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public void WriteTo(pb::CodedOutputStream output)
                 {
-                    if (X != 0F)
+                    if (Id.Length != 0)
                     {
-                        output.WriteRawTag(13);
-                        output.WriteFloat(X);
+                        output.WriteRawTag(10);
+                        output.WriteString(Id);
                     }
-                    if (Y != 0F)
+                    if (EffectId != 0L)
                     {
-                        output.WriteRawTag(21);
-                        output.WriteFloat(Y);
+                        output.WriteRawTag(16);
+                        output.WriteInt64(EffectId);
+                    }
+                    if (CreatedAtTick != 0L)
+                    {
+                        output.WriteRawTag(24);
+                        output.WriteInt64(CreatedAtTick);
+                    }
+                    if (Creator.Length != 0)
+                    {
+                        output.WriteRawTag(34);
+                        output.WriteString(Creator);
+                    }
+                    if (position_ != null)
+                    {
+                        output.WriteRawTag(42);
+                        output.WriteMessage(Position);
+                    }
+                    if (AreaTickCount != 0)
+                    {
+                        output.WriteRawTag(48);
+                        output.WriteInt32(AreaTickCount);
                     }
                     if (_unknownFields != null)
                     {
@@ -3893,13 +4622,29 @@ namespace NakamaMinimalGame.PublicMatchState
                 public int CalculateSize()
                 {
                     int size = 0;
-                    if (X != 0F)
+                    if (Id.Length != 0)
                     {
-                        size += 1 + 4;
+                        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
                     }
-                    if (Y != 0F)
+                    if (EffectId != 0L)
                     {
-                        size += 1 + 4;
+                        size += 1 + pb::CodedOutputStream.ComputeInt64Size(EffectId);
+                    }
+                    if (CreatedAtTick != 0L)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeInt64Size(CreatedAtTick);
+                    }
+                    if (Creator.Length != 0)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeStringSize(Creator);
+                    }
+                    if (position_ != null)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
+                    }
+                    if (AreaTickCount != 0)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeInt32Size(AreaTickCount);
                     }
                     if (_unknownFields != null)
                     {
@@ -3909,19 +4654,39 @@ namespace NakamaMinimalGame.PublicMatchState
                 }
 
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-                public void MergeFrom(Vector2Df other)
+                public void MergeFrom(Area other)
                 {
                     if (other == null)
                     {
                         return;
                     }
-                    if (other.X != 0F)
+                    if (other.Id.Length != 0)
                     {
-                        X = other.X;
+                        Id = other.Id;
                     }
-                    if (other.Y != 0F)
+                    if (other.EffectId != 0L)
                     {
-                        Y = other.Y;
+                        EffectId = other.EffectId;
+                    }
+                    if (other.CreatedAtTick != 0L)
+                    {
+                        CreatedAtTick = other.CreatedAtTick;
+                    }
+                    if (other.Creator.Length != 0)
+                    {
+                        Creator = other.Creator;
+                    }
+                    if (other.position_ != null)
+                    {
+                        if (position_ == null)
+                        {
+                            Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
+                        }
+                        Position.MergeFrom(other.Position);
+                    }
+                    if (other.AreaTickCount != 0)
+                    {
+                        AreaTickCount = other.AreaTickCount;
                     }
                     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
                 }
@@ -3937,14 +4702,38 @@ namespace NakamaMinimalGame.PublicMatchState
                             default:
                                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                                 break;
-                            case 13:
+                            case 10:
                                 {
-                                    X = input.ReadFloat();
+                                    Id = input.ReadString();
                                     break;
                                 }
-                            case 21:
+                            case 16:
                                 {
-                                    Y = input.ReadFloat();
+                                    EffectId = input.ReadInt64();
+                                    break;
+                                }
+                            case 24:
+                                {
+                                    CreatedAtTick = input.ReadInt64();
+                                    break;
+                                }
+                            case 34:
+                                {
+                                    Creator = input.ReadString();
+                                    break;
+                                }
+                            case 42:
+                                {
+                                    if (position_ == null)
+                                    {
+                                        Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
+                                    }
+                                    input.ReadMessage(Position);
+                                    break;
+                                }
+                            case 48:
+                                {
+                                    AreaTickCount = input.ReadInt32();
                                     break;
                                 }
                         }
@@ -4618,9 +5407,6 @@ namespace NakamaMinimalGame.PublicMatchState
 
             }
 
-            /// <summary>
-            ///opId = 1
-            /// </summary>
             public sealed partial class Client_Cast : pb::IMessage<Client_Cast>
             {
                 private static readonly pb::MessageParser<Client_Cast> _parser = new pb::MessageParser<Client_Cast>(() => new Client_Cast());
@@ -4653,6 +5439,7 @@ namespace NakamaMinimalGame.PublicMatchState
                 {
                     clientTick_ = other.clientTick_;
                     spellId_ = other.spellId_;
+                    position_ = other.position_ != null ? other.position_.Clone() : null;
                     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
                 }
 
@@ -4688,6 +5475,19 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                 }
 
+                /// <summary>Field number for the "position" field.</summary>
+                public const int PositionFieldNumber = 3;
+                private global::NakamaMinimalGame.PublicMatchState.Vector2Df position_;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                public global::NakamaMinimalGame.PublicMatchState.Vector2Df Position
+                {
+                    get { return position_; }
+                    set
+                    {
+                        position_ = value;
+                    }
+                }
+
                 [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
                 public override bool Equals(object other)
                 {
@@ -4707,6 +5507,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     }
                     if (ClientTick != other.ClientTick) return false;
                     if (SpellId != other.SpellId) return false;
+                    if (!object.Equals(Position, other.Position)) return false;
                     return Equals(_unknownFields, other._unknownFields);
                 }
 
@@ -4716,6 +5517,7 @@ namespace NakamaMinimalGame.PublicMatchState
                     int hash = 1;
                     if (ClientTick != 0L) hash ^= ClientTick.GetHashCode();
                     if (SpellId != 0L) hash ^= SpellId.GetHashCode();
+                    if (position_ != null) hash ^= Position.GetHashCode();
                     if (_unknownFields != null)
                     {
                         hash ^= _unknownFields.GetHashCode();
@@ -4742,6 +5544,11 @@ namespace NakamaMinimalGame.PublicMatchState
                         output.WriteRawTag(16);
                         output.WriteInt64(SpellId);
                     }
+                    if (position_ != null)
+                    {
+                        output.WriteRawTag(26);
+                        output.WriteMessage(Position);
+                    }
                     if (_unknownFields != null)
                     {
                         _unknownFields.WriteTo(output);
@@ -4759,6 +5566,10 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (SpellId != 0L)
                     {
                         size += 1 + pb::CodedOutputStream.ComputeInt64Size(SpellId);
+                    }
+                    if (position_ != null)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
                     }
                     if (_unknownFields != null)
                     {
@@ -4781,6 +5592,14 @@ namespace NakamaMinimalGame.PublicMatchState
                     if (other.SpellId != 0L)
                     {
                         SpellId = other.SpellId;
+                    }
+                    if (other.position_ != null)
+                    {
+                        if (position_ == null)
+                        {
+                            Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
+                        }
+                        Position.MergeFrom(other.Position);
                     }
                     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
                 }
@@ -4806,15 +5625,21 @@ namespace NakamaMinimalGame.PublicMatchState
                                     SpellId = input.ReadInt64();
                                     break;
                                 }
+                            case 26:
+                                {
+                                    if (position_ == null)
+                                    {
+                                        Position = new global::NakamaMinimalGame.PublicMatchState.Vector2Df();
+                                    }
+                                    input.ReadMessage(Position);
+                                    break;
+                                }
                         }
                     }
                 }
 
             }
 
-            /// <summary>
-            ///opId = 2
-            /// </summary>
             public sealed partial class Client_Autoattack : pb::IMessage<Client_Autoattack>
             {
                 private static readonly pb::MessageParser<Client_Autoattack> _parser = new pb::MessageParser<Client_Autoattack>(() => new Client_Autoattack());
@@ -4997,7 +5822,7 @@ namespace NakamaMinimalGame.PublicMatchState
                                 }
                             case 24:
                                 {
-                                    attacktype_ = (global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Autoattack.Types.Type)input.ReadEnum();
+                                    Attacktype = (global::NakamaMinimalGame.PublicMatchState.Client_Message.Types.Client_Autoattack.Types.Type)input.ReadEnum();
                                     break;
                                 }
                         }
@@ -5021,9 +5846,6 @@ namespace NakamaMinimalGame.PublicMatchState
 
             }
 
-            /// <summary>
-            ///opId = 3
-            /// </summary>
             public sealed partial class Client_CancelAttack : pb::IMessage<Client_CancelAttack>
             {
                 private static readonly pb::MessageParser<Client_CancelAttack> _parser = new pb::MessageParser<Client_CancelAttack>(() => new Client_CancelAttack());
@@ -5147,9 +5969,6 @@ namespace NakamaMinimalGame.PublicMatchState
 
             }
 
-            /// <summary>
-            ///opId = 4
-            /// </summary>
             public sealed partial class Client_Movement : pb::IMessage<Client_Movement>
             {
                 private static readonly pb::MessageParser<Client_Movement> _parser = new pb::MessageParser<Client_Movement>(() => new Client_Movement());
@@ -5443,9 +6262,6 @@ namespace NakamaMinimalGame.PublicMatchState
 
             }
 
-            /// <summary>
-            ///opId = 100
-            /// </summary>
             public sealed partial class Client_SelectCharacter : pb::IMessage<Client_SelectCharacter>
             {
                 private static readonly pb::MessageParser<Client_SelectCharacter> _parser = new pb::MessageParser<Client_SelectCharacter>(() => new Client_SelectCharacter());
@@ -5605,6 +6421,197 @@ namespace NakamaMinimalGame.PublicMatchState
 
         }
         #endregion
+
+    }
+
+    public sealed partial class Vector2Df : pb::IMessage<Vector2Df>
+    {
+        private static readonly pb::MessageParser<Vector2Df> _parser = new pb::MessageParser<Vector2Df>(() => new Vector2Df());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pb::MessageParser<Vector2Df> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pbr::MessageDescriptor Descriptor
+        {
+            get { return global::NakamaMinimalGame.PublicMatchState.MatchstateReflection.Descriptor.MessageTypes[2]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        pbr::MessageDescriptor pb::IMessage.Descriptor
+        {
+            get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Vector2Df()
+        {
+            OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Vector2Df(Vector2Df other) : this()
+        {
+            x_ = other.x_;
+            y_ = other.y_;
+            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Vector2Df Clone()
+        {
+            return new Vector2Df(this);
+        }
+
+        /// <summary>Field number for the "x" field.</summary>
+        public const int XFieldNumber = 1;
+        private float x_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public float X
+        {
+            get { return x_; }
+            set
+            {
+                x_ = value;
+            }
+        }
+
+        /// <summary>Field number for the "y" field.</summary>
+        public const int YFieldNumber = 2;
+        private float y_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public float Y
+        {
+            get { return y_; }
+            set
+            {
+                y_ = value;
+            }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override bool Equals(object other)
+        {
+            return Equals(other as Vector2Df);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public bool Equals(Vector2Df other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+            if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(X, other.X)) return false;
+            if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Y, other.Y)) return false;
+            return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override int GetHashCode()
+        {
+            int hash = 1;
+            if (X != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(X);
+            if (Y != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Y);
+            if (_unknownFields != null)
+            {
+                hash ^= _unknownFields.GetHashCode();
+            }
+            return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override string ToString()
+        {
+            return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void WriteTo(pb::CodedOutputStream output)
+        {
+            if (X != 0F)
+            {
+                output.WriteRawTag(13);
+                output.WriteFloat(X);
+            }
+            if (Y != 0F)
+            {
+                output.WriteRawTag(21);
+                output.WriteFloat(Y);
+            }
+            if (_unknownFields != null)
+            {
+                _unknownFields.WriteTo(output);
+            }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int CalculateSize()
+        {
+            int size = 0;
+            if (X != 0F)
+            {
+                size += 1 + 4;
+            }
+            if (Y != 0F)
+            {
+                size += 1 + 4;
+            }
+            if (_unknownFields != null)
+            {
+                size += _unknownFields.CalculateSize();
+            }
+            return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(Vector2Df other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            if (other.X != 0F)
+            {
+                X = other.X;
+            }
+            if (other.Y != 0F)
+            {
+                Y = other.Y;
+            }
+            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(pb::CodedInputStream input)
+        {
+            uint tag;
+            while ((tag = input.ReadTag()) != 0)
+            {
+                switch (tag)
+                {
+                    default:
+                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                        break;
+                    case 13:
+                        {
+                            X = input.ReadFloat();
+                            break;
+                        }
+                    case 21:
+                        {
+                            Y = input.ReadFloat();
+                            break;
+                        }
+                }
+            }
+        }
 
     }
 
